@@ -2705,28 +2705,20 @@ function renderWatchMomCards() {
 // ─────────────────────────────────────────────
 let authenticated = false;
 
-function hashPW(s) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
-  return Math.abs(h).toString();
-}
-const PW_HASH = hashPW('987868');
-
 function checkPW() {
-  const val = document.getElementById('pwInput').value;
-  if (hashPW(val) === PW_HASH) {
+  const val = document.getElementById('pwInput').value.trim();
+  if (val === '987867') {
     authenticated = true;
     document.getElementById('pwGate').style.display = 'none';
     try { const saved = localStorage.getItem('pats_v1'); if (saved) Object.assign(S, JSON.parse(saved)); } catch(e) {}
     render();
-    // Go to Tab 1
     document.querySelectorAll('.page-wrap').forEach(p => p.classList.remove('on'));
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('on'));
     document.getElementById('p1').classList.add('on');
     document.querySelectorAll('.nav-tab')[0].classList.add('on');
   } else {
     const err = document.getElementById('pwError');
-    err.textContent = 'Incorrect password';
+    err.textContent = val === '' ? 'Please enter password' : 'Incorrect password';
     document.getElementById('pwInput').value = '';
     document.getElementById('pwInput').focus();
     setTimeout(() => err.textContent = '', 2500);
