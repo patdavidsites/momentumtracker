@@ -1,0 +1,3168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Pat's Portfolio — v1.4</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #060d18;
+  --s0: #0a1525;
+  --s1: #0f1e35;
+  --s2: #142844;
+  --blue: #1e7fd4;
+  --bb: #48a8ff;
+  --bglow: rgba(72,168,255,0.15);
+  --green: #00d9a6;
+  --gd: rgba(0,217,166,0.13);
+  --yellow: #f5a623;
+  --yd: rgba(245,166,35,0.12);
+  --red: #f04545;
+  --rd: rgba(240,69,69,0.12);
+  --purple: #b06ee0;
+  --text: #e4f0ff;
+  --td: #8aadcc;
+  --tm: #5a7aaa;
+  --border: rgba(72,168,255,0.16);
+  --bb2: rgba(72,168,255,0.35);
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+
+.lm {
+  --bg: #eef2f8; --s0: #fff; --s1: #f0f4fa; --s2: #e2eaf8;
+  --text: #0d1626; --td: #4a6080; --tm: #8aa0c0;
+  --border: rgba(45,142,240,0.15); --bb2: rgba(45,142,240,0.35);
+  --gd: rgba(0,168,122,0.1); --yd: rgba(212,137,26,0.1); --rd: rgba(199,48,48,0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  transition: background .3s, color .3s;
+}
+
+/* ── NAV ── */
+.nav {
+  background: var(--s0);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0 14px;
+  height: 52px;
+}
+.nav-logo {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bb);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  flex: 1;
+}
+.nav-tabs {
+  display: flex;
+  gap: 2px;
+}
+.nav-tab {
+  padding: 8px 14px;
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--tm);
+  cursor: pointer;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.nav-tab.on { background: var(--bglow); color: var(--bb); }
+.nav-tab:hover { color: var(--text); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 12px;
+}
+.tbtn {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  color: var(--td);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--sans);
+  transition: all .2s;
+}
+.tbtn:hover { border-color: var(--bb); color: var(--bb); }
+.scrape-btn {
+  background: var(--blue);
+  border: none;
+  color: #fff;
+  padding: 7px 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--sans);
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.scrape-btn:hover { background: var(--bb); }
+.scrape-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+/* ── MAIN ── */
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 18px 15px 80px;
+}
+
+/* ── SCRAPE BAR ── */
+.sbar {
+  display: none;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--bb);
+  font-family: var(--mono);
+  align-items: center;
+  gap: 9px;
+}
+.sbar.on { display: flex; }
+.spin {
+  width: 13px; height: 13px;
+  border: 2px solid var(--border);
+  border-top-color: var(--bb);
+  border-radius: 50%;
+  animation: sp .8s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes sp { to { transform: rotate(360deg); } }
+
+/* ── FRIDAY BANNER ── */
+.friday {
+  background: linear-gradient(135deg, rgba(155,89,182,.15), rgba(45,142,240,.08));
+  border: 1px solid rgba(155,89,182,.4);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+.friday.on { display: flex; }
+.friday-icon { font-size: 22px; flex-shrink: 0; }
+.friday-txt { flex: 1; }
+.friday-ttl {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--purple);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: 2px;
+}
+.friday-sub { font-size: 12px; color: var(--td); }
+
+/* ── SECTION ── */
+.sh {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0 9px;
+}
+.st {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--tm);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.st::before {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 12px;
+  background: var(--bb);
+  border-radius: 2px;
+}
+.add-btn {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  color: var(--bb);
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--sans);
+  transition: all .2s;
+}
+.add-btn:hover { background: var(--bglow); border-color: var(--bb2); }
+
+/* ── NET WORTH BANNER ── */
+.banner {
+  background: linear-gradient(135deg, var(--s0), var(--s1));
+  border: 1px solid var(--bb2);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.nw-item label {
+  font-size: 9px;
+  font-family: var(--mono);
+  color: var(--tm);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  display: block;
+  margin-bottom: 2px;
+}
+.nw-val {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+.nw-val.total { color: var(--bb); font-size: 20px; }
+.nw-item.fx { text-align: right; }
+.fx-rate {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--yellow);
+}
+.nw-item.full { grid-column: span 2; }
+.last-up {
+  font-size: 9px;
+  color: var(--tm);
+  font-family: var(--mono);
+  margin-top: 2px;
+}
+
+/* ── CASH ── */
+.cash-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.cash-card {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cash-lbl {
+  font-size: 10px;
+  color: var(--tm);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.cash-inp {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: right;
+  width: 110px;
+  outline: none;
+}
+.cash-inp:focus { color: var(--bb); }
+
+/* ── HOLDING ROW ── */
+.hrow {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: border-color .2s;
+}
+.hrow:hover { border-color: var(--bb2); }
+.hrow.sig-g { border-left: 3px solid var(--green); }
+.hrow.sig-y { border-left: 3px solid var(--yellow); }
+.hrow.sig-r { border-left: 3px solid var(--red); }
+
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot.g { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.dot.y { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+.dot.r { background: var(--red); box-shadow: 0 0 6px var(--red); }
+
+.hrow-info { flex: 1; min-width: 0; }
+.hrow-ticker {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hrow-meta {
+  font-size: 11px;
+  color: var(--tm);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hrow-price {
+  text-align: right;
+  flex-shrink: 0;
+}
+.hrow-cur {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.hrow-chg {
+  font-family: var(--mono);
+  font-size: 10px;
+  margin-top: 1px;
+}
+.hrow-chg.p { color: var(--green); }
+.hrow-chg.n { color: var(--red); }
+.hrow-chg.u { color: var(--tm); }
+
+.hrow-btns {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.btn-edit {
+  background: var(--bglow);
+  border: 1px solid var(--bb2);
+  color: var(--bb);
+  border-radius: 5px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: var(--sans);
+  transition: all .2s;
+}
+.btn-edit:hover { background: var(--blue); color: #fff; }
+.btn-rm {
+  background: var(--rd);
+  border: 1px solid rgba(232,69,69,.3);
+  color: var(--red);
+  border-radius: 5px;
+  padding: 4px 9px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  transition: all .2s;
+}
+.btn-rm:hover { background: var(--red); color: #fff; }
+
+.tag {
+  font-size: 9px;
+  font-family: var(--mono);
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: var(--bglow);
+  color: var(--bb);
+  border: 1px solid var(--border);
+}
+
+/* ── OVERLAP ── */
+.ov {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ov-lbl { font-size: 11px; color: var(--td); flex: 1; }
+.ov-track { flex: 2; height: 4px; background: var(--s2); border-radius: 2px; }
+.ov-fill { height: 100%; border-radius: 2px; background: var(--yellow); }
+.ov-pct { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--yellow); }
+
+/* ── WATCHLIST ROW ── */
+/* ── WATCHLIST ROWS (momentum-aware) ── */
+.wrow-full {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  margin-bottom: 7px;
+  transition: border-color .2s;
+}
+.wrow-full:hover { border-color: var(--bb2); }
+.wrow-top {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 7px;
+}
+.wrow-ticker {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wrow-score {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 700;
+  min-width: 48px;
+  text-align: right;
+}
+.wrow-trend {
+  font-family: var(--mono);
+  font-size: 10px;
+  min-width: 130px;
+  text-align: right;
+}
+.wrow-bottom {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-left: 18px;
+}
+.wrow-stat { display: flex; align-items: center; gap: 5px; }
+.wstat-lbl {
+  font-size: 9px;
+  font-family: var(--mono);
+  color: var(--tm);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.wstat-val {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+.wrow-div {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--yellow);
+  background: var(--yd);
+  border: 1px solid rgba(245,166,35,.3);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.wrow-note-txt {
+  font-size: 11px;
+  color: var(--tm);
+  flex: 1;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 500px) {
+  .wrow-trend { display: none; }
+  .wrow-note-txt { display: none; }
+}
+
+
+/* ── BEHAVIOUR LOG ── */
+.log-input {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 7px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+.log-sel, .log-txt {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--sans);
+  outline: none;
+}
+.log-txt { width: 100%; }
+.log-txt:focus, .log-sel:focus { border-color: var(--bb); }
+.log-entry {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 13px;
+  margin-bottom: 6px;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 9px;
+  align-items: start;
+}
+.log-ts { font-family: var(--mono); font-size: 10px; color: var(--tm); white-space: nowrap; }
+.log-badge {
+  font-size: 9px;
+  font-family: var(--mono);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+.log-badge.buy { background: var(--gd); color: var(--green); }
+.log-badge.sell { background: var(--rd); color: var(--red); }
+.log-badge.trim { background: var(--yd); color: var(--yellow); }
+.log-badge.fear { background: var(--rd); color: var(--red); }
+.log-badge.research { background: var(--bglow); color: var(--bb); }
+.log-note { font-size: 12px; color: var(--td); }
+
+/* ── YEARLY ── */
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin-bottom: 12px;
+}
+.year-card {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px;
+  text-align: center;
+}
+.year-lbl { font-family: var(--mono); font-size: 10px; color: var(--tm); margin-bottom: 5px; }
+.year-inp {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+  outline: none;
+}
+.year-inp:focus { color: var(--bb); }
+.year-chg { font-family: var(--mono); font-size: 10px; margin-top: 3px; }
+
+.perf-card {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.perf-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.perf-row:last-child { border: none; }
+.perf-lbl { font-size: 12px; color: var(--td); }
+.perf-val { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+.perf-val.p { color: var(--green); }
+.perf-val.n { color: var(--red); }
+
+/* ── MODAL ── */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.overlay.on { display: flex; }
+.modal {
+  background: var(--s0);
+  border: 1px solid var(--bb2);
+  border-radius: 12px;
+  padding: 22px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bb);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.type-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.type-tab {
+  flex: 1;
+  padding: 8px;
+  text-align: center;
+  font-size: 11px;
+  font-family: var(--mono);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--tm);
+  transition: all .2s;
+}
+.type-tab.on { background: var(--bglow); border-color: var(--bb); color: var(--bb); }
+.form-sec { display: none; }
+.form-sec.on { display: block; }
+.fg { margin-bottom: 12px; }
+.fl {
+  font-size: 10px;
+  color: var(--tm);
+  font-family: var(--mono);
+  display: block;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.fi, .fsel {
+  width: 100%;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 11px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: var(--sans);
+  outline: none;
+}
+.fi:focus, .fsel:focus { border-color: var(--bb); }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.modal-actions { display: flex; gap: 9px; margin-top: 18px; }
+.modal-cancel {
+  flex: 1;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  color: var(--td);
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--sans);
+}
+.modal-save {
+  flex: 1;
+  background: var(--blue);
+  border: none;
+  color: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--sans);
+}
+.modal-save:hover { background: var(--bb); }
+
+/* ── REFLECTION MODAL ── */
+.ref-q { margin-bottom: 14px; }
+.ref-ql { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+.ref-ta {
+  width: 100%;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 11px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--sans);
+  outline: none;
+  resize: vertical;
+  min-height: 58px;
+  line-height: 1.5;
+}
+.ref-ta:focus { border-color: var(--bb); }
+
+.empty {
+  text-align: center;
+  padding: 16px;
+  color: var(--tm);
+  font-size: 12px;
+  font-family: var(--mono);
+}
+
+/* ── PAGE SYSTEM ── */
+.page-wrap { display: none; }
+.page-wrap.on { display: block; }
+
+/* ── TAB 3 INTELLIGENCE STYLES ── */
+.intel-bar {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--tm);
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 13px;
+  margin-bottom: 16px;
+}
+.i-section {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.i-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bb);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.i-title::before {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 14px;
+  background: var(--bb);
+  border-radius: 2px;
+}
+.i-summary {
+  font-size: 12px;
+  color: var(--td);
+  line-height: 1.7;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: var(--s1);
+  border-radius: 7px;
+  border-left: 3px solid var(--bb);
+}
+.i-note {
+  font-size: 11px;
+  color: var(--yellow);
+  margin-top: 12px;
+  font-style: italic;
+  line-height: 1.6;
+}
+/* PERSON CARD */
+.p-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.p-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.p-av {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.p-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.p-role { font-size: 11px; color: var(--tm); margin-top: 2px; }
+.p-aum { font-family: var(--mono); font-size: 11px; color: var(--bb); margin-top: 2px; }
+.p-thesis {
+  font-size: 12px;
+  color: var(--td);
+  line-height: 1.7;
+  margin-bottom: 10px;
+  padding: 9px 11px;
+  background: var(--s2);
+  border-radius: 6px;
+  border-left: 3px solid var(--bb);
+  font-style: italic;
+}
+.p-sub {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--tm);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 6px;
+}
+.p-rel { font-size: 11px; color: var(--yellow); font-style: italic; margin-top: 8px; line-height: 1.6; }
+.p-links { font-size: 11px; color: var(--tm); margin-top: 7px; }
+/* CHIPS */
+.chip-row { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  color: var(--td);
+}
+.chip.hot { border-color: var(--green); color: var(--green); background: var(--gd); }
+.chip.watch { border-color: var(--yellow); color: var(--yellow); background: var(--yd); }
+.chip.sold { border-color: var(--red); color: var(--red); background: var(--rd); }
+/* TABLE */
+.i-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.i-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--tm);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  text-align: left;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.i-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--td);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.i-table tr:last-child td { border: none; }
+.i-table td:first-child { font-family: var(--mono); color: var(--text); font-weight: 700; white-space: nowrap; }
+.amt { font-family: var(--mono); color: var(--green); white-space: nowrap; }
+.imp {
+  font-size: 10px;
+  font-family: var(--mono);
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  display: inline-block;
+}
+.imp.p { background: var(--gd); color: var(--green); }
+.imp.n { background: var(--rd); color: var(--red); }
+.imp.w { background: var(--yd); color: var(--yellow); }
+/* TRUMP ITEMS */
+.trump-item {
+  display: flex;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.trump-item:last-child { border: none; }
+.trump-co {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 80px;
+  flex-shrink: 0;
+}
+.trump-sub { font-size: 9px; color: var(--tm); font-weight: 400; }
+.trump-body { font-size: 11px; color: var(--td); flex: 1; line-height: 1.6; }
+.trump-body em { color: var(--bb); font-style: normal; }
+/* SPEC CARDS */
+.spec-card {
+  background: var(--s1);
+  border: 1px solid rgba(245,166,35,.25);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+.spec-header { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.spec-badge {
+  background: var(--yd);
+  border: 1px solid rgba(245,166,35,.3);
+  color: var(--yellow);
+  font-size: 9px;
+  font-family: var(--mono);
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.spec-ticker { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--text); }
+.spec-expires { font-size: 10px; color: var(--tm); margin-left: auto; font-family: var(--mono); }
+.spec-name { font-size: 12px; color: var(--td); font-weight: 600; margin-bottom: 4px; }
+.spec-desc { font-size: 11px; color: var(--td); line-height: 1.6; }
+.spec-rev { font-size: 11px; color: var(--green); margin-top: 6px; font-family: var(--mono); }
+
+@media (max-width: 700px) {
+  .i-table { font-size: 11px; }
+  .i-table th, .i-table td { padding: 6px 7px; }
+  .trump-item { flex-direction: column; gap: 6px; }
+  .p-head { flex-direction: column; }
+}
+</style>
+<style>
+/* ── PORTFOLIO HEALTH SCORE ── */
+.health-card {
+  background: var(--s0);
+  border: 1px solid var(--bb2);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+.health-left { flex-shrink: 0; text-align: center; width: 70px; }
+.health-label {
+  font-size: 9px;
+  font-family: var(--mono);
+  color: var(--tm);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 4px;
+}
+.health-score {
+  font-family: var(--mono);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.health-track {
+  width: 56px;
+  height: 4px;
+  background: var(--s2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.health-fill { height: 100%; border-radius: 2px; transition: width .5s, background .5s; }
+.health-points { flex: 1; display: flex; flex-direction: column; gap: 5px; justify-content: center; }
+.health-pt {
+  font-size: 12px;
+  color: var(--td);
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  line-height: 1.4;
+}
+.health-pt::before { content: '›'; color: var(--bb); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.health-pt.warn::before { color: var(--yellow); }
+.health-pt.bad::before { color: var(--red); }
+.health-pt.good::before { color: var(--green); }
+
+/* ── TAB 2 + TAB 3 STYLES ── */
+.macro-strip {
+  display: grid;
+  grid-template-columns: repeat(6,1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.macro-chip {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+.macro-lbl { font-size: 9px; font-family: var(--mono); color: var(--tm); display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: .06em; }
+.macro-val { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+.macro-chg { font-family: var(--mono); font-size: 10px; margin-top: 2px; }
+
+/* ALERTS */
+.alert-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.alert-box.red { background: var(--rd); border: 1px solid rgba(232,69,69,.35); color: var(--red); }
+.alert-box.yellow { background: var(--yd); border: 1px solid rgba(245,166,35,.35); color: var(--yellow); }
+.alert-box.green { background: var(--gd); border: 1px solid rgba(0,200,150,.3); color: var(--green); }
+.alert-box.blue { background: var(--bglow); border: 1px solid var(--bb2); color: var(--bb); }
+.alert-icon { font-size: 16px; flex-shrink: 0; }
+.alert-ttl { font-weight: 700; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 3px; }
+
+/* SECTOR GRID */
+.sector-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.sector-card {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 10px;
+  text-align: center;
+  cursor: default;
+  transition: border-color .2s;
+}
+.sector-card:hover { border-color: var(--bb2); }
+.sc-name { font-size: 10px; color: var(--td); margin-bottom: 6px; font-weight: 500; }
+.sc-score { font-family: var(--mono); font-size: 18px; font-weight: 700; margin-bottom: 3px; }
+.sc-lbl { font-size: 9px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.sc-chg { font-family: var(--mono); font-size: 10px; margin-top: 4px; }
+
+/* ROTATION */
+.rotation-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.rot-panel { background: var(--s0); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.rot-title { font-size: 11px; font-family: var(--mono); color: var(--tm); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+.rot-item { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.rot-item:last-child { border: none; }
+.rot-name { font-size: 12px; color: var(--td); flex: 1; }
+.rot-track { flex: 2; height: 4px; background: var(--s2); border-radius: 2px; }
+.rot-bar { height: 100%; border-radius: 2px; }
+.rot-val { font-family: var(--mono); font-size: 11px; font-weight: 700; min-width: 42px; text-align: right; }
+
+/* MOMENTUM CARDS GRID */
+.mom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+/* MOMENTUM CARD */
+.mcard {
+  background: var(--s0);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.mcard:hover { border-color: var(--bb2); }
+
+.mcard-head { padding: 16px 18px 12px; border-bottom: 1px solid var(--border); }
+.mcard-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+.mcard-ticker { font-family: var(--mono); font-size: 15px; font-weight: 700; }
+.mcard-name { font-size: 11px; color: var(--tm); margin-top: 2px; }
+.mscore-wrap { display: flex; align-items: baseline; gap: 3px; justify-content: flex-end; margin-bottom: 4px; }
+.mscore { font-family: var(--mono); font-size: 22px; font-weight: 700; }
+.mscore-denom { font-family: var(--mono); font-size: 13px; color: var(--tm); }
+.mscore-track { height: 4px; border-radius: 2px; background: var(--s2); overflow: hidden; width: 80px; }
+.mscore-fill { height: 100%; border-radius: 2px; transition: width .5s; }
+.mprice-row { display: flex; align-items: center; gap: 12px; }
+.mprice { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+.mprice-chg { font-family: var(--mono); font-size: 12px; }
+.mprice-chg.p { color: var(--green); }
+.mprice-chg.n { color: var(--red); }
+
+/* SPARKLINE */
+.spark-wrap { padding: 4px 18px 10px; border-bottom: 1px solid var(--border); }
+.spark-labels { display: flex; justify-content: space-between; font-size: 9px; font-family: var(--mono); color: var(--tm); margin-top: 3px; }
+canvas.spark { width: 100%; height: 68px; display: block; }
+
+/* MA CHIPS */
+.ma-row { padding: 8px 18px; display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+.ma-chip { font-size: 10px; font-family: var(--mono); padding: 3px 8px; border-radius: 4px; }
+.ma-chip.above { background: var(--gd); color: var(--green); }
+.ma-chip.below { background: var(--rd); color: var(--red); }
+
+/* DIVERGENCE */
+.div-badge { margin: 8px 18px 0; padding: 7px 10px; border-radius: 6px; font-size: 11px; display: flex; gap: 5px; }
+.div-badge.warn { background: var(--yd); border: 1px solid rgba(245,166,35,.3); color: var(--yellow); }
+.div-badge.ok { background: var(--gd); border: 1px solid rgba(0,200,150,.2); color: var(--green); }
+
+/* INDICATORS */
+.indicators { padding: 12px 18px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; border-bottom: 1px solid var(--border); }
+.ind { position: relative; cursor: help; }
+.ind-lbl { font-size: 9px; font-family: var(--mono); color: var(--tm); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+.ind-val { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+.ind-sub { font-size: 10px; color: var(--tm); margin-top: 2px; }
+.ind-tip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  background: var(--s2);
+  border: 1px solid var(--bb2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 11px;
+  color: var(--text);
+  width: 230px;
+  z-index: 50;
+  line-height: 1.6;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.ind:hover .ind-tip { display: block; }
+
+/* RETURN WINDOWS */
+.ret-row { padding: 10px 18px 14px; display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+.ret-item { background: var(--s1); border-radius: 6px; padding: 7px 8px; text-align: center; }
+.ret-period { font-size: 9px; font-family: var(--mono); color: var(--tm); display: block; margin-bottom: 3px; }
+.ret-val { font-family: var(--mono); font-size: 12px; font-weight: 700; }
+.ret-val.p { color: var(--green); } .ret-val.n { color: var(--red); } .ret-val.u { color: var(--tm); }
+
+/* BRIEF */
+.brief-box { background: var(--s1); border: 1px solid var(--bb2); border-radius: 10px; padding: 16px; margin-top: 16px; }
+.brief-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.brief-title { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--bb); text-transform: uppercase; letter-spacing: .07em; }
+.brief-pre { font-family: var(--mono); font-size: 11px; color: var(--td); line-height: 1.8; white-space: pre-wrap; max-height: 280px; overflow-y: auto; }
+
+/* KEY PANEL */
+.key-panel {
+  display: none;
+  position: fixed;
+  bottom: 20px; right: 20px;
+  background: var(--s1);
+  border: 1px solid var(--bb2);
+  border-radius: 12px;
+  padding: 18px;
+  width: 300px;
+  z-index: 400;
+  box-shadow: 0 16px 48px rgba(0,0,0,.5);
+}
+.key-panel.on { display: block; }
+.key-title { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--bb); text-transform: uppercase; margin-bottom: 12px; }
+.key-close { position: absolute; top: 12px; right: 14px; background: none; border: none; color: var(--tm); cursor: pointer; font-size: 18px; }
+.key-item { padding: 7px 0; border-bottom: 1px solid var(--border); }
+.key-item:last-child { border: none; }
+.key-term { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.key-def { font-size: 11px; color: var(--td); line-height: 1.5; }
+
+@media (max-width: 900px) {
+  .mom-grid { grid-template-columns: 1fr; }
+  .sector-grid { grid-template-columns: repeat(2,1fr); }
+  .macro-strip { grid-template-columns: repeat(3,1fr); }
+  .rotation-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .banner { grid-template-columns: 1fr 1fr; }
+  .cash-row { grid-template-columns: 1fr; }
+  .log-input { grid-template-columns: 1fr; }
+  .year-grid { grid-template-columns: repeat(3, 1fr); }
+  .indicators { grid-template-columns: 1fr 1fr; }
+  .ret-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v1.4</span></div>
+  <div class="nav-tabs">
+    <div class="nav-tab on" onclick="showPage('p1',this)">📱 Input</div>
+    <div class="nav-tab" onclick="showPage('p2',this)">📊 Momentum</div>
+    <div class="nav-tab" onclick="showPage('p3',this)">🧠 Intel</div>
+  </div>
+  <div class="nav-right">
+    <button class="tbtn" onclick="toggleTheme()" id="themeBtn">☀</button>
+    <button class="tbtn" onclick="showKey()" style="font-size:11px;">? Key</button>
+    <button class="tbtn" onclick="copyBrief()" style="font-size:11px;">📋 Brief</button>
+    <button class="scrape-btn" id="scrapeBtn" onclick="runScrape()">⟳ Scrape</button>
+  </div>
+</div>
+
+<!-- PASSWORD GATE — overlays Tab 1 content only -->
+<div id="pwGate" style="display:none;position:absolute;inset:0;background:rgba(6,13,24,0.92);z-index:50;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);">
+  <div style="background:var(--s0);border:1px solid var(--bb2);border-radius:16px;padding:36px 32px;width:100%;max-width:320px;text-align:center;">
+    <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--bb);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;">Input</div>
+    <div style="font-family:var(--mono);font-size:9px;color:var(--tm);letter-spacing:.06em;margin-bottom:24px;">Portfolio data is private</div>
+    <div style="font-size:28px;margin-bottom:18px;">🔒</div>
+    <input
+      id="pwInput"
+      type="password"
+      placeholder="Enter password"
+      style="width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);padding:12px 16px;border-radius:8px;font-size:15px;font-family:var(--mono);outline:none;text-align:center;letter-spacing:.15em;margin-bottom:8px;"
+      onkeydown="if(event.key==='Enter')checkPW()"
+    />
+    <div id="pwError" style="font-size:11px;color:var(--red);min-height:16px;margin-bottom:10px;font-family:var(--mono);"></div>
+    <button
+      onclick="checkPW()"
+      style="width:100%;background:var(--blue);border:none;color:#fff;padding:12px;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--sans);cursor:pointer;"
+    >Unlock</button>
+  </div>
+</div>
+
+<!-- PAGE WRAPPER TAB 1 -->
+<div id="p1" class="page-wrap on" style="position:relative;">
+<div class="main">
+
+  <!-- Scrape progress -->
+  <div class="sbar" id="sbar">
+    <div class="spin"></div>
+    <span id="sbarTxt">Updating prices...</span>
+  </div>
+
+  <!-- Friday banner -->
+  <div class="friday" id="fridayBanner">
+    <div class="friday-icon">📥</div>
+    <div class="friday-txt">
+      <div class="friday-ttl">Friday — Weekly Review</div>
+      <div class="friday-sub">Download this week's data for your Mac Mini archive.</div>
+    </div>
+    <button class="add-btn" onclick="openRef()">Start →</button>
+  </div>
+
+  <!-- Net worth -->
+  <div class="banner">
+    <div class="nw-item">
+      <label>AUD Holdings</label>
+      <div class="nw-val" id="tAUD">A$0</div>
+    </div>
+    <div class="nw-item fx">
+      <label>AUD/USD</label>
+      <div class="fx-rate" id="fxR">0.6420</div>
+      <div class="last-up" id="lastUp">—</div>
+    </div>
+    <div class="nw-item">
+      <label>USD Holdings (in AUD)</label>
+      <div class="nw-val" id="tUSD">A$0</div>
+    </div>
+    <div class="nw-item fx">
+      <label>Total SMSF</label>
+      <div class="nw-val total" id="tTotal">A$0</div>
+    </div>
+  </div>
+
+  <!-- PORTFOLIO HEALTH SCORE -->
+  <div class="health-card" id="healthCard">
+    <div class="health-left">
+      <div class="health-label">Portfolio Health</div>
+      <div class="health-score" id="healthScore">—</div>
+      <div class="health-track"><div class="health-fill" id="healthFill"></div></div>
+    </div>
+    <div class="health-points" id="healthPoints"></div>
+  </div>
+
+  <!-- Cash -->
+  <div class="sh"><div class="st">Cash</div><button class="add-btn" onclick="openModal('cash')">+ Add Cash</button></div>
+  <div class="cash-row">
+    <div class="cash-card">
+      <div class="cash-lbl">AUD</div>
+      <input class="cash-inp" id="cAUD" value="$5,000" onchange="updateTotals(); save();" />
+    </div>
+    <div class="cash-card">
+      <div class="cash-lbl">USD</div>
+      <input class="cash-inp" id="cUSD" value="$2,000" onchange="updateTotals(); save();" />
+    </div>
+  </div>
+
+  <!-- Overlap -->
+  <div class="sh"><div class="st">Portfolio Overlap</div></div>
+  <div id="overlapBars"></div>
+
+  <!-- ASX Holdings -->
+  <div class="sh">
+    <div class="st">ASX Holdings</div>
+    <button class="add-btn" onclick="openModal('ASX')">+ Add</button>
+  </div>
+  <div id="asxList"></div>
+
+  <!-- USD Holdings -->
+  <div class="sh">
+    <div class="st">USD Holdings</div>
+    <button class="add-btn" onclick="openModal('USD')">+ Add</button>
+  </div>
+  <div id="usdList"></div>
+
+  <!-- Watchlist -->
+  <div class="sh">
+    <div class="st">Watchlist</div>
+    <button class="add-btn" onclick="openWM()">+ Add</button>
+  </div>
+  <div id="wList"></div>
+
+  <!-- Behaviour Log -->
+  <div class="sh"><div class="st">Behaviour Log</div></div>
+  <div class="log-input">
+    <select class="log-sel" id="logType">
+      <option value="buy">Buy</option>
+      <option value="sell">Sell</option>
+      <option value="trim">Trim</option>
+      <option value="fear">Fear Exit</option>
+      <option value="research">Research Note</option>
+    </select>
+    <input class="log-txt" id="logTxt" placeholder="e.g. Sold ARTY — panicked on CPI data" />
+    <button class="add-btn" onclick="addLog()">Log</button>
+  </div>
+  <div id="logList"></div>
+
+  <!-- Yearly Tracker -->
+  <div class="sh"><div class="st">Yearly Tracker</div></div>
+  <div class="year-grid" id="yearGrid"></div>
+  <div class="perf-card">
+    <div class="perf-row"><div class="perf-lbl">Year to Date</div><div class="perf-val p" id="pYTD">+19.33%</div></div>
+    <div class="perf-row"><div class="perf-lbl">1 Year</div><div class="perf-val p" id="p1Y">—</div></div>
+    <div class="perf-row"><div class="perf-lbl">3 Year CAGR</div><div class="perf-val p" id="p3Y">—</div></div>
+    <div class="perf-row"><div class="perf-lbl">5 Year CAGR</div><div class="perf-val p" id="p5Y">—</div></div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /p1 page-wrap -->
+
+<!-- ═══════════════════════════════════════════
+     PAGE 2 — MOMENTUM ANALYSIS
+════════════════════════════════════════════ -->
+<div id="p2" class="page-wrap">
+<div class="main" style="max-width:1100px;">
+
+  <!-- ALERT BANNERS -->
+  <div id="alertStrip"></div>
+
+  <!-- MACRO STRIP -->
+  <div class="macro-strip" id="macroStrip"></div>
+
+  <!-- SECTOR HEAT -->
+  <div class="sh"><div class="st">Sector Momentum</div></div>
+  <div class="sector-grid" id="sectorGrid"></div>
+
+  <!-- ROTATION -->
+  <div class="sh"><div class="st">Capital Rotation — Where Money Is Moving</div></div>
+  <div class="rotation-row">
+    <div class="rot-panel">
+      <div class="rot-title">🟢 Inflows</div>
+      <div id="rotIn"></div>
+    </div>
+    <div class="rot-panel">
+      <div class="rot-title">🔴 Outflows / Cooling</div>
+      <div id="rotOut"></div>
+    </div>
+  </div>
+
+  <!-- HOLDING MOMENTUM CARDS -->
+  <div class="sh"><div class="st">Holdings — Full Momentum Analysis</div></div>
+  <div class="mom-grid" id="momGrid"></div>
+
+  <!-- WATCHLIST MOMENTUM -->
+  <div class="sh"><div class="st">Watchlist — Momentum Signals</div></div>
+  <div class="mom-grid" id="watchMomGrid"></div>
+
+  <!-- PASTE BRIEF -->
+  <div class="brief-box">
+    <div class="brief-header">
+      <div class="brief-title">📋 Analyst Brief — Copy & Paste Into Claude</div>
+      <button class="add-btn" onclick="copyBrief()">Copy</button>
+    </div>
+    <pre class="brief-pre" id="briefPre">Run scrape to generate analyst brief...</pre>
+  </div>
+
+</div>
+</div><!-- /p2 -->
+
+<!-- ═══════════════════════════════════════════
+     PAGE 3 — INTELLIGENCE
+════════════════════════════════════════════ -->
+<div id="p3" class="page-wrap">
+<div class="main" style="max-width:1000px;">
+
+  <div class="intel-bar">
+    📡 Intelligence Brief — updates each time you run Scrape.
+    Last scraped: <span id="intelUp">Not yet — run Scrape to refresh</span>
+  </div>
+
+  <!-- ── INFLUENTIAL INVESTORS ── -->
+  <div class="i-section">
+    <div class="i-title">Influential Investors to Follow</div>
+
+    <!-- ASCHENBRENNER -->
+    <div class="p-card">
+      <div class="p-head">
+        <div class="p-av" style="background:#1a6fc4;">LA</div>
+        <div>
+          <div class="p-name">Leopold Aschenbrenner</div>
+          <div class="p-role">Founder — Situational Awareness LP · Former OpenAI Superalignment Researcher</div>
+          <div class="p-aum">AUM: $5.5B · Grew from $225M in under 2 years · Invested nearly all personal net worth</div>
+        </div>
+      </div>
+      <div class="p-thesis">"Don't bet on the AI model companies. Bet on the physical bottlenecks — electricity, compute, data centres. AGI arrives by 2027. The most valuable assets in the AI era are not algorithms, they are power and computing capacity."</div>
+      <div class="p-sub">TOP 13F HOLDINGS Q1 2026</div>
+      <div class="chip-row">
+        <span class="chip hot">BE — Bloom Energy #1 (+1,511% 1yr)</span>
+        <span class="chip hot">CRWV — CoreWeave + calls (14% of fund)</span>
+        <span class="chip hot">LITE — Lumentum (+143% YTD)</span>
+        <span class="chip hot">INTC — Intel + 20.2M call options (+377% YTD)</span>
+        <span class="chip hot">COHR — Coherent Corp</span>
+        <span class="chip watch">CORZ — Core Scientific</span>
+        <span class="chip watch">IREN — ex-Bitcoin miner → AI data centres</span>
+        <span class="chip watch">SNDK — SanDisk</span>
+        <span class="chip">VST — Vistra Energy</span>
+        <span class="chip">CEG — Constellation Energy</span>
+        <span class="chip">RIOT, HUT, APLD — Bitcoin miners pivoting to AI</span>
+      </div>
+      <div class="p-rel">⚡ Your overlap: DRAM (memory thesis), URNM (nuclear/energy), AINF (infrastructure). Intel is his current high-conviction next multibagger — not in your portfolio. He was in Bloom Energy at ~$258. It's now $1,500+. He identified the power bottleneck 18 months before the market.</div>
+      <div class="p-links">📖 Read free: <strong>situational-awareness.ai</strong> (165 pages) · Follow: <strong>@LeopoldAschenbrenner</strong> on X</div>
+    </div>
+
+    <!-- DAN IVES -->
+    <div class="p-card">
+      <div class="p-head">
+        <div class="p-av" style="background:#d4891a;">DI</div>
+        <div>
+          <div class="p-name">Dan Ives</div>
+          <div class="p-role">MD & Senior Analyst — Wedbush Securities</div>
+          <div class="p-aum">Most quoted tech analyst on Wall Street · Launched IVEP ETF April 8, 2026</div>
+        </div>
+      </div>
+      <div class="p-thesis">"AI is a $30 trillion opportunity over the next decade. We are in the 1st or 2nd inning of the 4th Industrial Revolution. The infrastructure buildout is just beginning." When he upgrades or downgrades a stock, billions of dollars move the same day.</div>
+      <div class="p-sub">KEY CONVICTION PICKS</div>
+      <div class="chip-row">
+        <span class="chip hot">AAPL — Apple</span>
+        <span class="chip hot">MSFT — Microsoft</span>
+        <span class="chip hot">NVDA — Nvidia</span>
+        <span class="chip hot">PLTR — Palantir</span>
+        <span class="chip hot">CRM — Salesforce</span>
+        <span class="chip watch">IVEP — his own AI Power & Infrastructure ETF</span>
+      </div>
+      <div class="p-rel">⚡ Follow him daily for institutional sentiment. His IVEP ETF holdings vs your AINF tells you what you're overlapping and what you're missing. Compare the two regularly.</div>
+      <div class="p-links">Follow: <strong>@DanivesWedbush</strong> on X — posts daily takes, very readable</div>
+    </div>
+  </div>
+
+  <!-- ── NVIDIA INVESTMENTS ── -->
+  <div class="i-section">
+    <div class="i-title">Nvidia — $40B+ Investment Spree 2026</div>
+    <div class="i-summary">Strategy: invest in customers → they buy Nvidia hardware → Nvidia dominates the entire AI stack. Goldman Sachs raised 2026/27 earnings forecasts 12–34% ahead of May 20 earnings. Watch that date.</div>
+    <table class="i-table">
+      <thead><tr><th>Company</th><th>Amount</th><th>What & Why It Matters</th><th>Your Portfolio Impact</th></tr></thead>
+      <tbody>
+        <tr><td>OpenAI</td><td class="amt">$30B</td><td>Largest single bet. Circular: OpenAI buys $35B in chips per $10B invested. 10GW Nvidia systems committed.</td><td><span class="imp p">Bullish NVDA</span></td></tr>
+        <tr><td>Corning (GLW)</td><td class="amt">$3.2B</td><td>Fibre optic glass for data centre interconnects. Confirms photonics is the next bottleneck after chips.</td><td><span class="imp p">Photonics ✓</span></td></tr>
+        <tr><td>Lumentum (LITE)</td><td class="amt">$2B</td><td>Only supplier of 200G EMLs at volume. Aschenbrenner also holds. Triple signal — Nvidia + hedge fund + photonics thesis.</td><td><span class="imp p">On watchlist</span></td></tr>
+        <tr><td>Coherent (COHR)</td><td class="amt">$2B</td><td>Photonics volume leader — 25% market share, $5.8B revenue, profitable. On your watchlist.</td><td><span class="imp p">Buy candidate</span></td></tr>
+        <tr><td>Marvell (MRVL)</td><td class="amt">$2B</td><td>Custom silicon and co-packaged optics. Already inside your ARTY ETF — indirect exposure.</td><td><span class="imp w">In ARTY</span></td></tr>
+        <tr><td>Intel (INTC)</td><td class="amt">$5B → $25B+</td><td>Most profitable corporate investment in history over such a short period. Trump endorsed. Aschenbrenner holds calls. Triple conviction: government + Nvidia + Aschenbrenner.</td><td><span class="imp n">Not in portfolio</span></td></tr>
+        <tr><td>IREN</td><td class="amt">$2.1B</td><td>Data centre operator, ex-Bitcoin miner pivoting to AI. Aschenbrenner also holds — smart money convergence.</td><td><span class="imp w">Watch</span></td></tr>
+        <tr><td>Nebius</td><td class="amt">$2.1B</td><td>AI cloud company. European AI infrastructure buildout play.</td><td><span class="imp w">Watch</span></td></tr>
+        <tr><td>Anthropic</td><td class="amt">Participated</td><td>Alongside Google ($40B) and Amazon ($25B). Anthropic IPO rumoured Oct 2026 — your GOOGL position benefits directly.</td><td><span class="imp p">Via GOOGL</span></td></tr>
+        <tr><td>Illumex</td><td class="amt">~$60M (acquired)</td><td>AI data management startup, Tel Aviv. Acquired Feb 2026. Generative semantic data infrastructure.</td><td><span class="imp w">Acquired</span></td></tr>
+      </tbody>
+    </table>
+    <div class="i-note">⚠ Rumour watch: April 2026 reports of Nvidia in talks to acquire "a large company reshaping the PC landscape" — Dell and HP both denied. The strategic shift toward edge AI is real. Watch pre-May 20 earnings for announcements.</div>
+  </div>
+
+  <!-- ── GOOGLE INVESTMENTS ── -->
+  <div class="i-section">
+    <div class="i-title">Google / Alphabet — Strategic Moves 2026</div>
+    <div class="i-summary">You hold GOOGL — these moves directly affect your position. Google's Q1 cloud revenue +28% YoY. Strategy: secure the AI model supply chain and own energy infrastructure outright rather than just partnering with it.</div>
+    <table class="i-table">
+      <thead><tr><th>Company</th><th>Amount</th><th>What & Why It Matters</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Anthropic</td><td class="amt">$10B now + $30B contingent</td><td>$350B valuation — largest private tech investment ever recorded. Google commits compute capacity alongside capital. IPO rumoured Oct 2026 — potential major GOOGL catalyst.</td><td><span class="imp p">Bullish GOOGL</span></td></tr>
+        <tr><td>Intersect</td><td class="amt">$4.75B</td><td>Energy infrastructure company acquired outright. Multiple GW of projects under construction. "Bring your own generation" — unlike Microsoft/Amazon nuclear approach, Google owns the power plants directly.</td><td><span class="imp p">Energy moat</span></td></tr>
+        <tr><td>Wiz</td><td class="amt">Largest acquisition ever</td><td>Cybersecurity — largest acquisition in Alphabet history. Cloud security for AI platforms. Announced Mar 2025, closed Mar 2026. Directly protects Google Cloud's AI buildout.</td><td><span class="imp p">Cloud security</span></td></tr>
+        <tr><td>Kairos Power + TVA</td><td class="amt">SMR Partnership</td><td>First US nuclear deal signed Aug 2025. Advanced SMR reactor for Google data centres. First unit targeted by 2030.</td><td><span class="imp w">Nuclear watch</span></td></tr>
+      </tbody>
+    </table>
+    <div class="i-note">📊 Bonus: Willow quantum chip — first quantum computer to outperform a supercomputer on a practical computation. Three Google employees won Nobel Prizes in 2 years. Gemma 4 open-weight models released May 2026.</div>
+  </div>
+
+  <!-- ── TRUMP WATCH ── -->
+  <div class="i-section">
+    <div class="i-title">🇺🇸 Trump Watch — Policy Moves Affecting Your Holdings</div>
+    <div class="i-summary">Trump is running the US government like a hedge fund — $10B+ in taxpayer equity stakes across 11 companies. When he mentions a company on Truth Social, it moves in premarket immediately. Every item below directly affects something you own.</div>
+
+    <div class="trump-item">
+      <div class="trump-co">INTC<br><span class="trump-sub">Intel</span><br><span style="font-size:9px;color:var(--bb);font-family:var(--mono);">Apr 9, 2026</span></div>
+      <div class="trump-body">Truth Social: <em>"The United States Government is proud to be a Shareholder of Intel."</em> Met CEO Lip-Bu Tan personally at the White House. Intel, Broadcom, Micron, AMD all surged in premarket on the post alone. Rare triple convergence: US government backing + Nvidia $5B stake now worth $25B+ + Aschenbrenner holding 20.2M call options. Intel is up 377% YTD and is not in your portfolio.</div>
+      <div><span class="imp p">🟢 Strong</span></div>
+    </div>
+
+    <div class="trump-item">
+      <div class="trump-co">TSM<br><span class="trump-sub">TSMC</span><br><span style="font-size:9px;color:var(--red);font-family:var(--mono);">Jan 15, 2026</span></div>
+      <div class="trump-body">Imposed 25% tariff on advanced AI chips manufactured in Taiwan. Accused Taiwan of "taking our chip business away." TSMC manufactures 90% of advanced AI chips globally — your TSM is your single most tariff-exposed holding and your largest single position. TSMC posted +41% revenue the same day tariffs landed — demand too strong to care short-term. Arizona fabs fast-tracked but 3–5 years from meaningful scale. Monitor every tariff announcement.</div>
+      <div><span class="imp n">🔴 Risk</span></div>
+    </div>
+
+    <div class="trump-item">
+      <div class="trump-co">China tariffs<br><span class="trump-sub">Broad market</span><br><span style="font-size:9px;color:var(--yellow);font-family:var(--mono);">May 13, 2026</span></div>
+      <div class="trump-body">90-day tariff pause announced — direct catalyst for this week's market recovery. <strong style="color:var(--red);">Expires ~Aug 11, 2026.</strong> Your GOOGL, TSM, and SOXX all benefit short-term. Watch July/August window carefully for reversal risk — this is a 90-day ceasefire, not a deal. If tariffs resume, your USD holdings will face headwinds.</div>
+      <div><span class="imp w">🟡 Monitor</span></div>
+    </div>
+
+    <div class="trump-item">
+      <div class="trump-co">NVDA<br><span class="trump-sub">Nvidia</span><br><span style="font-size:9px;color:var(--yellow);font-family:var(--mono);">Mar 2026</span></div>
+      <div class="trump-body">Trump took a 25% cut of Nvidia's China chip sales as part of the deal allowing H200 exports. Restructuring CHIPS Act into Investment Accelerator requiring direct government equity stakes. Goldman raised Nvidia revenue estimates 12% ahead of <strong style="color:var(--yellow);">May 20 earnings — watch this date.</strong> Nvidia is inside your SEMI and SOXX indirectly.</div>
+      <div><span class="imp w">🟡 Monitor</span></div>
+    </div>
+
+    <div class="trump-item">
+      <div class="trump-co">USA Rare Earth<br><span class="trump-sub">Policy</span><br><span style="font-size:9px;color:var(--yellow);font-family:var(--mono);">Feb 2026</span></div>
+      <div class="trump-body">$277M direct funding + $1.3B in loans for domestic rare earth supply chain in Texas and Oklahoma. Covers rare earths, lithium, and critical minerals. Relevant to your XMET watchlist — US domestic rare earth development affects global pricing and supply dynamics for the transition metals ETF thesis.</div>
+      <div><span class="imp w">🟡 Watch XMET</span></div>
+    </div>
+
+    <div class="trump-item">
+      <div class="trump-co">CHIPS Act<br><span class="trump-sub">Policy</span><br><span style="font-size:9px;color:var(--yellow);font-family:var(--mono);">Ongoing</span></div>
+      <div class="trump-body">Restructured to Investment Accelerator requiring direct government equity stakes in exchange for funding. $29.5B+ awarded as of March 2026. Next recipients will get a direct government endorsement signal — will move their stock price. Watch Intel, Micron, and TSMC Arizona announcements specifically.</div>
+      <div><span class="imp w">🟡 Policy</span></div>
+    </div>
+  </div>
+
+  <!-- ── PHOTONICS ── -->
+  <div class="i-section">
+    <div class="i-title">Photonics — The Next Bottleneck Trade</div>
+    <div class="i-summary">Every dollar of GPU capex eventually requires optical interconnect. Hyperscaler capex growing 67% YoY in 2026. No ASX AUD-listed photonics ETF exists yet — when one launches expect DRAM-style capital inflows. Nvidia invested $2B each in Lumentum and Coherent on the same day. That is the clearest institutional signal the theme is real and imminent.</div>
+    <div class="chip-row" style="margin-bottom:10px;">
+      <span class="chip hot">LITE — +800% 1yr · Nvidia $2B · Aschenbrenner holds · 200G EML monopoly</span>
+      <span class="chip hot">COHR — +367% 1yr · $5.8B revenue · profitable · Nvidia $2B · 25% market share</span>
+      <span class="chip hot">GLW — Corning +127% YTD · Nvidia $3.2B · fibre optic glass</span>
+      <span class="chip watch">EUV — first US photonics ETF launched May 6 · $18M AUM · very early stage</span>
+      <span class="chip watch">MTSI — MACOM +130% YTD</span>
+      <span class="chip">AAOI — Applied Optoelectronics +441% YTD</span>
+    </div>
+    <div class="i-note">⚡ You already have indirect photonics exposure: COHR + LITE are inside your SOXX ETF. AINF holds Arista Networks and Amphenol — both photonics-adjacent. COHR at $5.8B revenue and profitable is the safest direct entry point if you want the theme. Speak to your adviser before acting.</div>
+  </div>
+
+  <!-- ── SPECULATIVE RADAR ── -->
+  <div class="i-section">
+    <div class="i-title">⚡ Speculative Radar — Early Stage, Positive Revenue</div>
+    <div class="i-summary">These rotate every 30 days. Each has real revenue — not speculative concept plays. But all carry higher risk than your core holdings. Research before acting.</div>
+    <div id="specGrid"></div>
+  </div>
+
+</div>
+</div><!-- /p3 -->
+
+<!-- KEY PANEL (floating) -->
+<div class="key-panel" id="keyPanel">
+  <button class="key-close" onclick="hideKey()">×</button>
+  <div class="key-title">Momentum Indicator Key</div>
+  <div class="key-item"><div class="key-term">Score /10</div><div class="key-def">Composite: RSI + MACD + MA position + ROC + divergence check. 8–10 strong uptrend. 5–7 neutral. Below 5 weakening.</div></div>
+  <div class="key-item"><div class="key-term">RSI (14-day)</div><div class="key-def">Above 70 = overbought — pullback risk. Below 30 = oversold — bounce potential. The trend of RSI matters more than the number itself.</div></div>
+  <div class="key-item"><div class="key-term">MACD</div><div class="key-def">12-day minus 26-day EMA. Positive = upward momentum. Watch the histogram — shrinking means momentum is fading even if price still rises.</div></div>
+  <div class="key-item"><div class="key-term">ROC (20-day)</div><div class="key-def">Rate of price change over 20 days. If 5-day ROC is lower than 20-day ROC, momentum is decelerating — a warning before price turns.</div></div>
+  <div class="key-item"><div class="key-term">MA Position</div><div class="key-def">Price vs 20, 50, 200-day moving averages. Above all three = strong uptrend. Below 200MA = structural downtrend.</div></div>
+  <div class="key-item"><div class="key-term">Divergence ⚠</div><div class="key-def">Price hits new high but RSI doesn't confirm it. Momentum is failing before price shows it — one of the most reliable early warnings a professional analyst uses.</div></div>
+  <div class="key-item"><div class="key-term">Alpha vs Sector</div><div class="key-def">How much your holding beats or lags its sector index. Negative alpha in a rising sector means you're in the wrong stock.</div></div>
+</div>
+
+<!-- HOLDING MODAL -->
+<div class="overlay" id="hModal">
+  <div class="modal">
+    <div class="modal-title" id="mTitle">Add Holding</div>
+    <div class="type-tabs" id="typeTabs">
+      <div class="type-tab on" onclick="switchType('stock')">Stock / ETF</div>
+      <div class="type-tab" onclick="switchType('cash')">Cash</div>
+    </div>
+
+    <!-- Stock form -->
+    <div class="form-sec on" id="stockForm">
+      <div class="fg">
+        <label class="fl">Market</label>
+        <select class="fsel" id="fMkt">
+          <option value="ASX">ASX (AUD)</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="fl">Ticker</label>
+          <input class="fi" id="fTk" placeholder="e.g. SEMI" />
+        </div>
+        <div class="fg">
+          <label class="fl">Signal</label>
+          <select class="fsel" id="fSig">
+            <option value="green">🟢 Buy</option>
+            <option value="yellow">🟡 Hold</option>
+            <option value="red">🔴 Research</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl">Name</label>
+        <input class="fi" id="fNm" placeholder="e.g. Global X Semiconductor ETF" />
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="fl">Shares</label>
+          <input class="fi" id="fSh" type="number" placeholder="894" />
+        </div>
+        <div class="fg">
+          <label class="fl">Entry Price</label>
+          <input class="fi" id="fEn" type="number" step="0.01" placeholder="23.10" />
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl">Current Price</label>
+        <input class="fi" id="fCu" type="number" step="0.01" placeholder="35.59" />
+      </div>
+      <div class="fg">
+        <label class="fl">Notes (optional)</label>
+        <input class="fi" id="fNo" placeholder="e.g. Watch new fab timelines 2027" />
+      </div>
+    </div>
+
+    <!-- Cash form -->
+    <div class="form-sec" id="cashForm">
+      <div class="fg">
+        <label class="fl">Currency</label>
+        <select class="fsel" id="cCur">
+          <option value="AUD">AUD</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">Amount</label>
+        <input class="fi" id="cAmt" type="number" placeholder="5000" />
+      </div>
+      <div class="fg">
+        <label class="fl">Note (optional)</label>
+        <input class="fi" id="cNote" placeholder="e.g. Waiting to deploy into AINF" />
+      </div>
+    </div>
+
+    <input type="hidden" id="fEI" value="-1" />
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-save" onclick="saveH()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- WATCHLIST MODAL -->
+<div class="overlay" id="wModal">
+  <div class="modal">
+    <div class="modal-title">Add to Watchlist</div>
+    <div class="fg"><label class="fl">Ticker</label><input class="fi" id="wTk" placeholder="e.g. COHR" /></div>
+    <div class="fg"><label class="fl">Name</label><input class="fi" id="wNm" placeholder="e.g. Coherent Corp" /></div>
+    <div class="fg"><label class="fl">Why Watching</label><input class="fi" id="wNt" placeholder="e.g. Photonics leader, Nvidia backed, profitable" /></div>
+    <div class="fg">
+      <label class="fl">Signal</label>
+      <select class="fsel" id="wSig">
+        <option value="green">🟢 Positive</option>
+        <option value="yellow">🟡 Neutral</option>
+        <option value="red">🔴 Negative</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeWM()">Cancel</button>
+      <button class="modal-save" onclick="saveW()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION MODAL -->
+<div class="overlay" id="refModal">
+  <div class="modal" style="max-width:540px;">
+    <div class="modal-title">📥 Friday Review — <span id="refDate"></span></div>
+    <div id="refQs"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeRef()">Cancel</button>
+      <button class="modal-save" onclick="downloadWeek()">Download Week File →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let S = {
+  holdings: [],
+  watchlist: [],
+  logs: [],
+  yearlyData: {},
+  priceHistory: {},
+  reflections: [],
+  activeType: 'stock'
+};
+
+// ─────────────────────────────────────────────
+// DEFAULTS
+// ─────────────────────────────────────────────
+const DEF_HOLDINGS = [
+  { ticker:'SEMI', name:'Global X Semiconductor ETF', market:'ASX', shares:894, entry:23.10, current:35.59, signal:'green', notes:'Core semiconductor holding' },
+  { ticker:'AINF', name:'Global X AI Infrastructure ETF', market:'ASX', shares:426, entry:18.66, current:18.71, signal:'yellow', notes:'AI power infrastructure — later cycle' },
+  { ticker:'EMKT', name:'VanEck Emerging Markets ETF', market:'ASX', shares:268, entry:36.97, current:36.81, signal:'yellow', notes:'EM diversification — P/E 13x' },
+  { ticker:'DRAM', name:'Roundhill Memory ETF', market:'USD', shares:273, entry:25.00, current:51.30, signal:'green', notes:'Memory supercycle — watch 2027 new fabs' },
+  { ticker:'URNM', name:'Sprott Uranium Miners ETF', market:'USD', shares:1256, entry:12.58, current:12.59, signal:'yellow', notes:'Trimmed to ~$15k — watching for next leg' },
+  { ticker:'TSM', name:'Taiwan Semiconductor ADR', market:'USD', shares:76, entry:118.50, current:209.50, signal:'green', notes:'⚠ Trump 25% tariff risk — largest single position' },
+  { ticker:'GOOGL', name:'Alphabet Inc', market:'USD', shares:47.65, entry:167.00, current:199.50, signal:'green', notes:'$40B Anthropic bet — cloud +28% YoY' },
+  { ticker:'ARTY', name:'iShares Future AI & Tech ETF', market:'USD', shares:120, entry:56.80, current:64.90, signal:'yellow', notes:'Overlaps SEMI/SOXX/DRAM — review allocation' },
+  { ticker:'SOXX', name:'iShares Semiconductor ETF', market:'USD', shares:8.36, entry:490.00, current:495.00, signal:'yellow', notes:'P/E 56x — analyst targets below current price' },
+];
+
+const DEF_WATCHLIST = [
+  { ticker:'COHR', name:'Coherent Corp', signal:'green', note:'Photonics leader — $5.8B revenue, Nvidia $2B, profitable', sug:false },
+  { ticker:'AMZN', name:'Amazon', signal:'green', note:'AWS re-acceleration, 28% analyst upside', sug:false },
+  { ticker:'NDQ', name:'BetaShares Nasdaq 100', signal:'green', note:'AUD Nasdaq anchor — 0.22% fee', sug:true },
+  { ticker:'INTC', name:'Intel', signal:'green', note:'Trump endorsed + Nvidia $5B→$25B + Aschenbrenner calls — triple conviction', sug:true },
+  { ticker:'XMET', name:'BetaShares Transition Metals', signal:'yellow', note:'Copper + lithium + rare earths, AUD, 8.7% off 52wk high', sug:true },
+];
+
+const DEF_LOGS = [
+  { ts:'May 13, 2026 — 11:42pm', type:'fear', note:'Sold DRAM, ARTY + others on CPI data. Re-entered same prices next day. Lesson: hold through macro noise.' }
+];
+
+const YEARS = [2021, 2022, 2023, 2024, 2025, 2026];
+
+const REF_QUESTIONS = [
+  "What was your single biggest win this week — and what decision led to it?",
+  "What spooked you, and how did you react? Was that reaction driven by fundamentals or fear?",
+  "Did you stick to your momentum strategy, or did you deviate? If you deviated, why?",
+  "Looking at your behaviour log — are you seeing any patterns? (e.g. selling on macro news)",
+  "Which holding surprised you most this week, and did you understand why it moved?",
+  "What did Aschenbrenner, Cathie Wood, or Dan Ives signal this week relevant to your holdings?",
+  "Are there any sector rotation signals this week you should be acting on?",
+  "What is the one thing you'd do differently if you could replay this week?",
+  "What is your main focus and key decision for next week?",
+  "Rate your emotional discipline this week 1–10 and explain why."
+];
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function init() {
+  const raw = localStorage.getItem('pats_v1');
+  if (raw) {
+    try { const parsed = JSON.parse(raw); Object.assign(S, parsed); } catch(e) {}
+  }
+  if (!S.holdings.length) S.holdings = JSON.parse(JSON.stringify(DEF_HOLDINGS));
+  if (!S.watchlist.length) S.watchlist = JSON.parse(JSON.stringify(DEF_WATCHLIST));
+  if (!S.logs.length) S.logs = JSON.parse(JSON.stringify(DEF_LOGS));
+  if (!Object.keys(S.yearlyData).length) S.yearlyData = { 2025: 150000, 2026: 179000 };
+
+  // Seed 90-day price history for any holdings that don't have it yet
+  S.holdings.forEach(h => {
+    if (!S.priceHistory[h.ticker] || S.priceHistory[h.ticker].length < 10) {
+      S.priceHistory[h.ticker] = seedHistory(h);
+    }
+  });
+
+  // Friday check
+  if (new Date().getDay() === 5) document.getElementById('fridayBanner').classList.add('on');
+
+  render();
+}
+
+function save() {
+  try { localStorage.setItem('pats_v1', JSON.stringify(S)); } catch(e) {}
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function renderHealthScore() {
+  if (!S.holdings.length) return;
+
+  // Calculate composite score from all holdings
+  const scores = S.holdings.map(h => calcMOM(h.ticker, h.current).score);
+  const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+  const score = parseFloat(avg.toFixed(1));
+
+  // Gather signals for dot points
+  const moms = S.holdings.map(h => ({ ticker: h.ticker, ...calcMOM(h.ticker, h.current) }));
+  const divs = moms.filter(m => m.div);
+  const overbought = moms.filter(m => m.rsi > 70);
+  const oversold = moms.filter(m => m.rsi < 32);
+  const belowMa200 = moms.filter(m => !m.am200);
+  const strongHolders = moms.filter(m => m.score >= 7.5);
+  const weakHolders = moms.filter(m => m.score < 4.5);
+
+  // Determine colour
+  const col = score >= 7 ? 'var(--green)' : score >= 5 ? 'var(--yellow)' : 'var(--red)';
+
+  // Build dot points
+  const pts = [];
+
+  // Strength point
+  if (strongHolders.length) {
+    pts.push({ cls: 'good', txt: `${strongHolders.map(m => m.ticker).join(', ')} showing strong momentum (score ≥7.5) — structural uptrend intact.` });
+  } else if (score >= 6) {
+    pts.push({ cls: 'good', txt: 'Broad momentum healthy — no single position in structural decline.' });
+  }
+
+  // Risk point
+  if (divs.length) {
+    pts.push({ cls: 'bad', txt: `⚠ Divergence on ${divs.map(m => m.ticker).join(', ')} — price at high but RSI not confirming. Reduce risk or tighten stops.` });
+  } else if (overbought.length) {
+    pts.push({ cls: 'warn', txt: `${overbought.map(m => m.ticker).join(', ')} overbought (RSI >70) — avoid adding at current levels. Expect consolidation.` });
+  } else if (oversold.length) {
+    pts.push({ cls: 'good', txt: `${oversold.map(m => m.ticker).join(', ')} oversold (RSI <32) — in an uptrend this is typically a buy opportunity.` });
+  }
+
+  // MA / structural point
+  if (belowMa200.length) {
+    pts.push({ cls: 'bad', txt: `${belowMa200.map(m => m.ticker).join(', ')} below 200-day MA — structural downtrend signal. Review thesis before adding.` });
+  } else if (weakHolders.length) {
+    pts.push({ cls: 'warn', txt: `${weakHolders.map(m => m.ticker).join(', ')} momentum weak (<4.5/10). Not in structural decline but watch closely.` });
+  } else {
+    pts.push({ cls: 'good', txt: 'All holdings above 200-day MA — broad structural uptrend intact across portfolio.' });
+  }
+
+  // Cash point
+  const cashA = parseCash(document.getElementById('cAUD')?.value || '0');
+  const cashU = parseCash(document.getElementById('cUSD')?.value || '0');
+  const fx = parseFloat(document.getElementById('fxR').textContent) || 0.642;
+  const totalCash = cashA + cashU / fx;
+  const totalPortfolio = parseFloat((document.getElementById('tTotal').textContent || '$0').replace(/[A$,]/g, '')) || 1;
+  const cashPct = (totalCash / totalPortfolio * 100).toFixed(0);
+  if (cashPct > 15) {
+    pts.push({ cls: 'warn', txt: `${cashPct}% in cash — significant dry powder available. Bull momentum favours deployment.` });
+  } else if (cashPct > 5) {
+    pts.push({ cls: '', txt: `${cashPct}% in cash — reasonable buffer. Available for opportunistic entries.` });
+  } else {
+    pts.push({ cls: '', txt: `${cashPct}% in cash — fully deployed. No dry powder for a pullback entry.` });
+  }
+
+  // Render
+  document.getElementById('healthScore').textContent = score.toFixed(1);
+  document.getElementById('healthScore').style.color = col;
+  document.getElementById('healthFill').style.width = (score * 10) + '%';
+  document.getElementById('healthFill').style.background = col;
+  document.getElementById('healthPoints').innerHTML = pts.slice(0, 3).map(p =>
+    `<div class="health-pt ${p.cls}">${p.txt}</div>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────
+// DYNAMIC OVERLAP CALCULATOR
+// ─────────────────────────────────────────────
+
+// Maps each ticker to its theme buckets
+const TICKER_THEMES = {
+  // Semiconductor
+  SEMI:  ['semiconductor','ai_hardware'],
+  SOXX:  ['semiconductor','ai_hardware'],
+  DRAM:  ['semiconductor','memory','ai_hardware'],
+  ARTY:  ['semiconductor','ai_hardware','ai_software'],
+  // AI Infrastructure
+  AINF:  ['ai_infra','energy','copper'],
+  // Emerging Markets
+  EMKT:  ['emerging_markets'],
+  EMKT2: ['emerging_markets'],
+  // Individual stocks
+  TSM:   ['semiconductor','ai_hardware'],
+  GOOGL: ['ai_software','hyperscaler'],
+  AMZN:  ['ai_software','hyperscaler'],
+  MSFT:  ['ai_software','hyperscaler'],
+  NVDA:  ['semiconductor','ai_hardware'],
+  // Uranium/Energy
+  URNM:  ['energy','nuclear'],
+  SMRF:  ['energy','nuclear'],
+  // Copper/Metals
+  COPX:  ['copper','energy'],
+  XMET:  ['copper','energy','emerging_markets'],
+  // Watchlist defaults — assume semiconductor if unrecognised and contains common patterns
+};
+
+// Theme display config
+const THEME_CONFIG = [
+  {
+    key: 'semiconductor',
+    label: 'Semiconductor / AI Chips',
+    color: 'var(--blue)',
+    warn: 60  // % above which we flag as high overlap
+  },
+  {
+    key: 'ai_hardware',
+    label: 'AI Hardware (chips + compute)',
+    color: 'var(--bb)',
+    warn: 65
+  },
+  {
+    key: 'ai_software',
+    label: 'AI Software / Hyperscalers',
+    color: 'var(--purple)',
+    warn: 50
+  },
+  {
+    key: 'ai_infra',
+    label: 'AI Infrastructure (power, grid, copper)',
+    color: 'var(--green)',
+    warn: 70
+  },
+  {
+    key: 'energy',
+    label: 'Energy / Nuclear',
+    color: 'var(--yellow)',
+    warn: 40
+  },
+  {
+    key: 'emerging_markets',
+    label: 'Emerging Markets',
+    color: 'var(--td)',
+    warn: 50
+  },
+];
+
+function getThemes(ticker) {
+  // Direct match first
+  if (TICKER_THEMES[ticker]) return TICKER_THEMES[ticker];
+  // Pattern matching for unlisted tickers
+  const t = ticker.toUpperCase();
+  const themes = [];
+  if (['SEMI','SOXX','DRAM','ARTY','SMH','XSD','PSI'].some(s => t.includes(s) || t === s)) themes.push('semiconductor','ai_hardware');
+  if (['AINF','INFRA','GRID','AIPO','IVEP'].some(s => t.includes(s))) themes.push('ai_infra','energy');
+  if (['URNM','URANIUM','NUC','ATOM','SMRF'].some(s => t.includes(s))) themes.push('energy','nuclear');
+  if (['EMKT','VGE','IEM','IAA','ASIA','VAE'].some(s => t.includes(s))) themes.push('emerging_markets');
+  if (['COPX','XMET','ICOP'].some(s => t.includes(s))) themes.push('copper','energy');
+  if (['GOOG','GOOGL','MSFT','AMZN','META','AAPL'].some(s => t.includes(s))) themes.push('ai_software','hyperscaler');
+  if (['TSM','TSMC','NVDA','AMD','INTC'].some(s => t.includes(s))) themes.push('semiconductor','ai_hardware');
+  return themes.length ? themes : ['ai_hardware']; // default assumption for unknown AI-adjacent tickers
+}
+
+function renderOverlap() {
+  if (!S.holdings.length) {
+    document.getElementById('overlapBars').innerHTML = '<div class="empty">Add holdings to see overlap analysis</div>';
+    return;
+  }
+
+  // Calculate total portfolio equity in AUD
+  const fx = parseFloat(document.getElementById('fxR').textContent) || 0.642;
+  let totalEquity = 0;
+  S.holdings.forEach(h => {
+    const eq = h.shares * h.current;
+    totalEquity += h.market === 'ASX' ? eq : eq / fx;
+  });
+  if (totalEquity === 0) return;
+
+  // For each theme, sum equity of holdings that belong to it
+  const themeEquity = {};
+  const themeHolders = {};
+  THEME_CONFIG.forEach(t => { themeEquity[t.key] = 0; themeHolders[t.key] = []; });
+
+  S.holdings.forEach(h => {
+    const eq = h.market === 'ASX' ? h.shares * h.current : (h.shares * h.current) / fx;
+    const themes = getThemes(h.ticker);
+    themes.forEach(theme => {
+      if (themeEquity[theme] !== undefined) {
+        themeEquity[theme] += eq;
+        if (!themeHolders[theme].includes(h.ticker)) themeHolders[theme].push(h.ticker);
+      }
+    });
+  });
+
+  // Only show themes that have at least one holding, sorted by % descending
+  const bars = THEME_CONFIG
+    .map(t => ({
+      ...t,
+      pct: Math.min(100, Math.round(themeEquity[t.key] / totalEquity * 100)),
+      holders: themeHolders[t.key]
+    }))
+    .filter(t => t.pct > 0)
+    .sort((a, b) => b.pct - a.pct);
+
+  const html = bars.map(b => {
+    const isHigh = b.pct >= b.warn;
+    const fillColor = isHigh ? 'var(--yellow)' : b.color;
+    const pctColor = isHigh ? 'var(--yellow)' : 'var(--td)';
+    const warning = isHigh ? ' ⚠' : '';
+    return `<div class="ov">
+      <div class="ov-lbl">
+        <span style="color:${b.color};font-weight:600;">${b.label}</span>${warning}
+        <span style="font-size:10px;color:var(--tm);margin-left:6px;">${b.holders.join(' · ')}</span>
+      </div>
+      <div class="ov-track"><div class="ov-fill" style="width:${b.pct}%;background:${fillColor};"></div></div>
+      <div class="ov-pct" style="color:${pctColor}">${b.pct}%</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('overlapBars').innerHTML = html || '<div class="empty">No overlap data available</div>';
+}
+
+function render() {
+  renderHoldings();
+  renderWatchlist();
+  renderLog();
+  renderYearly();
+  updateTotals();
+  renderOverlap();
+  renderHealthScore();
+}
+
+function renderHoldings() {
+  const asx = S.holdings.filter(h => h.market === 'ASX');
+  const usd = S.holdings.filter(h => h.market === 'USD');
+  document.getElementById('asxList').innerHTML = asx.length
+    ? asx.map(h => hRow(h, S.holdings.indexOf(h))).join('')
+    : '<div class="empty">No ASX holdings</div>';
+  document.getElementById('usdList').innerHTML = usd.length
+    ? usd.map(h => hRow(h, S.holdings.indexOf(h))).join('')
+    : '<div class="empty">No USD holdings</div>';
+}
+
+function hRow(h, idx) {
+  const sc = h.signal === 'green' ? 'g' : h.signal === 'yellow' ? 'y' : 'r';
+  const cur = h.market === 'ASX' ? 'A$' : 'US$';
+  const pct = ((h.current - h.entry) / h.entry * 100).toFixed(1);
+  const pc = pct > 0 ? 'p' : pct < 0 ? 'n' : 'u';
+  const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
+  return `<div class="hrow sig-${sc}">
+    <div class="dot ${sc}"></div>
+    <div class="hrow-info">
+      <div class="hrow-ticker">
+        ${h.ticker}
+        <span class="tag">${h.market}</span>
+      </div>
+      <div class="hrow-meta">${Number(h.shares).toLocaleString()} shares${h.notes ? ' · ' + h.notes.substring(0,40) + (h.notes.length>40?'…':'') : ''}</div>
+    </div>
+    <div class="hrow-price">
+      <div class="hrow-cur">${cur}${h.current.toFixed(2)}</div>
+      <div class="hrow-chg ${pc}">${arrow} ${Math.abs(pct)}% from entry</div>
+    </div>
+    <div class="hrow-btns">
+      <button class="btn-edit" onclick="editH(${idx})">✎</button>
+      <button class="btn-rm" onclick="removeH(${idx})">−</button>
+    </div>
+  </div>`;
+}
+
+// Watchlist mock prices — used to generate history and calculate momentum
+// for tickers not in holdings. Realistic current prices as of May 2026.
+const WATCH_PRICES = {
+  COHR:  284.50,
+  AMZN:  268.20,
+  NDQ:   45.80,
+  INTC:  89.40,
+  XMET:  16.93,
+  HACK:  14.20,
+  LITE:  858.00,
+  AIPO:  32.70,
+  SMRF:  18.40,
+  GLW:   58.20,
+  COPX:  90.82,
+  EQIX:  945.00,
+  ADBE:  285.00,
+  VGE:   88.50,
+  IAA:   175.00,
+  IKO:   42.00,
+};
+
+function getWatchMomentum(ticker) {
+  // Use existing price history if the ticker is also a holding
+  const existingHolding = S.holdings.find(h => h.ticker === ticker);
+  if (existingHolding && S.priceHistory[ticker]) {
+    return calcMOM(ticker, existingHolding.current);
+  }
+
+  // Generate synthetic history for watchlist-only tickers
+  const price = WATCH_PRICES[ticker] || 50;
+  if (!S.priceHistory['w_' + ticker]) {
+    const fakeH = { ticker: 'w_' + ticker, current: price, entry: price * 0.85 };
+    S.priceHistory['w_' + ticker] = seedHistory(fakeH);
+  }
+
+  // Use mock momentum data keyed to signal
+  const WATCH_MOCK = {
+    COHR:  { score:7.8, rsi:66, roc20:28.4, trend:'↑ Accelerating' },
+    AMZN:  { score:7.2, rsi:61, roc20:18.2, trend:'↑ Positive' },
+    NDQ:   { score:7.5, rsi:64, roc20:22.1, trend:'↑ Strong' },
+    INTC:  { score:8.4, rsi:74, roc20:42.6, trend:'↑ Very Strong' },
+    XMET:  { score:5.8, rsi:52, roc20:8.4,  trend:'→ Neutral' },
+    HACK:  { score:6.8, rsi:59, roc20:14.2, trend:'↑ Positive' },
+    LITE:  { score:8.1, rsi:71, roc20:38.4, trend:'↑ Strong (overbought watch)' },
+    AIPO:  { score:7.4, rsi:67, roc20:24.8, trend:'↑ Positive' },
+    SMRF:  { score:6.2, rsi:55, roc20:12.1, trend:'↑ Mild' },
+    GLW:   { score:7.6, rsi:68, roc20:26.4, trend:'↑ Strong' },
+    COPX:  { score:6.8, rsi:58, roc20:14.8, trend:'↑ Positive' },
+    EQIX:  { score:6.4, rsi:57, roc20:10.2, trend:'↑ Mild' },
+    ADBE:  { score:5.4, rsi:48, roc20:2.8,  trend:'→ Recovering' },
+    VGE:   { score:5.0, rsi:50, roc20:4.1,  trend:'→ Neutral' },
+  };
+
+  const m = WATCH_MOCK[ticker] || { score:5.5, rsi:50, roc20:5.0, trend:'→ Neutral' };
+  return { ...m, div: m.rsi > 70 && m.roc20 < m.roc20 * 0.5 };
+}
+
+function renderWatchlist() {
+  if (!S.watchlist.length) {
+    document.getElementById('wList').innerHTML = '<div class="empty">No watchlist items</div>';
+    return;
+  }
+
+  document.getElementById('wList').innerHTML = S.watchlist.map((w, i) => {
+    const m = getWatchMomentum(w.ticker);
+    const scoreCol = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+    const rsiCol = m.rsi > 70 ? 'var(--red)' : m.rsi < 32 ? 'var(--green)' : 'var(--td)';
+    const dotCls = m.score >= 7 ? 'g' : m.score >= 5 ? 'y' : 'r';
+
+    // Override dot with user-set signal if momentum not available
+    const dc = w.signal === 'green' ? 'g' : w.signal === 'yellow' ? 'y' : 'r';
+
+    return `<div class="wrow-full">
+      <div class="wrow-top">
+        <div class="dot ${dotCls}"></div>
+        <div class="wrow-ticker">
+          ${w.ticker}
+          ${w.sug ? '<span class="tag">Suggested</span>' : ''}
+        </div>
+        <div class="wrow-score" style="color:${scoreCol}">${m.score.toFixed(1)}<span style="font-size:10px;color:var(--tm)">/10</span></div>
+        <div class="wrow-trend" style="color:${scoreCol}">${m.trend}</div>
+        <button class="btn-rm" onclick="removeW(${i})">−</button>
+      </div>
+      <div class="wrow-bottom">
+        <div class="wrow-stat">
+          <span class="wstat-lbl">RSI</span>
+          <span class="wstat-val" style="color:${rsiCol}">${m.rsi}</span>
+        </div>
+        <div class="wrow-stat">
+          <span class="wstat-lbl">ROC 20D</span>
+          <span class="wstat-val" style="color:${m.roc20>0?'var(--green)':'var(--red)'}">${m.roc20>0?'+':''}${m.roc20}%</span>
+        </div>
+        ${m.div ? '<div class="wrow-div">⚠ Divergence</div>' : ''}
+        <div class="wrow-note-txt">${w.note}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderLog() {
+  document.getElementById('logList').innerHTML = S.logs.length
+    ? [...S.logs].reverse().slice(0, 10).map(l => `
+      <div class="log-entry">
+        <div class="log-ts">${l.ts}</div>
+        <div class="log-badge ${l.type}">${l.type.toUpperCase()}</div>
+        <div class="log-note">${l.note}</div>
+      </div>`).join('')
+    : '<div class="empty">No entries yet</div>';
+}
+
+function renderYearly() {
+  document.getElementById('yearGrid').innerHTML = YEARS.map(y => `
+    <div class="year-card">
+      <div class="year-lbl">${y}</div>
+      <input class="year-inp" type="text"
+        value="${S.yearlyData[y] ? '$' + Number(S.yearlyData[y]).toLocaleString() : ''}"
+        placeholder="—"
+        onchange="setYear(${y}, this.value)" />
+      <div class="year-chg" id="yc${y}"></div>
+    </div>`).join('');
+  calcPerf();
+}
+
+function setYear(y, v) {
+  const n = parseFloat(v.replace(/[$,]/g, ''));
+  S.yearlyData[y] = isNaN(n) ? '' : n;
+  calcPerf();
+  save();
+}
+
+function calcPerf() {
+  const y25 = S.yearlyData[2025], y26 = S.yearlyData[2026];
+  if (y25 && y26) setP('pYTD', ((y26 - y25) / y25 * 100).toFixed(1));
+  const cur = y26 || y25;
+  if (cur && y25) setP('p1Y', ((cur - y25) / y25 * 100).toFixed(1));
+  if (cur && S.yearlyData[2023]) setP('p3Y', ((Math.pow(cur / S.yearlyData[2023], 1/3) - 1) * 100).toFixed(1), ' p.a.');
+  if (cur && S.yearlyData[2021]) setP('p5Y', ((Math.pow(cur / S.yearlyData[2021], 1/5) - 1) * 100).toFixed(1), ' p.a.');
+}
+
+function setP(id, v, sfx='') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = (v > 0 ? '+' : '') + v + '%' + sfx;
+  el.className = 'perf-val ' + (v > 0 ? 'p' : 'n');
+}
+
+function updateTotals() {
+  const fx = parseFloat(document.getElementById('fxR').textContent) || 0.642;
+  let audH = 0, usdH = 0;
+  S.holdings.forEach(h => {
+    const eq = h.shares * h.current;
+    h.market === 'ASX' ? audH += eq : usdH += eq;
+  });
+  const cashA = parseCash(document.getElementById('cAUD').value);
+  const cashU = parseCash(document.getElementById('cUSD').value);
+  const totalA = audH + cashA;
+  const totalUinA = (usdH + cashU) / fx;
+  const total = totalA + totalUinA;
+  document.getElementById('tAUD').textContent = 'A$' + Math.round(totalA).toLocaleString();
+  document.getElementById('tUSD').textContent = 'A$' + Math.round(totalUinA).toLocaleString();
+  document.getElementById('tTotal').textContent = 'A$' + Math.round(total).toLocaleString();
+}
+
+function parseCash(v) {
+  return parseFloat((v || '0').replace(/[$,A-Za-z\s]/g, '')) || 0;
+}
+
+// ─────────────────────────────────────────────
+// SCRAPE (simulated — real scraper goes on Mac Mini server)
+// ─────────────────────────────────────────────
+async function runScrape() {
+  const btn = document.getElementById('scrapeBtn');
+  const bar = document.getElementById('sbar');
+  const txt = document.getElementById('sbarTxt');
+  btn.disabled = true;
+  btn.textContent = '⟳ Running...';
+  bar.classList.add('on');
+
+  const steps = [
+    'Fetching live AUD/USD rate...',
+    'Loading ASX prices — SEMI, AINF, EMKT...',
+    'Loading USD prices — DRAM, URNM, TSM, GOOGL, ARTY, SOXX...',
+    'Logging today\'s prices to history...',
+    'Done ✓'
+  ];
+  for (const s of steps) {
+    txt.textContent = s;
+    // Fetch real FX rate on first step
+    if (s.includes('AUD/USD')) await fetchFXRate();
+    await new Promise(r => setTimeout(r, 380));
+  }
+
+  // Simulate small price moves + log to history
+  const today = new Date().toISOString().split('T')[0];
+  S.holdings.forEach(h => {
+    const move = (Math.random() - 0.47) * 0.013;
+    h.current = parseFloat((h.current * (1 + move)).toFixed(2));
+    if (!S.priceHistory[h.ticker]) S.priceHistory[h.ticker] = [];
+    const hist = S.priceHistory[h.ticker];
+    if (!hist.length || hist[hist.length - 1].date !== today) {
+      hist.push({ date: today, price: h.current });
+      if (hist.length > 90) hist.shift();
+    } else {
+      hist[hist.length - 1].price = h.current;
+    }
+  });
+
+  const now = new Date();
+  const ts = now.toLocaleDateString('en-AU') + ' ' + now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('lastUp').textContent = ts;
+
+  bar.classList.remove('on');
+  btn.disabled = false;
+  btn.textContent = '⟳ Scrape';
+
+  render();
+  // If momentum tab is visible, refresh it
+  if (document.getElementById('p2').classList.contains('on')) {
+    renderMomentum();
+    setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 80);
+  }
+  // If intel tab is visible, refresh it
+  if (document.getElementById('p3').classList.contains('on')) renderIntel();
+  save();
+}
+
+// ─────────────────────────────────────────────
+// HOLDING MODAL
+// ─────────────────────────────────────────────
+function openModal(mkt) {
+  document.getElementById('fEI').value = '-1';
+  document.getElementById('typeTabs').style.display = 'flex';
+  ['fTk','fNm','fNo','fEn','fCu','fSh','cAmt','cNote'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('fSig').value = 'green';
+  if (mkt === 'cash') {
+    switchType('cash');
+    document.getElementById('mTitle').textContent = 'Add Cash';
+  } else {
+    switchType('stock');
+    document.getElementById('fMkt').value = mkt;
+    document.getElementById('mTitle').textContent = 'Add ' + mkt + ' Holding';
+  }
+  document.getElementById('hModal').classList.add('on');
+}
+
+function closeModal() {
+  document.getElementById('hModal').classList.remove('on');
+}
+
+function switchType(t) {
+  S.activeType = t;
+  document.querySelectorAll('.type-tab').forEach((el, i) => {
+    el.classList.toggle('on', (t === 'stock' && i === 0) || (t === 'cash' && i === 1));
+  });
+  document.getElementById('stockForm').classList.toggle('on', t === 'stock');
+  document.getElementById('cashForm').classList.toggle('on', t === 'cash');
+}
+
+function editH(idx) {
+  const h = S.holdings[idx];
+  switchType('stock');
+  document.getElementById('typeTabs').style.display = 'none';
+  document.getElementById('fMkt').value = h.market;
+  document.getElementById('fTk').value = h.ticker;
+  document.getElementById('fNm').value = h.name;
+  document.getElementById('fSh').value = h.shares;
+  document.getElementById('fEn').value = h.entry;
+  document.getElementById('fCu').value = h.current;
+  document.getElementById('fSig').value = h.signal;
+  document.getElementById('fNo').value = h.notes || '';
+  document.getElementById('fEI').value = idx;
+  document.getElementById('mTitle').textContent = 'Edit ' + h.ticker;
+  document.getElementById('hModal').classList.add('on');
+}
+
+function saveH() {
+  const ei = parseInt(document.getElementById('fEI').value);
+
+  if (S.activeType === 'cash') {
+    const cur = document.getElementById('cCur').value;
+    const amt = parseFloat(document.getElementById('cAmt').value) || 0;
+    if (cur === 'AUD') document.getElementById('cAUD').value = '$' + amt.toLocaleString();
+    else document.getElementById('cUSD').value = '$' + amt.toLocaleString();
+    updateTotals();
+    closeModal();
+    save();
+    return;
+  }
+
+  const ticker = document.getElementById('fTk').value.trim().toUpperCase();
+  const shares = parseFloat(document.getElementById('fSh').value) || 0;
+  if (!ticker || !shares) { alert('Ticker and shares required'); return; }
+
+  const h = {
+    ticker,
+    name: document.getElementById('fNm').value.trim(),
+    market: document.getElementById('fMkt').value,
+    shares,
+    entry: parseFloat(document.getElementById('fEn').value) || 0,
+    current: parseFloat(document.getElementById('fCu').value) || 0,
+    signal: document.getElementById('fSig').value,
+    notes: document.getElementById('fNo').value.trim()
+  };
+
+  if (ei >= 0) S.holdings[ei] = h;
+  else S.holdings.push(h);
+
+  closeModal();
+  render();
+  save();
+}
+
+function removeH(idx) {
+  if (!confirm('Remove ' + S.holdings[idx].ticker + '?')) return;
+  S.holdings.splice(idx, 1);
+  render();
+  save();
+}
+
+// ─────────────────────────────────────────────
+// WATCHLIST MODAL
+// ─────────────────────────────────────────────
+function openWM() {
+  ['wTk','wNm','wNt'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('wSig').value = 'green';
+  document.getElementById('wModal').classList.add('on');
+}
+function closeWM() { document.getElementById('wModal').classList.remove('on'); }
+function saveW() {
+  const ticker = document.getElementById('wTk').value.trim().toUpperCase();
+  if (!ticker) return;
+  S.watchlist.push({
+    ticker,
+    name: document.getElementById('wNm').value.trim(),
+    signal: document.getElementById('wSig').value,
+    note: document.getElementById('wNt').value.trim(),
+    sug: false
+  });
+  closeWM();
+  renderWatchlist();
+  save();
+}
+function removeW(idx) {
+  S.watchlist.splice(idx, 1);
+  renderWatchlist();
+  save();
+}
+
+// ─────────────────────────────────────────────
+// BEHAVIOUR LOG
+// ─────────────────────────────────────────────
+function addLog() {
+  const type = document.getElementById('logType').value;
+  const note = document.getElementById('logTxt').value.trim();
+  if (!note) return;
+  const now = new Date();
+  const ts = now.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' })
+    + ' — ' + now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' });
+  S.logs.push({ ts, type, note });
+  document.getElementById('logTxt').value = '';
+  renderLog();
+  save();
+}
+
+// ─────────────────────────────────────────────
+// FRIDAY REFLECTION + DOWNLOAD
+// ─────────────────────────────────────────────
+function openRef() {
+  document.getElementById('refDate').textContent =
+    new Date().toLocaleDateString('en-AU', { weekday:'long', day:'numeric', month:'long' });
+  document.getElementById('refQs').innerHTML = REF_QUESTIONS.map((q, i) => `
+    <div class="ref-q">
+      <div class="ref-ql">${i+1}. ${q}</div>
+      <textarea class="ref-ta" id="rq${i}" placeholder="Your answer..."></textarea>
+    </div>`).join('');
+  document.getElementById('refModal').classList.add('on');
+}
+function closeRef() { document.getElementById('refModal').classList.remove('on'); }
+
+function downloadWeek() {
+  const answers = {};
+  REF_QUESTIONS.forEach((_, i) => {
+    answers[i] = document.getElementById('rq' + i)?.value || '';
+  });
+
+  const weekData = {
+    generated: new Date().toISOString(),
+    weekEnding: new Date().toLocaleDateString('en-AU'),
+    smsf: {
+      totalAUD: document.getElementById('tAUD').textContent,
+      totalUSD: document.getElementById('tUSD').textContent,
+      totalSMSF: document.getElementById('tTotal').textContent,
+      fxRate: document.getElementById('fxR').textContent,
+      cashAUD: document.getElementById('cAUD').value,
+      cashUSD: document.getElementById('cUSD').value,
+    },
+    holdings: S.holdings,
+    watchlist: S.watchlist,
+    behaviourLog: S.logs,
+    yearlyData: S.yearlyData,
+    priceHistory: S.priceHistory,
+    reflection: { questions: REF_QUESTIONS, answers }
+  };
+
+  S.reflections.push({ date: weekData.generated, answers });
+  save();
+
+  const blob = new Blob([JSON.stringify(weekData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `portfolio-week-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  closeRef();
+}
+
+// ─────────────────────────────────────────────
+// INTELLIGENCE TAB (Tab 3)
+// ─────────────────────────────────────────────
+const SPEC_DATA = [
+  {
+    ticker: 'LITE', name: 'Lumentum Holdings',
+    desc: 'Only supplier shipping 200G-per-lane EMLs at volume. Nvidia named collaborator on silicon photonics. Largest CPO laser purchase commitment in company history. Jefferies price target $1,200.',
+    rev: 'Revenue $665M Q2 FY26 +65% YoY. Non-GAAP operating margin 25.2%.',
+    expires: 'Jun 13', signal: 'green'
+  },
+  {
+    ticker: 'AIPO', name: 'Defiance AI & Power Infrastructure ETF',
+    desc: 'Best New Thematic ETF at ETF.com Awards 2026. US companies earning 50%+ revenue from AI + power infrastructure. GE Vernova and Vertiv top holdings. Returned 25.3% in April alone.',
+    rev: '$493M net inflows past year. AUM $245M and growing fast.',
+    expires: 'Jun 13', signal: 'green'
+  },
+  {
+    ticker: 'INTC', name: 'Intel — Next Multibagger?',
+    desc: 'Aschenbrenner holds 20.2M call options. Trump personally endorsed on Truth Social. Nvidia $5B stake now worth $25B+. DCAI revenue +22% YoY. CPU demand surging from agentic AI inference workloads that favour x86 architecture.',
+    rev: 'Up 377% YTD. Foundry division turning profitable. Agentic AI CPU demand cycle just beginning.',
+    expires: 'Jun 20', signal: 'green'
+  },
+  {
+    ticker: 'SNDK', name: 'SanDisk (spun from WD Feb 2025)',
+    desc: 'Retains NAND chip manufacturing partnership with Kioxia. Direct Micron competitor in NAND flash. Same memory supercycle thesis as your DRAM ETF but single-stock exposure at potentially better valuation.',
+    rev: 'Post-spinoff standalone earnings — watch for profitability confirmation.',
+    expires: 'May 28', signal: 'yellow'
+  },
+  {
+    ticker: 'SMRF', name: 'ALPS Nautilus SMR & Nuclear ETF',
+    desc: 'Pure SMR/nuclear ETF launched Feb 2026. Holds Oklo, NexGen Energy, Uranium Energy Corp, enCore Energy. More diversified than URNM across the full nuclear value chain — exposure to the reactor builders, not just the miners.',
+    rev: 'ETF structure — all underlying holdings are revenue-generating businesses.',
+    expires: 'Jun 5', signal: 'yellow'
+  },
+];
+
+function renderIntel() {
+  // Update timestamp
+  const ts = document.getElementById('lastUp')?.textContent || '—';
+  const el = document.getElementById('intelUp');
+  if (el) el.textContent = ts === '—' ? 'Not yet — run Scrape to refresh' : ts;
+
+  // Render speculative grid
+  const grid = document.getElementById('specGrid');
+  if (grid) {
+    grid.innerHTML = SPEC_DATA.map(s => `
+      <div class="spec-card">
+        <div class="spec-header">
+          <div class="dot ${s.signal==='green'?'g':'y'}"></div>
+          <div class="spec-ticker">${s.ticker}</div>
+          <span class="spec-badge">⚡ Early Stage</span>
+          <div class="spec-expires">Expires: ${s.expires}</div>
+        </div>
+        <div class="spec-name">${s.name}</div>
+        <div class="spec-desc">${s.desc}</div>
+        <div class="spec-rev">✓ ${s.rev}</div>
+      </div>`).join('');
+  }
+}
+
+// ─────────────────────────────────────────────
+// AUD/USD AUTO-FETCH (free public APIs, no key needed)
+// ─────────────────────────────────────────────
+async function fetchFXRate() {
+  const apis = [
+    // Frankfurter — free, no key, ECB data
+    async () => {
+      const r = await fetch('https://api.frankfurter.app/latest?from=USD&to=AUD');
+      const d = await r.json();
+      return d.rates.AUD ? (1 / d.rates.AUD) : null;
+    },
+    // Open.er-api — free tier, no key
+    async () => {
+      const r = await fetch('https://open.er-api.com/v6/latest/AUD');
+      const d = await r.json();
+      return d.rates && d.rates.USD ? d.rates.USD : null;
+    }
+  ];
+
+  for (const api of apis) {
+    try {
+      const rate = await api();
+      if (rate && rate > 0.4 && rate < 1.2) {
+        // Valid AUD/USD rate
+        const formatted = rate.toFixed(4);
+        document.getElementById('fxR').textContent = formatted;
+        return formatted;
+      }
+    } catch(e) {
+      // Try next API
+    }
+  }
+  // If all fail, keep existing rate silently
+  return document.getElementById('fxR').textContent;
+}
+
+// ─────────────────────────────────────────────
+// WATCHLIST MOMENTUM CARDS (Tab 2)
+// ─────────────────────────────────────────────
+function renderWatchMomCards() {
+  const grid = document.getElementById('watchMomGrid');
+  if (!grid || !S.watchlist.length) {
+    if (grid) grid.innerHTML = '<div class="empty" style="grid-column:span 2">No watchlist items — add some on the Input tab</div>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  S.watchlist.forEach(w => {
+    const m = getWatchMomentum(w.ticker);
+    const scoreCol = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+    const rsiCol = m.rsi > 70 ? 'var(--red)' : m.rsi < 32 ? 'var(--green)' : 'var(--text)';
+    const rsiLbl = m.rsi > 70 ? 'Overbought' : m.rsi < 32 ? 'Oversold' : m.rsi > 55 ? 'Bullish' : 'Neutral';
+    const price = WATCH_PRICES[w.ticker] ? `${w.ticker.match(/^(NDQ|SEMI|AINF|EMKT|XMET|HACK)$/) ? 'A$' : 'US$'}${WATCH_PRICES[w.ticker].toFixed(2)}` : '—';
+
+    const card = document.createElement('div');
+    card.className = 'mcard';
+    card.style.opacity = '0.88'; // Slightly dimmed vs holdings to show hierarchy
+    card.innerHTML = `
+      <div class="mcard-head">
+        <div class="mcard-top">
+          <div>
+            <div class="mcard-ticker">${w.ticker} <span class="tag">WATCHLIST${w.sug ? ' · Suggested' : ''}</span></div>
+            <div class="mcard-name">${w.note.substring(0, 55)}${w.note.length > 55 ? '…' : ''}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="mscore-wrap">
+              <div class="mscore" style="color:${scoreCol}">${m.score.toFixed(1)}</div>
+              <div class="mscore-denom">/10</div>
+            </div>
+            <div class="mscore-track"><div class="mscore-fill" style="width:${m.score*10}%;background:${scoreCol}"></div></div>
+          </div>
+        </div>
+        <div class="mprice-row">
+          <div class="mprice">${price}</div>
+          <div class="mprice-chg ${m.roc20>=0?'p':'n'}" style="margin-left:8px">ROC ${m.roc20>0?'+':''}${m.roc20}% (20D)</div>
+          <div style="font-size:11px;color:${scoreCol};margin-left:10px;font-family:var(--mono);">${m.trend}</div>
+        </div>
+      </div>
+
+      <div class="ma-row" style="border-bottom:none;padding-bottom:0;">
+        ${m.div ? '<div class="div-badge warn" style="margin:0;">⚠ RSI Divergence detected — price/momentum not aligned</div>' : '<div class="div-badge ok" style="margin:0;">✓ No divergence — momentum and price aligned</div>'}
+      </div>
+
+      <div class="indicators" style="border-bottom:none;">
+        <div class="ind">
+          <div class="ind-lbl">RSI (14)</div>
+          <div class="ind-val" style="color:${rsiCol}">${m.rsi}</div>
+          <div class="ind-sub">${rsiLbl}</div>
+          <div class="ind-tip"><strong>RSI ${m.rsi}</strong><br>${m.rsi>70?'Overbought — momentum stretched. Wait for pullback below 65 before entering a full position. Consider scaling in.':m.rsi<32?'Oversold — potential bounce incoming. In a structural uptrend, this is a buying opportunity.':'Healthy range. No extremes.'}</div>
+        </div>
+        <div class="ind">
+          <div class="ind-lbl">ROC 20D</div>
+          <div class="ind-val" style="color:${m.roc20>=0?'var(--green)':'var(--red)'}">${m.roc20>0?'+':''}${m.roc20}%</div>
+          <div class="ind-sub">${m.trend}</div>
+          <div class="ind-tip"><strong>Rate of Change ${m.roc20}%</strong><br>${Math.abs(m.roc20)>20?'Strong momentum — this has moved significantly. Confirm with volume before entry.':Math.abs(m.roc20)>10?'Positive momentum — building well.':'Modest pace — not yet breaking out.'}</div>
+        </div>
+        <div class="ind">
+          <div class="ind-lbl">Score</div>
+          <div class="ind-val" style="color:${scoreCol}">${m.score.toFixed(1)}/10</div>
+          <div class="ind-sub">${m.score>=7?'Entry zone':'Monitor'}</div>
+          <div class="ind-tip"><strong>Momentum Score ${m.score}/10</strong><br>${m.score>=7.5?'Strong momentum — if you have conviction on the thesis, this is a reasonable entry window.':m.score>=6?'Positive momentum — worth monitoring for a stronger signal before committing capital.':'Neutral — wait for a clearer directional signal before entry.'}</div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ─────────────────────────────────────────────
+// PASSWORD GATE — Tab 1 only, Tabs 2 & 3 public
+// ─────────────────────────────────────────────
+function hashPW(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
+  return Math.abs(h).toString();
+}
+
+// Pre-hashed value of 987868
+const PW_HASH = hashPW('987868');
+
+function checkPW() {
+  const val = document.getElementById('pwInput').value;
+  if (hashPW(val) === PW_HASH) {
+    sessionStorage.setItem('pp_auth', '1');
+    document.getElementById('pwGate').style.display = 'none';
+    // Load full data if not already loaded
+    const saved = localStorage.getItem('pats_v1');
+    if (saved) { try { Object.assign(S, JSON.parse(saved)); } catch(e) {} }
+    if (!S.logs.length) S.logs = JSON.parse(JSON.stringify(DEF_LOGS));
+    S.holdings.forEach(h => {
+      if (!S.priceHistory[h.ticker] || S.priceHistory[h.ticker].length < 10) {
+        S.priceHistory[h.ticker] = seedHistory(h);
+      }
+    });
+    render();
+    renderMomentum();
+    // Switch to Tab 1
+    document.querySelectorAll('.page-wrap').forEach(p => p.classList.remove('on'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('on'));
+    document.getElementById('p1').classList.add('on');
+    document.querySelectorAll('.nav-tab')[0].classList.add('on');
+  } else {
+    const err = document.getElementById('pwError');
+    err.textContent = 'Incorrect password';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+    setTimeout(() => err.textContent = '', 2500);
+  }
+}
+
+// ─────────────────────────────────────────────
+function showPage(id, el) {
+  document.querySelectorAll('.page-wrap').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  if (el) el.classList.add('on');
+
+  if (id === 'p1') {
+    if (sessionStorage.getItem('pp_auth') !== '1') {
+      // Show lock overlay inside Tab 1
+      document.getElementById('pwGate').style.display = 'flex';
+      setTimeout(() => document.getElementById('pwInput')?.focus(), 100);
+    } else {
+      document.getElementById('pwGate').style.display = 'none';
+    }
+  }
+  if (id === 'p2') {
+    renderMomentum();
+    setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 80);
+  }
+  if (id === 'p3') renderIntel();
+}
+
+// ─────────────────────────────────────────────
+// MOMENTUM DATA
+// ─────────────────────────────────────────────
+const SECTOR_DATA = [
+  { name:'Semiconductors', score:7.8, lbl:'Strong', chg:'+18.4%', flow:'in' },
+  { name:'AI Infrastructure', score:6.9, lbl:'Positive', chg:'+11.2%', flow:'in' },
+  { name:'Memory / DRAM', score:7.5, lbl:'Supercycle', chg:'+42.5%', flow:'in' },
+  { name:'Photonics', score:8.1, lbl:'Heating up', chg:'+28.6%', flow:'in' },
+  { name:'Nuclear / Uranium', score:4.2, lbl:'Weak', chg:'-8.4%', flow:'out' },
+  { name:'Copper / Metals', score:6.4, lbl:'Positive', chg:'+14.8%', flow:'in' },
+  { name:'Emerg. Markets', score:4.8, lbl:'Neutral', chg:'+3.4%', flow:'neutral' },
+  { name:'Robotics / AI', score:7.2, lbl:'Growing', chg:'+22.1%', flow:'in' },
+  { name:'Cybersecurity', score:6.8, lbl:'Positive', chg:'+16.4%', flow:'in' },
+  { name:'Natural Gas', score:5.5, lbl:'Mixed', chg:'+6.2%', flow:'neutral' },
+];
+
+const MACRO_DATA = [
+  { lbl:'AUD/USD', val:'0.6420', chg:'+0.4%', pos:true },
+  { lbl:'S&P 500', val:'5,842', chg:'+1.2%', pos:true },
+  { lbl:'ASX 200', val:'8,241', chg:'+0.8%', pos:true },
+  { lbl:'SOX Index', val:'4,982', chg:'+2.1%', pos:true },
+  { lbl:'US 10Y', val:'4.38%', chg:'+0.04', pos:false },
+  { lbl:'VIX', val:'18.2', chg:'-1.4', pos:true },
+];
+
+// Seed 90 days of price history
+function seedHistory(h) {
+  const days = 90;
+  const vol = { SEMI:.018,AINF:.014,EMKT:.010,DRAM:.025,URNM:.020,TSM:.016,GOOGL:.013,ARTY:.017,SOXX:.015 }[h.ticker] || .015;
+  const today = new Date('2026-05-14');
+  let price = h.current;
+  const prices = [price];
+  for (let i = 1; i < days; i++) {
+    const drift = (Math.random() - 0.48) * vol;
+    price = price / (1 + drift);
+    prices.unshift(price);
+  }
+  const scale = h.current / prices[prices.length - 1];
+  const hist = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - (days - 1 - i));
+    hist.push({ date: d.toISOString().split('T')[0], price: parseFloat((prices[i] * scale).toFixed(2)) });
+  }
+  return hist;
+}
+
+// ─────────────────────────────────────────────
+// MOMENTUM CALCULATIONS
+// ─────────────────────────────────────────────
+function calcRSI(prices, period = 14) {
+  if (prices.length < period + 1) return 50;
+  let g = 0, l = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = prices[i] - prices[i - 1];
+    d > 0 ? g += d : l += Math.abs(d);
+  }
+  const rs = (g / period) / ((l / period) || 0.001);
+  return parseFloat((100 - 100 / (1 + rs)).toFixed(1));
+}
+
+function calcEMA(prices, period) {
+  if (prices.length < period) return prices[prices.length - 1] || 0;
+  const k = 2 / (period + 1);
+  let ema = prices.slice(0, period).reduce((a, b) => a + b, 0) / period;
+  for (let i = period; i < prices.length; i++) ema = prices[i] * k + ema * (1 - k);
+  return ema;
+}
+
+function calcMOM(ticker, current) {
+  const hist = S.priceHistory[ticker] || [];
+  const prices = hist.length >= 20 ? hist.map(h => h.price) : null;
+
+  // Fallback mock data if not enough history
+  const MOCK = {
+    SEMI:  { rsi:68, macd:1.2,  macdH:0.3,  roc20:18.5, roc5:2.1,  am20:true,  am50:true,  am200:true,  div:false, r1w:2.1,  r1m:14.2, r3m:35.7,  score:7.8 },
+    AINF:  { rsi:54, macd:0.4,  macdH:0.1,  roc20:11.2, roc5:0.8,  am20:true,  am50:true,  am200:true,  div:false, r1w:0.8,  r1m:11.2, r3m:28.4,  score:6.5 },
+    EMKT:  { rsi:49, macd:-0.1, macdH:-0.05,roc20:3.4,  roc5:-0.4, am20:false, am50:true,  am200:true,  div:false, r1w:-0.4, r1m:3.4,  r3m:8.2,   score:5.2 },
+    DRAM:  { rsi:72, macd:2.8,  macdH:0.6,  roc20:42.5, roc5:5.2,  am20:true,  am50:true,  am200:true,  div:true,  r1w:5.2,  r1m:42.5, r3m:105.8, score:7.2 },
+    URNM:  { rsi:46, macd:-0.3, macdH:-0.1, roc20:-8.4, roc5:1.2,  am20:false, am50:false, am200:true,  div:false, r1w:1.2,  r1m:-8.4, r3m:-12.6, score:4.1 },
+    TSM:   { rsi:65, macd:3.2,  macdH:0.8,  roc20:22.4, roc5:3.1,  am20:true,  am50:true,  am200:true,  div:false, r1w:3.1,  r1m:22.4, r3m:48.2,  score:7.4 },
+    GOOGL: { rsi:61, macd:1.8,  macdH:0.4,  roc20:16.8, roc5:2.4,  am20:true,  am50:true,  am200:true,  div:false, r1w:2.4,  r1m:16.8, r3m:32.1,  score:7.0 },
+    ARTY:  { rsi:63, macd:1.1,  macdH:0.2,  roc20:14.2, roc5:1.8,  am20:true,  am50:true,  am200:true,  div:false, r1w:1.8,  r1m:14.2, r3m:28.6,  score:6.4 },
+    SOXX:  { rsi:71, macd:1.6,  macdH:0.1,  roc20:19.8, roc5:1.2,  am20:true,  am50:true,  am200:true,  div:true,  r1w:1.2,  r1m:19.8, r3m:46.5,  score:6.8 },
+  };
+
+  if (!prices) return MOCK[ticker] || { rsi:50,macd:0,macdH:0,roc20:0,roc5:0,am20:true,am50:true,am200:true,div:false,r1w:0,r1m:0,r3m:0,score:5.0 };
+
+  const n = prices.length;
+  const rsi = calcRSI(prices.slice(-15));
+  const ema12 = calcEMA(prices, 12);
+  const ema26 = calcEMA(prices, 26);
+  const macd = parseFloat((ema12 - ema26).toFixed(2));
+  const macdH = parseFloat((macd - calcEMA(prices.slice(-9), 9)).toFixed(2));
+  const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+  const ma20 = avg(prices.slice(-20));
+  const ma50 = avg(prices.slice(-Math.min(50, n)));
+  const ma200 = avg(prices);
+  const roc20 = parseFloat(((prices[n-1] - prices[Math.max(0,n-20)]) / prices[Math.max(0,n-20)] * 100).toFixed(1));
+  const roc5  = parseFloat(((prices[n-1] - prices[Math.max(0,n-5)])  / prices[Math.max(0,n-5)]  * 100).toFixed(1));
+  const rsiPrev = calcRSI(prices.slice(-29, -14));
+  const div = prices.slice(-5).some(p => p >= current * 0.99) && rsi < rsiPrev - 5;
+  const r1w = parseFloat(((prices[n-1]-prices[Math.max(0,n-5)])/prices[Math.max(0,n-5)]*100).toFixed(2));
+  const r1m = parseFloat(((prices[n-1]-prices[Math.max(0,n-22)])/prices[Math.max(0,n-22)]*100).toFixed(2));
+  const r3m = parseFloat(((prices[n-1]-prices[0])/prices[0]*100).toFixed(2));
+
+  let score = 5;
+  if (rsi > 50) score += 1; if (rsi > 60) score += 0.5; if (rsi > 70) score -= 0.5; if (rsi < 30) score -= 2;
+  if (macd > 0) score += 1; if (macdH > 0) score += 0.5;
+  if (current > ma20) score += 0.5; if (current > ma50) score += 0.5; if (current > ma200) score += 0.5;
+  if (roc20 > 5) score += 0.5; if (roc20 > 15) score += 0.5; if (roc20 < -5) score -= 1;
+  if (div) score -= 1.5;
+  score = parseFloat(Math.max(1, Math.min(10, score)).toFixed(1));
+
+  return { rsi, macd, macdH, roc20, roc5, am20: current > ma20, am50: current > ma50, am200: current > ma200, div, r1w, r1m, r3m, score };
+}
+
+// ─────────────────────────────────────────────
+// RENDER MOMENTUM TAB
+// ─────────────────────────────────────────────
+function renderMomentum() {
+  renderAlerts();
+  renderMacroStrip();
+  renderSectorGrid();
+  renderRotation();
+  renderMomCards();
+  renderWatchMomCards();
+  generateBrief();
+}
+
+function renderAlerts() {
+  const alerts = [];
+  S.holdings.forEach(h => {
+    const m = calcMOM(h.ticker, h.current);
+    if (m.div) alerts.push({ type:'red', icon:'⚠', ttl:`Divergence — ${h.ticker}`, body:`Price at/near recent high but RSI (${m.rsi}) has not confirmed the move. Classic momentum failure signal. A professional analyst would reduce size or tighten stop-loss here.` });
+    if (m.rsi > 75) alerts.push({ type:'yellow', icon:'🔥', ttl:`Overbought — ${h.ticker}`, body:`RSI ${m.rsi} — above 75 is extreme territory. Not a sell signal in a strong trend, but expect turbulence. Require volume confirmation on the next up-move.` });
+    if (m.rsi < 32) alerts.push({ type:'green', icon:'📉', ttl:`Oversold — ${h.ticker}`, body:`RSI ${m.rsi} — approaching oversold. In a structural uptrend, this is typically a buying opportunity. Watch for RSI turning back above 35 as bounce confirmation.` });
+    if (m.macdH < 0 && m.macd > 0) alerts.push({ type:'yellow', icon:'📊', ttl:`MACD Fading — ${h.ticker}`, body:`MACD still positive (${m.macd}) but histogram turning negative — pace of upward momentum is decelerating. Not a reversal yet. Monitor next 3–5 sessions.` });
+  });
+  if (!alerts.length) alerts.push({ type:'blue', icon:'✅', ttl:'No Critical Alerts', body:'No divergences, overbought extremes, or MACD failures detected. Momentum broadly healthy across the portfolio.' });
+  document.getElementById('alertStrip').innerHTML = alerts.map(a => `
+    <div class="alert-box ${a.type}">
+      <div class="alert-icon">${a.icon}</div>
+      <div><div class="alert-ttl">${a.ttl}</div>${a.body}</div>
+    </div>`).join('');
+}
+
+function renderMacroStrip() {
+  // Pull live FX from Tab 1
+  const fx = document.getElementById('fxR').textContent;
+  MACRO_DATA[0].val = fx;
+  document.getElementById('macroStrip').innerHTML = MACRO_DATA.map(m => `
+    <div class="macro-chip">
+      <span class="macro-lbl">${m.lbl}</span>
+      <div class="macro-val">${m.val}</div>
+      <div class="macro-chg" style="color:${m.pos?'var(--green)':'var(--red)'}">${m.chg}</div>
+    </div>`).join('');
+}
+
+function renderSectorGrid() {
+  document.getElementById('sectorGrid').innerHTML = SECTOR_DATA.map(s => {
+    const col = s.score >= 7 ? 'var(--green)' : s.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+    return `<div class="sector-card">
+      <div class="sc-name">${s.name}</div>
+      <div class="sc-score" style="color:${col}">${s.score.toFixed(1)}</div>
+      <div class="sc-lbl" style="color:${col}">${s.lbl}</div>
+      <div class="sc-chg" style="color:${s.chg.startsWith('+')?'var(--green)':'var(--red)'}">${s.chg} 3M</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRotation() {
+  const inflow  = SECTOR_DATA.filter(s => s.flow === 'in').sort((a,b) => b.score - a.score);
+  const outflow = SECTOR_DATA.filter(s => s.flow !== 'in').sort((a,b) => a.score - b.score);
+  document.getElementById('rotIn').innerHTML = inflow.map(s => `
+    <div class="rot-item">
+      <div class="rot-name">${s.name}</div>
+      <div class="rot-track"><div class="rot-bar" style="width:${s.score*10}%;background:var(--green);opacity:.7;"></div></div>
+      <div class="rot-val" style="color:var(--green)">${s.score.toFixed(1)}</div>
+    </div>`).join('');
+  document.getElementById('rotOut').innerHTML = outflow.map(s => `
+    <div class="rot-item">
+      <div class="rot-name">${s.name}</div>
+      <div class="rot-track"><div class="rot-bar" style="width:${s.score*10}%;background:${s.score<5?'var(--red)':'var(--yellow)'};opacity:.7;"></div></div>
+      <div class="rot-val" style="color:${s.score<5?'var(--red)':'var(--yellow)'}">${s.score.toFixed(1)}</div>
+    </div>`).join('');
+}
+
+function renderMomCards() {
+  const grid = document.getElementById('momGrid');
+  grid.innerHTML = '';
+  S.holdings.forEach(h => {
+    const m = calcMOM(h.ticker, h.current);
+    const cur = h.market === 'ASX' ? 'A$' : 'US$';
+    const plp = ((h.current - h.entry) / h.entry * 100).toFixed(2);
+    const scoreCol = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+
+    const rsiCol = m.rsi > 70 ? 'var(--red)' : m.rsi < 30 ? 'var(--green)' : 'var(--text)';
+    const rsiLbl = m.rsi > 70 ? 'Overbought' : m.rsi < 30 ? 'Oversold' : m.rsi > 55 ? 'Bullish' : 'Neutral';
+    const rsiTip = `<strong>RSI ${m.rsi}</strong><br>14-day momentum measure. ${m.rsi>70?'Above 70 = overbought. Expect a pullback or consolidation. Avoid adding here without volume confirmation.':m.rsi<30?'Below 30 = oversold. In an uptrend, this is a buy signal. Wait for RSI to turn back above 35.':'Healthy range — no extreme readings.'}`;
+
+    const macdLbl = m.macd > 0 ? 'Positive' : 'Negative';
+    const macdTip = `<strong>MACD ${m.macd}</strong><br>12-day minus 26-day EMA. ${m.macd>0?'Positive = upward momentum confirmed.':'Negative = downward pressure.'} Histogram ${m.macdH>0?'growing — momentum accelerating.':'shrinking — pace is fading. Watch for reversal if histogram keeps declining.'}`;
+
+    const rocTip = `<strong>ROC ${m.roc20}% over 20 days</strong><br>Rate of price change. 5-day ROC is ${m.roc5}%. ${m.roc5 < m.roc20 * 0.3 ? '⚠ Deceleration — momentum slowing.' : m.roc5 > m.roc20 * 0.5 ? '✓ Acceleration — momentum building.' : 'Stable pace.'} Watch for 5D ROC turning negative while 20D remains positive — early warning.`;
+
+    const div = document.createElement('div');
+    div.className = 'mcard';
+    div.innerHTML = `
+      <div class="mcard-head">
+        <div class="mcard-top">
+          <div>
+            <div class="mcard-ticker">${h.ticker} <span class="tag">${h.market}</span></div>
+            <div class="mcard-name">${h.name}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="mscore-wrap">
+              <div class="mscore" style="color:${scoreCol}">${m.score.toFixed(1)}</div>
+              <div class="mscore-denom">/10</div>
+            </div>
+            <div class="mscore-track"><div class="mscore-fill" style="width:${m.score*10}%;background:${scoreCol}"></div></div>
+          </div>
+        </div>
+        <div class="mprice-row">
+          <div class="mprice">${cur}${h.current.toFixed(2)}</div>
+          <div class="mprice-chg ${plp>=0?'p':'n'}">${plp>0?'+':''}${plp}% from entry</div>
+          <div class="mprice-chg ${m.r1w>=0?'p':'n'}" style="margin-left:8px">1W ${m.r1w>0?'+':''}${m.r1w}%</div>
+        </div>
+      </div>
+
+      <div class="spark-wrap">
+        <canvas class="spark" id="spark-${h.ticker}" height="68"></canvas>
+        <div class="spark-labels"><span>3M ago</span><span>2M ago</span><span>1M ago</span><span>Today</span></div>
+      </div>
+
+      <div class="ma-row">
+        <span class="ma-chip ${m.am200?'above':'below'}">200MA ${m.am200?'↑ Above':'↓ Below'}</span>
+        <span class="ma-chip ${m.am50?'above':'below'}">50MA ${m.am50?'↑ Above':'↓ Below'}</span>
+        <span class="ma-chip ${m.am20?'above':'below'}">20MA ${m.am20?'↑ Above':'↓ Below'}</span>
+      </div>
+
+      <div class="div-badge ${m.div?'warn':'ok'}">
+        ${m.div ? '⚠ RSI Divergence — price at high but momentum not confirming. Reduce risk.' : '✓ No divergence — price and momentum aligned.'}
+      </div>
+
+      <div class="indicators">
+        <div class="ind">
+          <div class="ind-lbl">RSI (14)</div>
+          <div class="ind-val" style="color:${rsiCol}">${m.rsi}</div>
+          <div class="ind-sub">${rsiLbl}</div>
+          <div class="ind-tip">${rsiTip}</div>
+        </div>
+        <div class="ind">
+          <div class="ind-lbl">MACD</div>
+          <div class="ind-val" style="color:${m.macd>=0?'var(--green)':'var(--red)'}">${m.macd>0?'+':''}${m.macd}</div>
+          <div class="ind-sub">Hist ${m.macdH>0?'+':''}${m.macdH}</div>
+          <div class="ind-tip">${macdTip}</div>
+        </div>
+        <div class="ind">
+          <div class="ind-lbl">ROC 20D</div>
+          <div class="ind-val" style="color:${m.roc20>=0?'var(--green)':'var(--red)'}">${m.roc20>0?'+':''}${m.roc20}%</div>
+          <div class="ind-sub">5D ${m.roc5>0?'+':''}${m.roc5}%</div>
+          <div class="ind-tip">${rocTip}</div>
+        </div>
+      </div>
+
+      <div class="ret-row">
+        <div class="ret-item"><span class="ret-period">1 Week</span><div class="ret-val ${m.r1w>=0?'p':'n'}">${m.r1w>0?'+':''}${m.r1w}%</div></div>
+        <div class="ret-item"><span class="ret-period">1 Month</span><div class="ret-val ${m.r1m>=0?'p':'n'}">${m.r1m>0?'+':''}${m.r1m}%</div></div>
+        <div class="ret-item"><span class="ret-period">3 Month</span><div class="ret-val ${m.r3m>=0?'p':'n'}">${m.r3m>0?'+':''}${m.r3m}%</div></div>
+        <div class="ret-item"><span class="ret-period">From Entry</span><div class="ret-val ${plp>=0?'p':'n'}">${plp>0?'+':''}${plp}%</div></div>
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+// ─────────────────────────────────────────────
+// SPARKLINE CANVAS
+// ─────────────────────────────────────────────
+function drawSpark(ticker) {
+  const canvas = document.getElementById('spark-' + ticker);
+  if (!canvas) return;
+  const hist = S.priceHistory[ticker] || [];
+  if (hist.length < 2) return;
+  const data = hist.map(h => h.price);
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 350;
+  const H = 68;
+  canvas.width = W * window.devicePixelRatio;
+  canvas.height = H * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  ctx.clearRect(0, 0, W, H);
+
+  const min = Math.min(...data) * 0.995;
+  const max = Math.max(...data) * 1.005;
+  const xStep = W / (data.length - 1);
+  const yScale = v => H - ((v - min) / (max - min)) * (H - 10) - 5;
+  const isUp = data[data.length - 1] >= data[0];
+  const lineCol = isUp ? '#00c896' : '#e84545';
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, isUp ? 'rgba(0,200,150,0.22)' : 'rgba(232,69,69,0.22)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+  ctx.beginPath();
+  ctx.moveTo(0, H);
+  data.forEach((v, i) => ctx.lineTo(i * xStep, yScale(v)));
+  ctx.lineTo((data.length - 1) * xStep, H);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Price line
+  ctx.beginPath();
+  data.forEach((v, i) => i === 0 ? ctx.moveTo(0, yScale(v)) : ctx.lineTo(i * xStep, yScale(v)));
+  ctx.strokeStyle = lineCol;
+  ctx.lineWidth = 1.8;
+  ctx.stroke();
+
+  // 20MA line
+  if (data.length >= 20) {
+    ctx.beginPath();
+    for (let i = 19; i < data.length; i++) {
+      const ma = data.slice(i - 19, i + 1).reduce((a, b) => a + b, 0) / 20;
+      const x = i * xStep, y = yScale(ma);
+      i === 19 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(45,142,240,0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+// ─────────────────────────────────────────────
+// GENERATE ANALYST BRIEF
+// ─────────────────────────────────────────────
+function generateBrief() {
+  const now = new Date();
+  const ds = now.toLocaleDateString('en-AU', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const fx = document.getElementById('fxR').textContent;
+  const scores = S.holdings.map(h => calcMOM(h.ticker, h.current).score);
+  const avgScore = (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(1);
+  const divH = S.holdings.filter(h => calcMOM(h.ticker, h.current).div).map(h => h.ticker);
+  const obH  = S.holdings.filter(h => calcMOM(h.ticker, h.current).rsi > 70).map(h => h.ticker);
+
+  let b = `╔══════════════════════════════════════════════════╗
+║  PAT'S PORTFOLIO — ANALYST BRIEF                 ║
+║  ${ds.padEnd(48)}║
+╚══════════════════════════════════════════════════╝
+
+AUD/USD: ${fx}
+Total SMSF: ${document.getElementById('tTotal').textContent}
+Cash AUD: ${document.getElementById('cAUD').value} | Cash USD: ${document.getElementById('cUSD').value}
+
+━━━ EXECUTIVE SUMMARY ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Portfolio Avg Momentum Score: ${avgScore}/10
+Divergence Alerts: ${divH.length ? divH.join(', ') : 'None'}
+Overbought (RSI>70): ${obH.length ? obH.join(', ') : 'None'}
+
+━━━ HOLDING MOMENTUM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  S.holdings.forEach(h => {
+    const m = calcMOM(h.ticker, h.current);
+    const cur = h.market === 'ASX' ? 'A$' : 'US$';
+    const eq = h.shares * h.current;
+    const plp = ((h.current - h.entry) / h.entry * 100).toFixed(2);
+    b += `${h.ticker} (${h.market})  Score: ${m.score}/10\n`;
+    b += `  Price: ${cur}${h.current.toFixed(2)} | Equity: ${cur}${Math.round(eq).toLocaleString()} | Entry P/L: ${plp>0?'+':''}${plp}%\n`;
+    b += `  Returns — 1W: ${m.r1w>0?'+':''}${m.r1w}%  1M: ${m.r1m>0?'+':''}${m.r1m}%  3M: ${m.r3m>0?'+':''}${m.r3m}%\n`;
+    b += `  RSI: ${m.rsi} (${m.rsi>70?'OVERBOUGHT':m.rsi<30?'OVERSOLD':'OK'}) | MACD: ${m.macd>0?'+':''}${m.macd} | ROC-20: ${m.roc20>0?'+':''}${m.roc20}%\n`;
+    b += `  MA: 200 ${m.am200?'✓ABOVE':'✗BELOW'}  50 ${m.am50?'✓ABOVE':'✗BELOW'}  20 ${m.am20?'✓ABOVE':'✗BELOW'}\n`;
+    if (m.div) b += `  ⚠ DIVERGENCE: Price at high, RSI not confirming — watch closely\n`;
+    if (h.notes) b += `  Notes: ${h.notes}\n`;
+    b += '\n';
+  });
+
+  b += `━━━ SECTOR MOMENTUM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  SECTOR_DATA.forEach(s => { b += `${s.name}: ${s.score}/10 — ${s.lbl} | 3M ${s.chg} | ${s.flow === 'in' ? 'INFLOWS' : 'OUTFLOWS'}\n`; });
+
+  b += `\n━━━ MACRO ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  MACRO_DATA.forEach(m => { b += `${m.lbl}: ${m.val} (${m.chg})\n`; });
+
+  b += `\n━━━ WATCHLIST MOMENTUM ━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  S.watchlist.forEach(w => {
+    const m = getWatchMomentum(w.ticker);
+    b += `${w.ticker}  Score: ${m.score}/10  RSI: ${m.rsi}  ROC: ${m.roc20>0?'+':''}${m.roc20}%  ${m.trend}\n`;
+    b += `  ${w.note}\n`;
+    if (m.div) b += `  ⚠ DIVERGENCE DETECTED\n`;
+    b += '\n';
+  });
+
+  b += `\n━━━ BEHAVIOUR LOG (last 5) ━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  [...S.logs].slice(-5).forEach(l => { b += `${l.ts} | ${l.type.toUpperCase()} | ${l.note}\n`; });
+
+  b += `\n━━━ KEY INTELLIGENCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  b += `ASCHENBRENNER: BE #1 (+1511% 1yr), INTC calls (+377% YTD), CRWV+calls, LITE, COHR\n`;
+  b += `NVIDIA $40B+: $30B OpenAI, $3.2B Corning, $2B LITE, $2B COHR, $5B INTC→$25B+\n`;
+  b += `GOOGLE: $40B Anthropic (IPO Oct?), $4.75B Intersect energy, Wiz acquired\n`;
+  b += `TRUMP: Endorsed INTC, 25% AI chip tariff (TSM risk), China pause ~Aug expiry\n`;
+  b += `\n═══════════════════════════════════════════════════\n`;
+  b += `PASTE THIS ENTIRE BRIEF TO CLAUDE FOR ANALYSIS\n`;
+  b += `═══════════════════════════════════════════════════`;
+
+  const el = document.getElementById('briefPre');
+  if (el) el.textContent = b;
+  return b;
+}
+
+function copyBrief() {
+  const text = generateBrief();
+  navigator.clipboard.writeText(text).then(() => {
+    const btns = document.querySelectorAll('[onclick="copyBrief()"]');
+    btns.forEach(b => { const orig = b.textContent; b.textContent = '✓ Copied!'; setTimeout(() => b.textContent = orig, 2000); });
+  }).catch(() => { console.log(generateBrief()); });
+}
+
+function showKey() { document.getElementById('keyPanel').classList.add('on'); }
+function hideKey() { document.getElementById('keyPanel').classList.remove('on'); }
+
+// ─────────────────────────────────────────────
+// THEME
+// ─────────────────────────────────────────────
+function toggleTheme() {
+  document.body.classList.toggle('lm');
+  document.getElementById('themeBtn').textContent =
+    document.body.classList.contains('lm') ? '🌙' : '☀';
+}
+
+// ─────────────────────────────────────────────
+// CLOSE OVERLAYS ON BACKDROP CLICK
+// ─────────────────────────────────────────────
+document.querySelectorAll('.overlay').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('on');
+  });
+});
+
+// Always require password on fresh open
+sessionStorage.removeItem('pp_auth');
+
+// ─────────────────────────────────────────────
+// AUTH-AWARE STARTUP
+// ─────────────────────────────────────────────
+if (sessionStorage.getItem('pp_auth') === '1') {
+  // Already authenticated — hide gate, load full data
+  document.getElementById('pwGate').style.display = 'none';
+  init();
+} else {
+  // Not authenticated — seed defaults for public tabs, show gate on Tab 1
+  S.holdings = JSON.parse(JSON.stringify(DEF_HOLDINGS));
+  S.watchlist = JSON.parse(JSON.stringify(DEF_WATCHLIST));
+  S.yearlyData = { 2025: 150000, 2026: 179000 };
+  S.holdings.forEach(h => {
+    if (!S.priceHistory[h.ticker] || S.priceHistory[h.ticker].length < 10) {
+      S.priceHistory[h.ticker] = seedHistory(h);
+    }
+  });
+  // Default to Momentum tab on first open
+  document.getElementById('p1').classList.remove('on');
+  document.getElementById('p2').classList.add('on');
+  document.querySelectorAll('.nav-tab')[0].classList.remove('on');
+  document.querySelectorAll('.nav-tab')[1].classList.add('on');
+  // Show gate inside Tab 1 (visible when they click Input)
+  document.getElementById('pwGate').style.display = 'flex';
+  renderMomentum();
+  setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 100);
+}
+</body>
+</html>
