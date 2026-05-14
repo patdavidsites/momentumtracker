@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Pat's Portfolio — v3.2</title>
+<title>Pat's Portfolio — v3.3</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -1312,7 +1312,7 @@ canvas.spark { width: 100%; height: 68px; display: block; }
 
 <!-- NAV -->
 <div class="nav">
-  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v3.2</span></div>
+  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v3.3</span></div>
   <div class="nav-tabs">
     <div class="nav-tab" onclick="showPage('p1',this)">📱 Input</div>
     <div class="nav-tab on" onclick="showPage('p2',this)">📊 Momentum</div>
@@ -1467,11 +1467,13 @@ canvas.spark { width: 100%; height: 68px; display: block; }
         <button onclick="quickAdd('COPX','Global X Copper Miners ETF','USD',100,40.00,42.00,'yellow','Copper structural deficit thesis')" style="background:var(--s1);border:1px solid var(--border);color:var(--td);padding:5px 11px;border-radius:6px;font-size:11px;font-family:var(--mono);cursor:pointer;">+ COPX</button>
       </div>
     </div>
-    <textarea id="pasteImport" rows="6" placeholder="Paste here e.g.:
-HOLDINGS UPDATE
+    <textarea id="pasteImport" rows="6" placeholder="Paste block from Claude e.g.:
+REPLACE ASX
 SEMI | 894 | 37.62 | ASX
 AINF | 690 | 18.57 | ASX
-TSM | 76.08 | 417.90 | USD
+REPLACE USD
+GOOGL | 47.6537 | 401.13 | USD
+TSM | 76.0793 | 417.90 | USD
 CASH UPDATE
 AUD | 13145.42
 USD | 0" style="width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:7px;font-size:12px;font-family:var(--mono);outline:none;resize:vertical;line-height:1.7;margin-bottom:8px;"></textarea>
@@ -2410,6 +2412,16 @@ function applyPasteImport() {
     if (line.startsWith('HOLDINGS UPDATE')) { mode = 'holdings'; return; }
     if (line.startsWith('CASH UPDATE'))     { mode = 'cash';     return; }
     if (line.startsWith('REMOVE'))          { mode = 'remove';   return; }
+    if (line.startsWith('REPLACE ASX')) {
+      // Wipe all ASX holdings — rebuild from lines that follow
+      S.holdings = S.holdings.filter(h => h.market !== 'ASX');
+      mode = 'holdings'; return;
+    }
+    if (line.startsWith('REPLACE USD')) {
+      // Wipe all USD holdings — rebuild from lines that follow
+      S.holdings = S.holdings.filter(h => h.market !== 'USD');
+      mode = 'holdings'; return;
+    }
 
     if (mode === 'remove') {
       const ticker = line.replace(/[|]/g,'').trim().toUpperCase();
