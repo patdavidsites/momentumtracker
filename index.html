@@ -2133,8 +2133,8 @@ function renderHealthScore() {
   })();
 
   // Build full scorecard rows
-  const moms = S.holdings.map(h => ({ ticker: h.ticker, ...calcMOM(h.ticker, h.current) }));
-  const scorecardRows = moms.sort((a, b) => b.score - a.score).map(m => {
+  const scorecardMoms = S.holdings.map(h => ({ ticker: h.ticker, ...calcMOM(h.ticker, h.current) }));
+  const scorecardRows = scorecardMoms.sort((a, b) => b.score - a.score).map(m => {
     const col = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
     const flags = [];
     if (m.div) flags.push('⚠ Divergence');
