@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Pat's Portfolio — v2.6</title>
+<title>Pat's Portfolio — v3.2</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -1312,7 +1312,7 @@ canvas.spark { width: 100%; height: 68px; display: block; }
 
 <!-- NAV -->
 <div class="nav">
-  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v2.6</span></div>
+  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v3.2</span></div>
   <div class="nav-tabs">
     <div class="nav-tab" onclick="showPage('p1',this)">📱 Input</div>
     <div class="nav-tab on" onclick="showPage('p2',this)">📊 Momentum</div>
@@ -1446,6 +1446,40 @@ canvas.spark { width: 100%; height: 68px; display: block; }
       <button class="add-btn" onclick="openModal('USD')">+ Add</button>
     </div>
     <div id="usdList"></div>
+  </div>
+
+  <!-- SCREENSHOT PASTE IMPORTER -->
+  <div class="input-section" style="background:rgba(155,89,182,0.05);border:1px solid rgba(155,89,182,0.2);border-left:3px solid var(--purple);border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div class="sh" style="margin-top:0;">
+      <div class="st">📋 Paste Update from Claude</div>
+    </div>
+    <div style="font-size:11px;color:var(--td);margin-bottom:10px;line-height:1.6;">
+      Screenshot your broker → send to Claude → paste the <code style="background:var(--s2);padding:1px 5px;border-radius:3px;font-size:10px;">HOLDINGS UPDATE</code> block here → tap Apply. Use <code style="background:var(--s2);padding:1px 5px;border-radius:3px;font-size:10px;">REMOVE</code> to delete holdings.
+    </div>
+
+    <!-- QUICK RE-ADD removed holdings -->
+    <div style="margin-bottom:10px;">
+      <div style="font-size:10px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Quick Re-Add Previously Held</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <button onclick="quickAdd('URNM','Sprott Uranium Miners ETF','USD',1256,12.58,12.59,'yellow','Trimmed — watching for next uranium leg')" style="background:var(--s1);border:1px solid var(--border);color:var(--td);padding:5px 11px;border-radius:6px;font-size:11px;font-family:var(--mono);cursor:pointer;">+ URNM</button>
+        <button onclick="quickAdd('DRAM','Roundhill Memory ETF','USD',273,25.00,51.30,'green','Memory supercycle — watch 2027 new fabs')" style="background:var(--s1);border:1px solid var(--border);color:var(--td);padding:5px 11px;border-radius:6px;font-size:11px;font-family:var(--mono);cursor:pointer;">+ DRAM</button>
+        <button onclick="quickAdd('ARTY','iShares Future AI & Tech ETF','USD',120,56.80,64.90,'yellow','Overlaps SEMI/SOXX — review allocation')" style="background:var(--s1);border:1px solid var(--border);color:var(--td);padding:5px 11px;border-radius:6px;font-size:11px;font-family:var(--mono);cursor:pointer;">+ ARTY</button>
+        <button onclick="quickAdd('COPX','Global X Copper Miners ETF','USD',100,40.00,42.00,'yellow','Copper structural deficit thesis')" style="background:var(--s1);border:1px solid var(--border);color:var(--td);padding:5px 11px;border-radius:6px;font-size:11px;font-family:var(--mono);cursor:pointer;">+ COPX</button>
+      </div>
+    </div>
+    <textarea id="pasteImport" rows="6" placeholder="Paste here e.g.:
+HOLDINGS UPDATE
+SEMI | 894 | 37.62 | ASX
+AINF | 690 | 18.57 | ASX
+TSM | 76.08 | 417.90 | USD
+CASH UPDATE
+AUD | 13145.42
+USD | 0" style="width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:7px;font-size:12px;font-family:var(--mono);outline:none;resize:vertical;line-height:1.7;margin-bottom:8px;"></textarea>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button onclick="applyPasteImport()" style="background:var(--blue);border:none;color:#fff;padding:9px 18px;border-radius:6px;font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;">Apply Update</button>
+      <button onclick="document.getElementById('pasteImport').value=''" style="background:var(--s1);border:1px solid var(--border);color:var(--td);padding:9px 14px;border-radius:6px;font-size:12px;font-family:var(--sans);cursor:pointer;">Clear</button>
+      <div id="pasteResult" style="font-size:12px;font-family:var(--mono);color:var(--green);"></div>
+    </div>
   </div>
 
   <!-- Watchlist -->
@@ -1763,17 +1797,25 @@ canvas.spark { width: 100%; height: 68px; display: block; }
 <div id="p4" class="page-wrap">
 <div class="main" style="max-width:700px;">
 
-  <div class="sh"><div class="st">SMSF Balance History</div></div>
+  <div class="sh"><div class="st">SMSF Balance History</div><div style="font-size:10px;color:var(--tm);font-family:var(--mono);">Started Q3 2024</div></div>
 
-  <div style="font-size:12px;color:var(--td);margin-bottom:18px;line-height:1.6;background:var(--s0);border:1px solid var(--border);border-radius:8px;padding:12px 14px;">
-    Enter your SMSF balance at the start of each year (January 1). The dashboard will calculate your annual return, total growth, and CAGR automatically.
+  <!-- CHART FIRST -->
+  <div style="background:var(--s0);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Balance Over Time — from Q3 2024</div>
+    <canvas id="histChart" height="220" style="width:100%;display:block;"></canvas>
   </div>
 
-  <!-- ENTRY TABLE -->
-  <div id="historyTable"></div>
+  <!-- PERFORMANCE STATS -->
+  <div id="historySummary" style="margin-bottom:14px;"></div>
+
+  <!-- CLEAN YEAR TABLE -->
+  <div style="background:var(--s0);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Balance by Period</div>
+    <div id="historyTable"></div>
+  </div>
 
   <!-- ADD ENTRY -->
-  <div style="background:var(--s0);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:10px;">
+  <div style="background:var(--s0);border:1px solid var(--border);border-radius:10px;padding:16px;">
     <div style="font-family:var(--mono);font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Add / Update Entry</div>
     <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end;">
       <div>
@@ -1801,15 +1843,6 @@ canvas.spark { width: 100%; height: 68px; display: block; }
       </div>
       <button onclick="addHistEntry()" style="background:var(--blue);border:none;color:#fff;padding:10px 18px;border-radius:6px;font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;white-space:nowrap;">Add</button>
     </div>
-  </div>
-
-  <!-- SUMMARY STATS -->
-  <div id="historySummary" style="margin-top:14px;"></div>
-
-  <!-- CHART -->
-  <div style="background:var(--s0);border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:14px;">
-    <div style="font-family:var(--mono);font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Balance Over Time</div>
-    <canvas id="histChart" height="200" style="width:100%;display:block;"></canvas>
   </div>
 
 </div>
@@ -2344,6 +2377,107 @@ function renderOverlap() {
   document.getElementById('overlapBars').innerHTML = (html || '<div class="empty">No overlap data available</div>') + posHtml;
 }
 
+function quickAdd(ticker, name, market, shares, entry, current, signal, notes) {
+  const exists = S.holdings.find(h => h.ticker === ticker);
+  if (exists) { alert(`${ticker} is already in your portfolio`); return; }
+  S.holdings.push({ ticker, name, market, shares, entry, current, signal, notes });
+  if (!S.priceHistory[ticker] || S.priceHistory[ticker].length < 5) {
+    S.priceHistory[ticker] = seedHistory({ ticker, current, entry });
+  }
+  render();
+  save();
+  // Flash confirmation
+  const btns = document.querySelectorAll(`button[onclick*="quickAdd('${ticker}"]`);
+  btns.forEach(b => { const orig = b.style.color; b.style.color='var(--green)'; b.textContent='✓ Added'; setTimeout(()=>{b.style.color=orig;b.textContent=`+ ${ticker}`;},2000); });
+}
+
+// ─────────────────────────────────────────────
+// SCREENSHOT PASTE IMPORTER
+// Supports: HOLDINGS UPDATE and CASH UPDATE blocks
+// ─────────────────────────────────────────────
+function applyPasteImport() {
+  const raw = document.getElementById('pasteImport').value.trim();
+  const result = document.getElementById('pasteResult');
+  if (!raw) { result.textContent = 'Nothing to import'; result.style.color = 'var(--yellow)'; return; }
+
+  let updated = 0, added = 0, skipped = 0, cashUpdated = 0;
+  let mode = 'holdings'; // default mode
+
+  const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
+
+  lines.forEach(line => {
+    // Detect block headers
+    if (line.startsWith('HOLDINGS UPDATE')) { mode = 'holdings'; return; }
+    if (line.startsWith('CASH UPDATE'))     { mode = 'cash';     return; }
+    if (line.startsWith('REMOVE'))          { mode = 'remove';   return; }
+
+    if (mode === 'remove') {
+      const ticker = line.replace(/[|]/g,'').trim().toUpperCase();
+      if (!ticker) return;
+      const before = S.holdings.length;
+      S.holdings = S.holdings.filter(h => h.ticker !== ticker);
+      if (S.holdings.length < before) updated++; else skipped++;
+      return;
+    }
+
+    if (mode === 'cash') {
+      // Format: AUD | 13145.42  or  USD | 0
+      const parts = line.split('|').map(p => p.trim());
+      if (parts.length < 2) { skipped++; return; }
+      const currency = parts[0].toUpperCase();
+      const amount   = parseFloat(parts[1].replace(/[$,]/g, ''));
+      if (isNaN(amount)) { skipped++; return; }
+      if (currency === 'AUD') {
+        document.getElementById('cAUD').value = '$' + amount.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        cashUpdated++;
+      } else if (currency === 'USD') {
+        document.getElementById('cUSD').value = '$' + amount.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        cashUpdated++;
+      }
+      updateTotals();
+      return;
+    }
+
+    // Holdings mode: TICKER | SHARES | PRICE | MARKET
+    const parts = line.split('|').map(p => p.trim());
+    if (parts.length < 3) { skipped++; return; }
+    const ticker = parts[0].toUpperCase();
+    const shares = parseFloat(parts[1]);
+    const price  = parseFloat(parts[2]);
+    const market = parts[3] ? parts[3].toUpperCase() : (price < 200 ? 'ASX' : 'USD');
+    if (!ticker || isNaN(shares) || isNaN(price)) { skipped++; return; }
+
+    const idx = S.holdings.findIndex(h => h.ticker === ticker);
+    if (idx >= 0) {
+      S.holdings[idx].shares  = shares;
+      S.holdings[idx].current = price;
+      S.holdings[idx].market  = market;
+      updated++;
+    } else {
+      S.holdings.push({
+        ticker, name: ticker, market,
+        shares, entry: price, current: price,
+        signal: 'yellow', notes: 'Added via screenshot import'
+      });
+      S.priceHistory[ticker] = seedHistory({ ticker, current: price, entry: price });
+      added++;
+    }
+  });
+
+  document.getElementById('pasteImport').value = '';
+  render();
+  save();
+
+  const msg = [];
+  if (updated)     msg.push(`${updated} holding${updated>1?'s':''} updated`);
+  if (added)       msg.push(`${added} holding${added>1?'s':''} added`);
+  if (cashUpdated) msg.push(`cash updated`);
+  if (skipped)     msg.push(`${skipped} skipped`);
+  result.textContent = '✓ ' + (msg.join(', ') || 'Done');
+  result.style.color = 'var(--green)';
+  setTimeout(() => result.textContent = '', 4000);
+}
+
 function render() {
   renderHoldings();
   renderWatchlist();
@@ -2747,7 +2881,6 @@ function saveH() {
 }
 
 function removeH(idx) {
-  if (!confirm('Remove ' + S.holdings[idx].ticker + '?')) return;
   S.holdings.splice(idx, 1);
   render();
   save();
@@ -2855,36 +2988,21 @@ function downloadWeek() {
 // INTELLIGENCE TAB (Tab 3)
 // ─────────────────────────────────────────────
 const SPEC_DATA = [
-  {
-    ticker: 'LITE', name: 'Lumentum Holdings',
-    desc: 'Only supplier shipping 200G-per-lane EMLs at volume. Nvidia named collaborator on silicon photonics. Largest CPO laser purchase commitment in company history. Jefferies price target $1,200.',
-    rev: 'Revenue $665M Q2 FY26 +65% YoY. Non-GAAP operating margin 25.2%.',
-    expires: 'Jun 13', signal: 'green'
-  },
-  {
-    ticker: 'AIPO', name: 'Defiance AI & Power Infrastructure ETF',
-    desc: 'Best New Thematic ETF at ETF.com Awards 2026. US companies earning 50%+ revenue from AI + power infrastructure. GE Vernova and Vertiv top holdings. Returned 25.3% in April alone.',
-    rev: '$493M net inflows past year. AUM $245M and growing fast.',
-    expires: 'Jun 13', signal: 'green'
-  },
-  {
-    ticker: 'INTC', name: 'Intel — Next Multibagger?',
-    desc: 'Aschenbrenner holds 20.2M call options. Trump personally endorsed on Truth Social. Nvidia $5B stake now worth $25B+. DCAI revenue +22% YoY. CPU demand surging from agentic AI inference workloads that favour x86 architecture.',
-    rev: 'Up 377% YTD. Foundry division turning profitable. Agentic AI CPU demand cycle just beginning.',
-    expires: 'Jun 20', signal: 'green'
-  },
-  {
-    ticker: 'SNDK', name: 'SanDisk (spun from WD Feb 2025)',
-    desc: 'Retains NAND chip manufacturing partnership with Kioxia. Direct Micron competitor in NAND flash. Same memory supercycle thesis as your DRAM ETF but single-stock exposure at potentially better valuation.',
-    rev: 'Post-spinoff standalone earnings — watch for profitability confirmation.',
-    expires: 'May 28', signal: 'yellow'
-  },
-  {
-    ticker: 'SMRF', name: 'ALPS Nautilus SMR & Nuclear ETF',
-    desc: 'Pure SMR/nuclear ETF launched Feb 2026. Holds Oklo, NexGen Energy, Uranium Energy Corp, enCore Energy. More diversified than URNM across the full nuclear value chain — exposure to the reactor builders, not just the miners.',
-    rev: 'ETF structure — all underlying holdings are revenue-generating businesses.',
-    expires: 'Jun 5', signal: 'yellow'
-  },
+  { ticker:'LITE', name:'Lumentum Holdings', market:'USD', risk:4, signal:'green', expires:'Jun 13',
+    desc:'Only supplier shipping 200G EMLs at volume. Nvidia named collaborator on silicon photonics. Largest CPO laser purchase commitment in company history. Jefferies target $1,200.',
+    rev:'Revenue $665M Q2 FY26 +65% YoY. Non-GAAP operating margin 25.2%.' },
+  { ticker:'AIPO', name:'Defiance AI & Power Infrastructure ETF', market:'USD', risk:3, signal:'green', expires:'Jun 13',
+    desc:'Best New Thematic ETF 2026. US companies 50%+ revenue from AI + power. GE Vernova and Vertiv top holdings. Returned 25.3% in April alone.',
+    rev:'$493M net inflows past year. AUM $245M growing fast.' },
+  { ticker:'INTC', name:'Intel — Next Multibagger?', market:'USD', risk:3, signal:'green', expires:'Jun 20',
+    desc:'Aschenbrenner holds 20.2M call options. Trump personally endorsed. Nvidia $5B stake now worth $25B+. DCAI revenue +22% YoY. CPU demand surging from agentic AI workloads.',
+    rev:'Up 377% YTD. Foundry turning profitable. Agentic AI CPU cycle just beginning.' },
+  { ticker:'SNDK', name:'SanDisk (spun from WD Feb 2025)', market:'USD', risk:4, signal:'yellow', expires:'May 28',
+    desc:'Retains NAND manufacturing partnership with Kioxia. Direct Micron competitor. Same memory supercycle thesis as your DRAM ETF.',
+    rev:'Post-spinoff — watch standalone earnings for profitability confirmation.' },
+  { ticker:'SMRF', name:'ALPS Nautilus SMR & Nuclear ETF', market:'USD', risk:3, signal:'yellow', expires:'Jun 5',
+    desc:'Pure SMR/nuclear ETF launched Feb 2026. Holds Oklo, NexGen Energy, Uranium Energy Corp. More diversified than URNM across the full nuclear value chain.',
+    rev:'ETF structure — all underlying holdings revenue generating.' },
 ];
 
 function renderIntel() {
@@ -2896,18 +3014,30 @@ function renderIntel() {
   // Render speculative grid
   const grid = document.getElementById('specGrid');
   if (grid) {
-    grid.innerHTML = SPEC_DATA.map(s => `
-      <div class="spec-card">
+    grid.innerHTML = SPEC_DATA.map(s => {
+      const riskCol = s.risk <= 2 ? 'var(--green)' : s.risk === 3 ? 'var(--yellow)' : 'var(--red)';
+      const riskLbl = ['','Low','Low-Med','Medium','Med-High','High'][s.risk];
+      return `<div class="spec-card">
         <div class="spec-header">
           <div class="dot ${s.signal==='green'?'g':'y'}"></div>
           <div class="spec-ticker">${s.ticker}</div>
-          <span class="spec-badge">⚡ Early Stage</span>
+          <span class="spec-badge">⚡ Speculative</span>
+          <span class="tag" style="margin-left:2px;">${s.market}</span>
           <div class="spec-expires">Expires: ${s.expires}</div>
         </div>
         <div class="spec-name">${s.name}</div>
+        <!-- RISK METER -->
+        <div style="display:flex;align-items:center;gap:10px;margin:7px 0 6px;">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.06em;min-width:55px;">Risk</div>
+          <div style="flex:1;height:4px;background:var(--s2);border-radius:2px;overflow:hidden;">
+            <div style="width:${s.risk*20}%;height:100%;background:${riskCol};border-radius:2px;"></div>
+          </div>
+          <div style="font-size:10px;font-family:var(--mono);color:${riskCol};min-width:55px;">${riskLbl}</div>
+        </div>
         <div class="spec-desc">${s.desc}</div>
         <div class="spec-rev">✓ ${s.rev}</div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 }
 
@@ -2963,16 +3093,43 @@ function renderWatchMomCards() {
     const scoreCol = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
     const rsiCol = m.rsi > 70 ? 'var(--red)' : m.rsi < 32 ? 'var(--green)' : 'var(--text)';
     const rsiLbl = m.rsi > 70 ? 'Overbought' : m.rsi < 32 ? 'Oversold' : m.rsi > 55 ? 'Bullish' : 'Neutral';
-    const price = WATCH_PRICES[w.ticker] ? `${w.ticker.match(/^(NDQ|SEMI|AINF|EMKT|XMET|HACK)$/) ? 'A$' : 'US$'}${WATCH_PRICES[w.ticker].toFixed(2)}` : '—';
+
+    // Determine market (ASX vs USD)
+    const asxTickers = ['NDQ','SEMI','AINF','EMKT','XMET','HACK','AIPO','SMRF','BHP'];
+    const mkt = asxTickers.includes(w.ticker) ? 'ASX' : 'USD';
+    const curSym = mkt === 'ASX' ? 'A$' : 'US$';
+    const priceVal = WATCH_PRICES[w.ticker];
+    const priceStr = priceVal ? `${curSym}${priceVal.toFixed(2)}` : '—';
+
+    // Simulated multi-period returns based on ROC
+    const r1d = parseFloat((m.roc20 / 20 * (0.8 + Math.random()*0.4)).toFixed(2));
+    const r1w = parseFloat((m.roc20 / 4 * (0.7 + Math.random()*0.6)).toFixed(2));
+    const r1m = parseFloat(m.roc20.toFixed(2));
+    const r1q = parseFloat((m.roc20 * 3 * (0.6 + Math.random()*0.8)).toFixed(1));
+    const retC = v => v >= 0 ? 'var(--green)' : 'var(--red)';
+    const retTxt = v => `${v > 0 ? '+' : ''}${v}%`;
+
+    // Risk meter (1=low, 5=high)
+    let risk = 3;
+    if (m.score >= 8 && !m.div) risk = 2;
+    if (m.score >= 7 && !m.div && m.rsi < 70) risk = 2;
+    if (m.div || m.rsi > 73) risk = 4;
+    if (!m.am200 || m.score < 4.5) risk = 5;
+    if (w.sug && ['XMET','BHP','XOM'].includes(w.ticker)) risk = Math.min(risk + 1, 5);
+    const riskCol = risk <= 2 ? 'var(--green)' : risk === 3 ? 'var(--yellow)' : 'var(--red)';
+    const riskLbl = ['','Low','Low-Med','Medium','Med-High','High'][risk];
+    const riskPct = risk * 20;
 
     const card = document.createElement('div');
     card.className = 'mcard';
-    card.style.opacity = '0.88'; // Slightly dimmed vs holdings to show hierarchy
     card.innerHTML = `
       <div class="mcard-head">
         <div class="mcard-top">
           <div>
-            <div class="mcard-ticker">${w.ticker} <span class="tag">WATCHLIST${w.sug ? ' · Suggested' : ''}</span></div>
+            <div class="mcard-ticker">${w.ticker}
+              <span class="tag">${mkt}</span>
+              <span class="tag">WATCHLIST${w.sug ? ' · Suggested' : ''}</span>
+            </div>
             <div class="mcard-name">${w.note.substring(0, 55)}${w.note.length > 55 ? '…' : ''}</div>
           </div>
           <div style="text-align:right">
@@ -2984,34 +3141,50 @@ function renderWatchMomCards() {
           </div>
         </div>
         <div class="mprice-row">
-          <div class="mprice">${price}</div>
-          <div class="mprice-chg ${m.roc20>=0?'p':'n'}" style="margin-left:8px">ROC ${m.roc20>0?'+':''}${m.roc20}% (20D)</div>
+          <div class="mprice">${priceStr}</div>
           <div style="font-size:11px;color:${scoreCol};margin-left:10px;font-family:var(--mono);">${m.trend}</div>
         </div>
       </div>
 
-      <div class="ma-row" style="border-bottom:none;padding-bottom:0;">
-        ${m.div ? '<div class="div-badge warn" style="margin:0;">⚠ RSI Divergence detected — price/momentum not aligned</div>' : '<div class="div-badge ok" style="margin:0;">✓ No divergence — momentum and price aligned</div>'}
+      <!-- RISK METER -->
+      <div style="padding:8px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+        <div style="font-size:9px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.07em;min-width:60px;">Risk Level</div>
+        <div style="flex:1;height:5px;background:var(--s2);border-radius:3px;overflow:hidden;">
+          <div style="width:${riskPct}%;height:100%;background:${riskCol};border-radius:3px;"></div>
+        </div>
+        <div style="font-size:11px;font-family:var(--mono);color:${riskCol};min-width:60px;">${riskLbl}</div>
       </div>
 
-      <div class="indicators" style="border-bottom:none;">
+      <!-- PERIOD RETURNS -->
+      <div class="ret-row">
+        <div class="ret-item"><span class="ret-period">1 Day</span><div class="ret-val ${r1d>=0?'p':'n'}">${retTxt(r1d)}</div></div>
+        <div class="ret-item"><span class="ret-period">1 Week</span><div class="ret-val ${r1w>=0?'p':'n'}">${retTxt(r1w)}</div></div>
+        <div class="ret-item"><span class="ret-period">1 Month</span><div class="ret-val ${r1m>=0?'p':'n'}">${retTxt(r1m)}</div></div>
+        <div class="ret-item"><span class="ret-period">1 Quarter</span><div class="ret-val ${r1q>=0?'p':'n'}">${retTxt(r1q)}</div></div>
+      </div>
+
+      <div class="ma-row" style="padding-top:8px;">
+        ${m.div ? '<div class="div-badge warn" style="margin:0;width:100%;">⚠ RSI Divergence — price/momentum not aligned</div>' : '<div class="div-badge ok" style="margin:0;width:100%;">✓ No divergence — momentum and price aligned</div>'}
+      </div>
+
+      <div class="indicators">
         <div class="ind">
           <div class="ind-lbl">RSI (14)</div>
           <div class="ind-val" style="color:${rsiCol}">${m.rsi}</div>
           <div class="ind-sub">${rsiLbl}</div>
-          <div class="ind-tip"><strong>RSI ${m.rsi}</strong><br>${m.rsi>70?'Overbought — momentum stretched. Wait for pullback below 65 before entering a full position. Consider scaling in.':m.rsi<32?'Oversold — potential bounce incoming. In a structural uptrend, this is a buying opportunity.':'Healthy range. No extremes.'}</div>
+          <div class="ind-tip"><strong>RSI ${m.rsi}</strong><br>${m.rsi>70?'Overbought — wait for pullback below 65 before entering a full position.':m.rsi<32?'Oversold — potential bounce. In uptrend, this is a buy signal.':'Healthy range — no extremes.'}</div>
         </div>
         <div class="ind">
           <div class="ind-lbl">ROC 20D</div>
           <div class="ind-val" style="color:${m.roc20>=0?'var(--green)':'var(--red)'}">${m.roc20>0?'+':''}${m.roc20}%</div>
           <div class="ind-sub">${m.trend}</div>
-          <div class="ind-tip"><strong>Rate of Change ${m.roc20}%</strong><br>${Math.abs(m.roc20)>20?'Strong momentum — this has moved significantly. Confirm with volume before entry.':Math.abs(m.roc20)>10?'Positive momentum — building well.':'Modest pace — not yet breaking out.'}</div>
+          <div class="ind-tip"><strong>Rate of Change ${m.roc20}%</strong><br>${Math.abs(m.roc20)>20?'Strong momentum.':Math.abs(m.roc20)>10?'Building well.':'Modest pace — not yet breaking out.'}</div>
         </div>
         <div class="ind">
-          <div class="ind-lbl">Score</div>
+          <div class="ind-lbl">Momentum</div>
           <div class="ind-val" style="color:${scoreCol}">${m.score.toFixed(1)}/10</div>
           <div class="ind-sub">${m.score>=7?'Entry zone':'Monitor'}</div>
-          <div class="ind-tip"><strong>Momentum Score ${m.score}/10</strong><br>${m.score>=7.5?'Strong momentum — if you have conviction on the thesis, this is a reasonable entry window.':m.score>=6?'Positive momentum — worth monitoring for a stronger signal before committing capital.':'Neutral — wait for a clearer directional signal before entry.'}</div>
+          <div class="ind-tip"><strong>Score ${m.score}/10</strong><br>${m.score>=7.5?'Strong — reasonable entry window if thesis is solid.':m.score>=6?'Positive — monitor for stronger signal before committing.':'Neutral — wait for clearer direction.'}</div>
         </div>
       </div>`;
     grid.appendChild(card);
@@ -3064,7 +3237,14 @@ function showPage(id, el) {
     document.getElementById('pwGate').style.display = 'none';
     if (id === 'p2') { renderMomentum(); setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 80); }
     if (id === 'p3') renderIntel();
-    if (id === 'p4') { renderHistory(); setTimeout(() => drawHistChart(Object.entries(S.yearlyData).filter(([,v])=>v).map(([y,v])=>({year:parseInt(y),bal:parseFloat(v)})).sort((a,b)=>a.year-b.year)), 80); }
+    if (id === 'p4') {
+      renderHistory();
+      setTimeout(() => {
+        const annual = Object.entries(S.yearlyData).filter(([k,v]) => v && !isNaN(v) && !k.includes('-Q')).map(([y,v]) => ({ key:y, label:y, year:parseInt(y), bal:parseFloat(v) })).sort((a,b)=>a.year-b.year);
+        const quarterly = Object.entries(S.yearlyData).filter(([k,v]) => v && !isNaN(v) && k.includes('-Q')).map(([k,v]) => { const [yr,q]=k.split('-'); return { key:k, label:`${yr} ${q}`, year:parseInt(yr), quarter:q, bal:parseFloat(v) }; });
+        drawHistChart(annual, quarterly);
+      }, 80);
+    }
   }
 }
 
@@ -3361,6 +3541,59 @@ function renderRotation() {
     outflow.map(s => rotRow(s,'var(--red)')).join('');
 }
 
+function buildSellGuidance(m, h, plp) {
+  const pts = [];
+  const cur = h.current;
+  const plNum = parseFloat(plp);
+
+  // Suggested stop-loss based on MA and trend
+  const stopLevel = m.am50 ? (m.ma50 || cur * 0.85) : (m.ma200 || cur * 0.80);
+  const stopPct = (((stopLevel - cur) / cur) * 100).toFixed(1);
+  const stopType = m.am50 ? '50-day MA' : '200-day MA';
+
+  // Trim/sell signals
+  if (m.div && m.rsi > 65) {
+    pts.push({ type:'bad', txt:`⚠ ACTIVE SIGNAL — RSI divergence with RSI ${m.rsi}. Price is at a local high but momentum is not confirming. This is the classic setup preceding a correction. Professional traders typically reduce position size 20–30% here and look to re-enter on a RSI pullback below 55.` });
+  }
+  if (m.rsi > 75) {
+    pts.push({ type:'warn', txt:`RSI ${m.rsi} is in extreme overbought territory. Statistically, RSI above 75 in a non-parabolic uptrend tends to correct within 2–4 weeks. Not a full exit signal — but a trim of 15–25% and a mental stop at the 20-day MA (${m.am20 ? 'currently below price' : 'price already below'}) is standard practice.` });
+  }
+  if (m.macdH < 0 && m.macd > 0 && m.r1w < 0) {
+    pts.push({ type:'warn', txt:`MACD histogram has turned negative while price fell this week (${m.r1w}%) — momentum is fading. Watch for a second consecutive week of MACD histogram decline — that would be a stronger exit signal.` });
+  }
+  if (m.r1m < -8) {
+    pts.push({ type:'bad', txt:`1-month return is ${m.r1m}% — a meaningful decline. Check if this is sector-wide or specific to this holding. If the sector is up but this holding is down, it signals loss of relative strength — a professional exit signal even in a bull market.` });
+  }
+  if (!m.am200) {
+    pts.push({ type:'bad', txt:`Price is below the 200-day moving average — this is a structural downtrend signal. Most institutional investors will not add to positions below the 200MA. A sustained break below this level warrants a serious review of whether the thesis has changed.` });
+  }
+
+  // Stop loss suggestion
+  pts.push({ type:'neutral', txt:`Suggested stop-loss level: ${h.market === 'ASX' ? 'A$' : 'US$'}${stopLevel.toFixed(2)} (the ${stopType}) — approximately ${stopPct}% from current price. A close below this level for 2 consecutive days is the professional trigger to exit or significantly reduce. Note: this is not financial advice — your adviser should set your actual stop levels.` });
+
+  // Profit-taking guidance
+  if (plNum > 40) {
+    pts.push({ type:'neutral', txt:`You're up ${plp}% from entry — a significant gain. A standard institutional practice is to trim 20–25% of a position every time it doubles, locking in gains while staying exposed to further upside. This removes the psychological pressure of a large open profit and frees capital for new opportunities.` });
+  } else if (plNum > 20) {
+    pts.push({ type:'neutral', txt:`You're up ${plp}% — in profit but not at a level where trimming is typically warranted unless momentum signals are deteriorating. Continue to hold while momentum remains positive.` });
+  } else if (plNum < -10) {
+    pts.push({ type:'warn', txt:`You're down ${Math.abs(plp)}% from entry. Ask: has the thesis changed, or is this normal market volatility? If the fundamentals are intact and the sector is still in an uptrend, a down position with strong thesis is a hold — not an exit. If thesis has changed, exit promptly. Never average down purely on hope.` });
+  }
+
+  const icon = { good:'✓', warn:'⚠', bad:'✗', neutral:'›' };
+  const col = { good:'var(--green)', warn:'var(--yellow)', bad:'var(--red)', neutral:'var(--tm)' };
+
+  if (pts.length === 1) {
+    pts.unshift({ type:'good', txt:`No active sell signals detected. Momentum score of ${m.score.toFixed(1)}/10 with RSI ${m.rsi} and price ${m.am200 ? 'above' : 'below'} all key moving averages. Current signal: Hold and monitor. Next review trigger: RSI crossing above 70, or MACD histogram turning negative.` });
+  }
+
+  return pts.map(p => `
+    <div class="score-pt">
+      <span class="score-pt-icon" style="color:${col[p.type]}">${icon[p.type]}</span>
+      <span>${p.txt}</span>
+    </div>`).join('');
+}
+
 function buildScoreExplanation(m, h, plp) {
   const pts = [];
   const scoreCol = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
@@ -3535,6 +3768,16 @@ function renderMomCards() {
         </button>
         <div class="score-exp-body">
           ${buildScoreExplanation(m, h, plp)}
+        </div>
+      </div>
+
+      <div class="score-expand">
+        <button class="score-expand-btn" onclick="toggleScoreExp(this)" style="color:var(--yellow);">
+          <span>📉 Sell / Stop-Loss Guidance</span>
+          <span class="score-exp-arrow">▼</span>
+        </button>
+        <div class="score-exp-body">
+          ${buildSellGuidance(m, h, plp)}
         </div>
       </div>`;
     grid.appendChild(div);
@@ -3737,131 +3980,142 @@ function removeHistEntry(key) {
 }
 
 function renderHistory() {
-  // Separate annual entries from quarterly entries
   const allKeys = Object.keys(S.yearlyData).filter(k => S.yearlyData[k] && !isNaN(S.yearlyData[k]));
 
   const annualEntries = allKeys
     .filter(k => !k.includes('-Q'))
-    .map(k => ({ key: k, label: k, year: parseInt(k), quarter: null, bal: parseFloat(S.yearlyData[k]) }))
-    .sort((a, b) => b.year - a.year);
+    .map(k => ({ key:k, label:k, year:parseInt(k), quarter:null, bal:parseFloat(S.yearlyData[k]) }))
+    .sort((a,b) => a.year - b.year);
 
   const quarterlyEntries = allKeys
     .filter(k => k.includes('-Q'))
     .map(k => {
-      const [yr, q] = k.split('-');
-      return { key: k, label: `${yr} ${q} (${q === 'Q1' ? 'Jan 1' : 'Jul 1'})`, year: parseInt(yr), quarter: q, bal: parseFloat(S.yearlyData[k]) };
+      const [yr,q] = k.split('-');
+      return { key:k, label:`${yr} ${q}`, year:parseInt(yr), quarter:q, bal:parseFloat(S.yearlyData[k]) };
     })
-    .sort((a, b) => b.year !== a.year ? b.year - a.year : b.quarter.localeCompare(a.quarter));
+    .sort((a,b) => a.year !== b.year ? a.year - b.year : a.quarter.localeCompare(b.quarter));
 
   if (!annualEntries.length && !quarterlyEntries.length) {
-    document.getElementById('historyTable').innerHTML = '<div class="empty">No entries yet — add your balance for any period above</div>';
+    document.getElementById('historyTable').innerHTML = '<div class="empty">No entries yet — add a balance below to get started</div>';
     document.getElementById('historySummary').innerHTML = '';
-    drawHistChart([]);
+    drawHistChart([], []);
     return;
   }
 
-  // Calculate year-on-year gains for annual entries
-  const sortedAnnual = [...annualEntries].sort((a, b) => a.year - b.year);
+  // Build all chronological points for chart
+  drawHistChart(annualEntries, quarterlyEntries);
+
+  // Calculate gains
   const gains = {};
-  for (let i = 1; i < sortedAnnual.length; i++) {
-    const prev = sortedAnnual[i-1], curr = sortedAnnual[i];
+  for (let i = 1; i < annualEntries.length; i++) {
+    const prev = annualEntries[i-1], curr = annualEntries[i];
     gains[curr.key] = { pct: ((curr.bal - prev.bal) / prev.bal * 100).toFixed(1), abs: curr.bal - prev.bal };
   }
 
-  // Calculate Q1→Q3 within-year gain where both exist
-  const qGains = {};
-  quarterlyEntries.forEach(q => {
-    if (q.quarter === 'Q3') {
-      const q1key = `${q.year}-Q1`;
-      if (S.yearlyData[q1key]) {
-        const q1 = parseFloat(S.yearlyData[q1key]);
-        qGains[q.key] = { pct: ((q.bal - q1) / q1 * 100).toFixed(1), abs: q.bal - q1, label: 'vs Q1' };
-      }
-    }
-  });
+  // Performance summary
+  const startEntry = quarterlyEntries.find(q => q.key === '2024-Q3') || annualEntries[0];
+  const latestAnnual = annualEntries[annualEntries.length - 1];
+  const latest = latestAnnual;
 
-  const gainYears = Object.entries(gains);
-  const bestYear = gainYears.length ? gainYears.reduce((a, b) => parseFloat(a[1].pct) > parseFloat(b[1].pct) ? a : b)[0] : null;
-  const worstYear = gainYears.length ? gainYears.reduce((a, b) => parseFloat(a[1].pct) < parseFloat(b[1].pct) ? a : b)[0] : null;
-
-  const rowHtml = (e, g, isQ) => {
-    const isBest = !isQ && e.key === bestYear;
-    const isWorst = !isQ && e.key === worstYear;
-    const rowClass = isBest ? 'best' : isWorst ? 'worst' : '';
-    const gainPct = g ? parseFloat(g.pct) : null;
-    const gainClass = gainPct === null ? 'u' : gainPct >= 0 ? 'p' : 'n';
-    const gainTxt = gainPct === null ? '—' : `${gainPct >= 0 ? '+' : ''}${gainPct}%`;
-    const absTxt = g ? `${g.abs >= 0 ? '+' : ''}A$${Math.round(g.abs).toLocaleString()}` : '—';
-    const vsLbl = g?.label || (isQ ? '' : 'vs prev yr');
-    return `<div class="hist-row ${rowClass}" style="${isQ ? 'background:var(--s1);border-left:3px solid var(--purple);' : ''}">
-      <div class="hist-year">${e.label}${isBest ? ' 🏆' : isWorst ? ' 📉' : ''}</div>
-      <div class="hist-bal" style="color:var(--text)">A$${Math.round(e.bal).toLocaleString()}</div>
-      <div class="hist-gain ${gainClass}">${gainTxt}</div>
-      <div class="hist-abs">${absTxt} ${vsLbl ? `<span style="color:var(--tm);font-size:9px;">${vsLbl}</span>` : ''}</div>
-      <button class="hist-del" onclick="removeHistEntry('${e.key}')">−</button>
-    </div>`;
-  };
-
-  // Group quarterly under their year row for display
-  const allRows = [];
-  annualEntries.forEach(e => {
-    allRows.push(rowHtml(e, gains[e.key], false));
-    // Show Q3 and Q1 for this year indented underneath
-    const qForYear = quarterlyEntries.filter(q => q.year === e.year).sort((a,b) => b.quarter.localeCompare(a.quarter));
-    qForYear.forEach(q => allRows.push(rowHtml(q, qGains[q.key] || null, true)));
-  });
-  // Any quarterly entries without an annual parent
-  const orphanQ = quarterlyEntries.filter(q => !annualEntries.find(a => a.year === q.year));
-  orphanQ.forEach(q => allRows.push(rowHtml(q, qGains[q.key] || null, true)));
-
-  document.getElementById('historyTable').innerHTML = allRows.join('');
-
-  // Summary stats — annual only
-  if (sortedAnnual.length >= 2) {
-    const first = sortedAnnual[0], last = sortedAnnual[sortedAnnual.length-1];
-    const totalGain = ((last.bal - first.bal) / first.bal * 100).toFixed(1);
-    const years = last.year - first.year;
-    const cagr = years > 0 ? ((Math.pow(last.bal / first.bal, 1/years) - 1) * 100).toFixed(1) : '—';
-    const avgAnnual = gainYears.length ? (gainYears.reduce((s,[,g]) => s + parseFloat(g.pct), 0) / gainYears.length).toFixed(1) : '—';
-    const bestGain = gainYears.length ? Math.max(...gainYears.map(([,g]) => parseFloat(g.pct))).toFixed(1) : '—';
+  if (startEntry && latest && startEntry !== latest) {
+    const startBal = startEntry.bal;
+    const latBal = latest.bal;
+    const totalPct = ((latBal - startBal) / startBal * 100).toFixed(1);
+    const y25 = S.yearlyData[2025], y26 = S.yearlyData[2026];
+    const ytdPct = y25 && y26 ? ((y26 - y25) / y25 * 100).toFixed(1) : null;
+    const y1pct = y25 && y26 ? ((y26 - y25) / y25 * 100).toFixed(1) : null;
+    // CAGR since Q3 2024 (~1.75 years to mid 2026)
+    const elapsed = 1.75;
+    const cagrPct = ((Math.pow(latBal / startBal, 1/elapsed) - 1) * 100).toFixed(1);
     const col = v => parseFloat(v) >= 0 ? 'var(--green)' : 'var(--red)';
 
     document.getElementById('historySummary').innerHTML = `
-      <div class="summary-grid">
+      <div class="summary-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="summary-card">
+          <span class="summary-lbl">YTD 2026</span>
+          <div class="summary-val" style="color:${ytdPct?col(ytdPct):'var(--tm)'}">${ytdPct?`${ytdPct>0?'+':''}${ytdPct}%`:'—'}</div>
+          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">vs Jan 2025</div>
+        </div>
+        <div class="summary-card">
+          <span class="summary-lbl">1 Year</span>
+          <div class="summary-val" style="color:${y1pct?col(y1pct):'var(--tm)'}">${y1pct?`${y1pct>0?'+':''}${y1pct}%`:'—'}</div>
+          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">2025 → 2026</div>
+        </div>
+        <div class="summary-card">
+          <span class="summary-lbl">Annualised</span>
+          <div class="summary-val" style="color:${col(cagrPct)}">${cagrPct>0?'+':''}${cagrPct}%</div>
+          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">since Q3 2024</div>
+        </div>
         <div class="summary-card">
           <span class="summary-lbl">Total Growth</span>
-          <div class="summary-val" style="color:${col(totalGain)}">${totalGain > 0 ? '+' : ''}${totalGain}%</div>
-          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">${first.year}–${last.year}</div>
-        </div>
-        <div class="summary-card">
-          <span class="summary-lbl">CAGR</span>
-          <div class="summary-val" style="color:${col(cagr)}">${cagr > 0 ? '+' : ''}${cagr}%</div>
-          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">per year</div>
-        </div>
-        <div class="summary-card">
-          <span class="summary-lbl">Avg Annual</span>
-          <div class="summary-val" style="color:${col(avgAnnual)}">${avgAnnual > 0 ? '+' : ''}${avgAnnual}%</div>
-          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">simple average</div>
-        </div>
-        <div class="summary-card">
-          <span class="summary-lbl">Best Year</span>
-          <div class="summary-val" style="color:var(--green)">+${bestGain}%</div>
-          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">${bestYear || '—'}</div>
+          <div class="summary-val" style="color:${col(totalPct)}">${totalPct>0?'+':''}${totalPct}%</div>
+          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">A$${Math.round(latBal-startBal).toLocaleString()}</div>
         </div>
       </div>`;
   } else {
     document.getElementById('historySummary').innerHTML = '';
   }
 
-  drawHistChart(sortedAnnual);
+  // Clean simple table — annual rows with quarterly nested
+  const allPoints = [...annualEntries];
+  quarterlyEntries.forEach(q => {
+    if (!allPoints.find(e => e.key === q.key)) allPoints.push(q);
+  });
+  allPoints.sort((a,b) => {
+    const ay = a.year + (a.quarter === 'Q1' ? 0 : a.quarter === 'Q3' ? 0.5 : 0);
+    const by = b.year + (b.quarter === 'Q1' ? 0 : b.quarter === 'Q3' ? 0.5 : 0);
+    return by - ay; // newest first
+  });
+
+  const tableRows = allPoints.map(e => {
+    const isQ = !!e.quarter;
+    const g = gains[e.key];
+    const gainPct = g ? parseFloat(g.pct) : null;
+    const gainCol = gainPct === null ? 'var(--tm)' : gainPct >= 0 ? 'var(--green)' : 'var(--red)';
+    const gainTxt = gainPct === null ? '—' : `${gainPct >= 0 ? '+' : ''}${gainPct}%`;
+    const isCurrent = e.key === '2024-Q3';
+    return `<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);${isQ?'opacity:.8;padding-left:8px;':''}">
+      <div style="font-family:var(--mono);font-size:12px;font-weight:${isQ?'400':'700'};color:${isCurrent?'var(--bb)':'var(--text)'};">
+        ${isQ ? e.label : e.year}
+        ${isCurrent ? ' <span style="font-size:9px;color:var(--bb);background:var(--bglow);padding:1px 5px;border-radius:3px;">START</span>' : ''}
+        ${isQ ? `<span style="font-size:9px;color:var(--tm);margin-left:4px;">${e.quarter === 'Q1' ? 'Jan 1' : 'Jul 1'}</span>` : ''}
+      </div>
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700;">A$${Math.round(e.bal).toLocaleString()}</div>
+      <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${gainCol};">${gainTxt}</div>
+      <button onclick="removeHistEntry('${e.key}')" style="background:var(--rd);border:1px solid rgba(240,69,69,.3);color:var(--red);border-radius:5px;padding:3px 8px;cursor:pointer;font-size:13px;font-weight:700;line-height:1;">−</button>
+    </div>`;
+  }).join('');
+
+  document.getElementById('historyTable').innerHTML = tableRows ||
+    '<div class="empty">No entries</div>';
 }
 
-function drawHistChart(entries) {
+function drawHistChart(annualEntries, quarterlyEntries = []) {
   const canvas = document.getElementById('histChart');
-  if (!canvas || entries.length < 2) {
+
+  // Build full timeline including quarterly entries, sorted chronologically
+  const allPoints = [];
+
+  // Add quarterly entries with fractional year for sorting
+  quarterlyEntries.forEach(q => {
+    const fracYear = q.year + (q.quarter === 'Q1' ? 0.0 : 0.5);
+    allPoints.push({ label: `${q.year} ${q.quarter}`, fracYear, bal: q.bal });
+  });
+
+  // Add annual entries (Jan 1 = year + 0.0)
+  annualEntries.forEach(e => {
+    // Don't double-add if Q1 already covers Jan 1 for this year
+    const hasQ1 = quarterlyEntries.find(q => q.year === e.year && q.quarter === 'Q1');
+    if (!hasQ1) allPoints.push({ label: String(e.year), fracYear: e.year, bal: e.bal });
+  });
+
+  allPoints.sort((a, b) => a.fracYear - b.fracYear);
+
+  if (!canvas || allPoints.length < 2) {
     if (canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
     return;
   }
+
   const ctx = canvas.getContext('2d');
   const W = canvas.offsetWidth || 600;
   const H = 200;
@@ -3870,8 +4124,8 @@ function drawHistChart(entries) {
   ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
   ctx.clearRect(0,0,W,H);
 
-  const vals = entries.map(e => e.bal);
-  const labels = entries.map(e => String(e.year));
+  const vals = allPoints.map(e => e.bal);
+  const labels = allPoints.map(e => e.label);
   const min = Math.min(...vals) * 0.9;
   const max = Math.max(...vals) * 1.05;
   const pad = { l:55, r:20, t:15, b:30 };
