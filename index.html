@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Pat's Portfolio — v1.4</title>
+<title>Pat's Portfolio — v1.5</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -1175,6 +1175,26 @@ canvas.spark { width: 100%; height: 68px; display: block; }
   .year-grid { grid-template-columns: repeat(3, 1fr); }
   .indicators { grid-template-columns: 1fr 1fr; }
   .ret-row { grid-template-columns: 1fr 1fr; }
+/* ── HISTORY TAB ── */
+.hist-row { display:grid; grid-template-columns:80px 1fr 1fr 1fr auto; gap:10px; align-items:center; padding:11px 14px; background:var(--s0); border:1px solid var(--border); border-radius:8px; margin-bottom:7px; transition:border-color .2s; }
+.hist-row:hover { border-color:var(--bb2); }
+.hist-row.best { border-left:3px solid var(--green); }
+.hist-row.worst { border-left:3px solid var(--red); }
+.hist-year { font-family:var(--mono); font-size:14px; font-weight:700; color:var(--text); }
+.hist-bal { font-family:var(--mono); font-size:14px; font-weight:700; }
+.hist-gain { font-family:var(--mono); font-size:13px; font-weight:700; }
+.hist-gain.p { color:var(--green); } .hist-gain.n { color:var(--red); } .hist-gain.u { color:var(--tm); }
+.hist-abs { font-family:var(--mono); font-size:11px; color:var(--td); }
+.hist-del { background:var(--rd); border:1px solid rgba(240,69,69,.3); color:var(--red); border-radius:5px; padding:3px 9px; cursor:pointer; font-size:14px; font-weight:700; line-height:1; }
+.hist-del:hover { background:var(--red); color:#fff; }
+.summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; }
+.summary-card { background:var(--s0); border:1px solid var(--border); border-radius:10px; padding:14px; text-align:center; }
+.summary-lbl { font-size:9px; font-family:var(--mono); color:var(--tm); text-transform:uppercase; letter-spacing:.08em; display:block; margin-bottom:5px; }
+.summary-val { font-family:var(--mono); font-size:18px; font-weight:700; }
+@media(max-width:600px) {
+  .hist-row { grid-template-columns:60px 1fr 1fr auto; }
+  .hist-abs { display:none; }
+  .summary-grid { grid-template-columns:1fr 1fr; }
 }
 </style>
 </head>
@@ -1182,11 +1202,12 @@ canvas.spark { width: 100%; height: 68px; display: block; }
 
 <!-- NAV -->
 <div class="nav">
-  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v1.4</span></div>
+  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v1.5</span></div>
   <div class="nav-tabs">
-    <div class="nav-tab on" onclick="showPage('p1',this)">📱 Input</div>
-    <div class="nav-tab" onclick="showPage('p2',this)">📊 Momentum</div>
+    <div class="nav-tab" onclick="showPage('p1',this)">📱 Input</div>
+    <div class="nav-tab on" onclick="showPage('p2',this)">📊 Momentum</div>
     <div class="nav-tab" onclick="showPage('p3',this)">🧠 Intel</div>
+    <div class="nav-tab" onclick="showPage('p4',this)">📈 History</div>
   </div>
   <div class="nav-right">
     <button class="tbtn" onclick="toggleTheme()" id="themeBtn">☀</button>
@@ -1557,6 +1578,53 @@ canvas.spark { width: 100%; height: 68px; display: block; }
 
 </div>
 </div><!-- /p3 -->
+
+<!-- ═══════════════════════════════════════════
+     PAGE 4 — BALANCE HISTORY
+════════════════════════════════════════════ -->
+<div id="p4" class="page-wrap">
+<div class="main" style="max-width:700px;">
+
+  <div class="sh"><div class="st">SMSF Balance History</div></div>
+
+  <div style="font-size:12px;color:var(--td);margin-bottom:18px;line-height:1.6;background:var(--s0);border:1px solid var(--border);border-radius:8px;padding:12px 14px;">
+    Enter your SMSF balance at the start of each year (January 1). The dashboard will calculate your annual return, total growth, and CAGR automatically.
+  </div>
+
+  <!-- ENTRY TABLE -->
+  <div id="historyTable"></div>
+
+  <!-- ADD ENTRY -->
+  <div style="background:var(--s0);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:10px;">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Add / Update Entry</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end;">
+      <div>
+        <label style="font-size:10px;font-family:var(--mono);color:var(--tm);display:block;margin-bottom:4px;text-transform:uppercase;">Year</label>
+        <select id="histYear" style="width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);padding:9px 11px;border-radius:6px;font-size:13px;font-family:var(--sans);outline:none;">
+          <option>2026</option><option>2025</option><option>2024</option>
+          <option>2023</option><option>2022</option><option>2021</option>
+          <option>2020</option><option>2019</option><option>2018</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:10px;font-family:var(--mono);color:var(--tm);display:block;margin-bottom:4px;text-transform:uppercase;">Balance (AUD)</label>
+        <input id="histBalance" type="text" placeholder="e.g. 182,000" style="width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);padding:9px 11px;border-radius:6px;font-size:13px;font-family:var(--sans);outline:none;" onkeydown="if(event.key==='Enter')addHistEntry()" />
+      </div>
+      <button onclick="addHistEntry()" style="background:var(--blue);border:none;color:#fff;padding:10px 18px;border-radius:6px;font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;white-space:nowrap;">Add</button>
+    </div>
+  </div>
+
+  <!-- SUMMARY STATS -->
+  <div id="historySummary" style="margin-top:14px;"></div>
+
+  <!-- CHART -->
+  <div style="background:var(--s0);border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:14px;">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Balance Over Time</div>
+    <canvas id="histChart" height="200" style="width:100%;display:block;"></canvas>
+  </div>
+
+</div>
+</div><!-- /p4 -->
 
 <!-- KEY PANEL (floating) -->
 <div class="key-panel" id="keyPanel">
@@ -2633,32 +2701,25 @@ function renderWatchMomCards() {
 // ─────────────────────────────────────────────
 // PASSWORD GATE — Tab 1 only, Tabs 2 & 3 public
 // ─────────────────────────────────────────────
+// PASSWORD — Tab 1 only, in-memory flag
+// ─────────────────────────────────────────────
+let authenticated = false;
+
 function hashPW(s) {
   let h = 0;
   for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
   return Math.abs(h).toString();
 }
-
-// Pre-hashed value of 987868
 const PW_HASH = hashPW('987868');
 
 function checkPW() {
   const val = document.getElementById('pwInput').value;
   if (hashPW(val) === PW_HASH) {
-    sessionStorage.setItem('pp_auth', '1');
+    authenticated = true;
     document.getElementById('pwGate').style.display = 'none';
-    // Load full data if not already loaded
-    const saved = localStorage.getItem('pats_v1');
-    if (saved) { try { Object.assign(S, JSON.parse(saved)); } catch(e) {} }
-    if (!S.logs.length) S.logs = JSON.parse(JSON.stringify(DEF_LOGS));
-    S.holdings.forEach(h => {
-      if (!S.priceHistory[h.ticker] || S.priceHistory[h.ticker].length < 10) {
-        S.priceHistory[h.ticker] = seedHistory(h);
-      }
-    });
+    try { const saved = localStorage.getItem('pats_v1'); if (saved) Object.assign(S, JSON.parse(saved)); } catch(e) {}
     render();
-    renderMomentum();
-    // Switch to Tab 1
+    // Go to Tab 1
     document.querySelectorAll('.page-wrap').forEach(p => p.classList.remove('on'));
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('on'));
     document.getElementById('p1').classList.add('on');
@@ -2673,27 +2734,25 @@ function checkPW() {
 }
 
 // ─────────────────────────────────────────────
+// PAGE NAVIGATION
+// ─────────────────────────────────────────────
 function showPage(id, el) {
   document.querySelectorAll('.page-wrap').forEach(p => p.classList.remove('on'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('on'));
   document.getElementById(id).classList.add('on');
   if (el) el.classList.add('on');
-
   if (id === 'p1') {
-    if (sessionStorage.getItem('pp_auth') !== '1') {
+    if (!authenticated) {
       document.getElementById('pwGate').style.display = 'flex';
       setTimeout(() => document.getElementById('pwInput')?.focus(), 100);
     } else {
       document.getElementById('pwGate').style.display = 'none';
     }
   } else {
-    // Always hide gate when on other tabs — nav stays fully clickable
     document.getElementById('pwGate').style.display = 'none';
-    if (id === 'p2') {
-      renderMomentum();
-      setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 80);
-    }
+    if (id === 'p2') { renderMomentum(); setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 80); }
     if (id === 'p3') renderIntel();
+    if (id === 'p4') { renderHistory(); setTimeout(() => drawHistChart(Object.entries(S.yearlyData).filter(([,v])=>v).map(([y,v])=>({year:parseInt(y),bal:parseFloat(v)})).sort((a,b)=>a.year-b.year)), 80); }
   }
 }
 
@@ -3137,35 +3196,212 @@ document.querySelectorAll('.overlay').forEach(el => {
   });
 });
 
-// Always require password on fresh open
-sessionStorage.removeItem('pp_auth');
+// ─────────────────────────────────────────────
+// HISTORY TAB
+// ─────────────────────────────────────────────
+function addHistEntry() {
+  const year = parseInt(document.getElementById('histYear').value);
+  const raw = document.getElementById('histBalance').value.replace(/[$,\s]/g,'');
+  const bal = parseFloat(raw);
+  if (!year || isNaN(bal) || bal <= 0) return;
+  S.yearlyData[year] = bal;
+  document.getElementById('histBalance').value = '';
+  save();
+  renderHistory();
+}
+
+function removeHistEntry(year) {
+  delete S.yearlyData[year];
+  save();
+  renderHistory();
+}
+
+function renderHistory() {
+  // Sort entries newest first
+  const entries = Object.entries(S.yearlyData)
+    .filter(([,v]) => v && !isNaN(v))
+    .map(([y,v]) => ({ year: parseInt(y), bal: parseFloat(v) }))
+    .sort((a,b) => b.year - a.year);
+
+  if (!entries.length) {
+    document.getElementById('historyTable').innerHTML = '<div class="empty">No entries yet — add your January 1 balance for each year above</div>';
+    document.getElementById('historySummary').innerHTML = '';
+    drawHistChart([]);
+    return;
+  }
+
+  // Calculate gains year-over-year
+  const sorted = [...entries].sort((a,b) => a.year - b.year);
+  const gains = {};
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = sorted[i-1], curr = sorted[i];
+    gains[curr.year] = { pct: ((curr.bal - prev.bal) / prev.bal * 100).toFixed(1), abs: curr.bal - prev.bal };
+  }
+
+  // Find best and worst years
+  const gainYears = Object.entries(gains).filter(([,g]) => g.pct !== null);
+  const bestYear = gainYears.length ? gainYears.reduce((a,b) => parseFloat(a[1].pct) > parseFloat(b[1].pct) ? a : b)[0] : null;
+  const worstYear = gainYears.length ? gainYears.reduce((a,b) => parseFloat(a[1].pct) < parseFloat(b[1].pct) ? a : b)[0] : null;
+
+  document.getElementById('historyTable').innerHTML = entries.map(e => {
+    const g = gains[e.year];
+    const isBest = String(e.year) === String(bestYear);
+    const isWorst = String(e.year) === String(worstYear);
+    const rowClass = isBest ? 'best' : isWorst ? 'worst' : '';
+    const gainPct = g ? parseFloat(g.pct) : null;
+    const gainClass = gainPct === null ? 'u' : gainPct >= 0 ? 'p' : 'n';
+    const gainTxt = gainPct === null ? '—' : `${gainPct >= 0 ? '+' : ''}${gainPct}%`;
+    const absTxt = g ? `${g.abs >= 0 ? '+' : ''}A$${Math.round(g.abs).toLocaleString()}` : '—';
+    return `<div class="hist-row ${rowClass}">
+      <div class="hist-year">${e.year}${isBest ? ' 🏆' : isWorst ? ' 📉' : ''}</div>
+      <div class="hist-bal">A$${Math.round(e.bal).toLocaleString()}</div>
+      <div class="hist-gain ${gainClass}">${gainTxt}</div>
+      <div class="hist-abs">${absTxt}</div>
+      <button class="hist-del" onclick="removeHistEntry(${e.year})">−</button>
+    </div>`;
+  }).join('');
+
+  // Summary stats
+  if (sorted.length >= 2) {
+    const first = sorted[0], last = sorted[sorted.length-1];
+    const totalGain = ((last.bal - first.bal) / first.bal * 100).toFixed(1);
+    const years = last.year - first.year;
+    const cagr = years > 0 ? ((Math.pow(last.bal / first.bal, 1/years) - 1) * 100).toFixed(1) : '—';
+    const avgAnnual = gainYears.length ? (gainYears.reduce((s,[,g]) => s + parseFloat(g.pct), 0) / gainYears.length).toFixed(1) : '—';
+    const bestGain = gainYears.length ? Math.max(...gainYears.map(([,g]) => parseFloat(g.pct))).toFixed(1) : '—';
+    const col = v => parseFloat(v) >= 0 ? 'var(--green)' : 'var(--red)';
+
+    document.getElementById('historySummary').innerHTML = `
+      <div class="summary-grid">
+        <div class="summary-card">
+          <span class="summary-lbl">Total Growth</span>
+          <div class="summary-val" style="color:${col(totalGain)}">${totalGain > 0 ? '+' : ''}${totalGain}%</div>
+          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">${first.year}–${last.year}</div>
+        </div>
+        <div class="summary-card">
+          <span class="summary-lbl">CAGR</span>
+          <div class="summary-val" style="color:${col(cagr)}">${cagr > 0 ? '+' : ''}${cagr}%</div>
+          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">per year</div>
+        </div>
+        <div class="summary-card">
+          <span class="summary-lbl">Avg Annual Return</span>
+          <div class="summary-val" style="color:${col(avgAnnual)}">${avgAnnual > 0 ? '+' : ''}${avgAnnual}%</div>
+          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">simple average</div>
+        </div>
+        <div class="summary-card">
+          <span class="summary-lbl">Best Year</span>
+          <div class="summary-val" style="color:var(--green)">+${bestGain}%</div>
+          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">${bestYear}</div>
+        </div>
+      </div>`;
+  } else {
+    document.getElementById('historySummary').innerHTML = '';
+  }
+
+  drawHistChart(sorted);
+}
+
+function drawHistChart(entries) {
+  const canvas = document.getElementById('histChart');
+  if (!canvas || entries.length < 2) {
+    if (canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
+    return;
+  }
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 600;
+  const H = 200;
+  canvas.width = W * window.devicePixelRatio;
+  canvas.height = H * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  ctx.clearRect(0,0,W,H);
+
+  const vals = entries.map(e => e.bal);
+  const labels = entries.map(e => String(e.year));
+  const min = Math.min(...vals) * 0.9;
+  const max = Math.max(...vals) * 1.05;
+  const pad = { l:55, r:20, t:15, b:30 };
+  const cW = W - pad.l - pad.r;
+  const cH = H - pad.t - pad.b;
+  const xStep = cW / (vals.length - 1);
+  const yScale = v => pad.t + cH - ((v - min) / (max - min)) * cH;
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(72,168,255,0.08)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (cH / 4) * i;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    const val = max - ((max - min) / 4) * i;
+    ctx.fillStyle = 'rgba(90,122,170,0.8)';
+    ctx.font = `${9 * window.devicePixelRatio / window.devicePixelRatio}px monospace`;
+    ctx.textAlign = 'right';
+    ctx.fillText('A$' + Math.round(val/1000) + 'k', pad.l - 5, y + 3);
+  }
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + cH);
+  grad.addColorStop(0, 'rgba(72,168,255,0.25)');
+  grad.addColorStop(1, 'rgba(72,168,255,0)');
+  ctx.beginPath();
+  ctx.moveTo(pad.l, pad.t + cH);
+  vals.forEach((v,i) => ctx.lineTo(pad.l + i * xStep, yScale(v)));
+  ctx.lineTo(pad.l + (vals.length-1) * xStep, pad.t + cH);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  vals.forEach((v,i) => { const x = pad.l + i*xStep, y = yScale(v); i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y); });
+  ctx.strokeStyle = '#48a8ff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Dots + labels
+  vals.forEach((v,i) => {
+    const x = pad.l + i*xStep, y = yScale(v);
+    ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle = '#48a8ff'; ctx.fill();
+    ctx.strokeStyle = 'var(--bg)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(90,122,170,0.9)';
+    ctx.font = `9px monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(labels[i], x, H - pad.b + 14);
+  });
+}
 
 // ─────────────────────────────────────────────
-// AUTH-AWARE STARTUP
+// STARTUP
 // ─────────────────────────────────────────────
-if (sessionStorage.getItem('pp_auth') === '1') {
-  // Already authenticated — hide gate, load full data
-  document.getElementById('pwGate').style.display = 'none';
-  init();
-} else {
-  // Not authenticated — seed defaults for public tabs, show gate on Tab 1
-  S.holdings = JSON.parse(JSON.stringify(DEF_HOLDINGS));
-  S.watchlist = JSON.parse(JSON.stringify(DEF_WATCHLIST));
-  S.yearlyData = { 2025: 150000, 2026: 179000 };
-  S.holdings.forEach(h => {
-    if (!S.priceHistory[h.ticker] || S.priceHistory[h.ticker].length < 10) {
-      S.priceHistory[h.ticker] = seedHistory(h);
-    }
-  });
-  // Default to Momentum tab on first open
-  document.getElementById('p1').classList.remove('on');
-  document.getElementById('p2').classList.add('on');
-  document.querySelectorAll('.nav-tab')[0].classList.remove('on');
-  document.querySelectorAll('.nav-tab')[1].classList.add('on');
-  // Show gate inside Tab 1 (visible when they click Input)
-  document.getElementById('pwGate').style.display = 'flex';
-  renderMomentum();
-  setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 100);
-}
+// Seed default data for public tabs (Momentum + Intel)
+S.holdings = JSON.parse(JSON.stringify(DEF_HOLDINGS));
+S.watchlist = JSON.parse(JSON.stringify(DEF_WATCHLIST));
+S.logs = JSON.parse(JSON.stringify(DEF_LOGS));
+S.yearlyData = { 2025: 150000, 2026: 179000 };
+
+// Load saved data from localStorage if it exists
+try {
+  const saved = localStorage.getItem('pats_v1');
+  if (saved) Object.assign(S, JSON.parse(saved));
+} catch(e) {}
+
+// Seed price history for all holdings
+S.holdings.forEach(h => {
+  if (!S.priceHistory[h.ticker] || S.priceHistory[h.ticker].length < 10) {
+    S.priceHistory[h.ticker] = seedHistory(h);
+  }
+});
+
+// Always start on Momentum tab — freely accessible, no password
+document.getElementById('p1').classList.remove('on');
+document.getElementById('p2').classList.add('on');
+document.querySelectorAll('.nav-tab')[0].classList.remove('on');
+document.querySelectorAll('.nav-tab')[1].classList.add('on');
+document.getElementById('pwGate').style.display = 'none';
+
+// Render public tabs
+renderMomentum();
+setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 100);
+</script>
 </body>
 </html>
