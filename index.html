@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Pat's Portfolio — v1.5</title>
+<title>Pat's Portfolio — v2.0</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -743,12 +743,72 @@ body {
   margin-bottom: 16px;
 }
 .i-section {
-  background: var(--s0);
-  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 14px;
+  border: 1px solid var(--border);
 }
+/* Alternating section backgrounds — Intel page */
+#p3 .i-section:nth-child(1)  { background: #0a1a2e; border-left: 3px solid var(--bb); }
+#p3 .i-section:nth-child(2)  { background: #0d1f2a; border-left: 3px solid var(--green); }
+#p3 .i-section:nth-child(3)  { background: #0a1a2e; border-left: 3px solid var(--yellow); }
+#p3 .i-section:nth-child(4)  { background: #0d1f2a; border-left: 3px solid var(--red); }
+#p3 .i-section:nth-child(5)  { background: #0a1a2e; border-left: 3px solid var(--purple); }
+#p3 .i-section:nth-child(6)  { background: #0d1f2a; border-left: 3px solid var(--green); }
+/* Momentum tab section backgrounds */
+#p2 .rot-panel:nth-child(1)  { border-left: 3px solid var(--green); }
+#p2 .rot-panel:nth-child(2)  { border-left: 3px solid var(--red); }
+/* Section dividers on momentum */
+.mom-section-header {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--tm);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin: 20px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mom-section-header::before {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 13px;
+  border-radius: 2px;
+}
+.mom-section-header.holdings {
+  background: rgba(72,168,255,0.06);
+  border: 1px solid rgba(72,168,255,0.15);
+  color: var(--bb);
+}
+.mom-section-header.holdings::before { background: var(--bb); }
+.mom-section-header.watchlist {
+  background: rgba(245,166,35,0.06);
+  border: 1px solid rgba(245,166,35,0.15);
+  color: var(--yellow);
+}
+.mom-section-header.watchlist::before { background: var(--yellow); }
+.mom-section-header.market {
+  background: rgba(0,217,166,0.06);
+  border: 1px solid rgba(0,217,166,0.15);
+  color: var(--green);
+}
+.mom-section-header.market::before { background: var(--green); }
+/* Section background strips */
+.mom-section-bg-blue  { background: rgba(72,168,255,0.03); border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid rgba(72,168,255,0.08); }
+.mom-section-bg-gold  { background: rgba(245,166,35,0.03); border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid rgba(245,166,35,0.08); }
+.mom-section-bg-green { background: rgba(0,217,166,0.03); border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid rgba(0,217,166,0.08); }
+/* Input tab section colours */
+#p1 .sh + div, #p1 .sh + .cash-row { }
+.input-section { border-radius: 10px; padding: 14px; margin-bottom: 4px; }
+.input-section.blue  { background: rgba(72,168,255,0.04); border: 1px solid rgba(72,168,255,0.1); }
+.input-section.teal  { background: rgba(0,217,166,0.04); border: 1px solid rgba(0,217,166,0.1); }
+.input-section.gold  { background: rgba(245,166,35,0.04); border: 1px solid rgba(245,166,35,0.1); }
+.input-section.purple { background: rgba(176,110,224,0.04); border: 1px solid rgba(176,110,224,0.1); }
 .i-title {
   font-family: var(--mono);
   font-size: 12px;
@@ -1202,7 +1262,7 @@ canvas.spark { width: 100%; height: 68px; display: block; }
 
 <!-- NAV -->
 <div class="nav">
-  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v1.5</span></div>
+  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v2.0</span></div>
   <div class="nav-tabs">
     <div class="nav-tab" onclick="showPage('p1',this)">📱 Input</div>
     <div class="nav-tab on" onclick="showPage('p2',this)">📊 Momentum</div>
@@ -1373,25 +1433,39 @@ canvas.spark { width: 100%; height: 68px; display: block; }
   <div class="sector-grid" id="sectorGrid"></div>
 
   <!-- ROTATION -->
-  <div class="sh"><div class="st">Capital Rotation — Where Money Is Moving</div></div>
+  <div class="sh">
+    <div class="st">Capital Rotation — Where Money Is Moving</div>
+    <div style="font-size:10px;color:var(--tm);font-family:var(--mono);">Updated: May 14, 2026</div>
+  </div>
   <div class="rotation-row">
     <div class="rot-panel">
-      <div class="rot-title">🟢 Inflows</div>
+      <div class="rot-title">🟢 Inflows &amp; 🟡 Neutral</div>
       <div id="rotIn"></div>
     </div>
     <div class="rot-panel">
-      <div class="rot-title">🔴 Outflows / Cooling</div>
+      <div class="rot-title">🔴 Outflows / Structural Decline</div>
       <div id="rotOut"></div>
     </div>
   </div>
 
   <!-- HOLDING MOMENTUM CARDS -->
-  <div class="sh"><div class="st">Holdings — Full Momentum Analysis</div></div>
-  <div class="mom-grid" id="momGrid"></div>
+  <div class="mom-section-header holdings">📊 Your Holdings — Full Momentum Analysis</div>
+  <div class="mom-section-bg-blue">
+    <div class="mom-grid" id="momGrid"></div>
+  </div>
 
   <!-- WATCHLIST MOMENTUM -->
-  <div class="sh"><div class="st">Watchlist — Momentum Signals</div></div>
-  <div class="mom-grid" id="watchMomGrid"></div>
+  <div class="mom-section-header watchlist">👁 Watchlist — Momentum Signals</div>
+  <div class="mom-section-bg-gold">
+    <div class="mom-grid" id="watchMomGrid"></div>
+  </div>
+
+  <!-- HYPERSCALER CONTEXT -->
+  <div class="mom-section-header market">🌐 Hyperscaler & Market Context</div>
+  <div class="mom-section-bg-green">
+    <div style="font-size:11px;color:var(--td);margin-bottom:12px;font-style:italic;">Key bellwether stocks across your themes — not in your portfolio but drive the sectors you're invested in. Updated on scrape.</div>
+    <div class="mom-grid" id="hyperGrid"></div>
+  </div>
 
   <!-- PASTE BRIEF -->
   <div class="brief-box">
@@ -1447,6 +1521,34 @@ canvas.spark { width: 100%; height: 68px; display: block; }
       </div>
       <div class="p-rel">⚡ Your overlap: DRAM (memory thesis), URNM (nuclear/energy), AINF (infrastructure). Intel is his current high-conviction next multibagger — not in your portfolio. He was in Bloom Energy at ~$258. It's now $1,500+. He identified the power bottleneck 18 months before the market.</div>
       <div class="p-links">📖 Read free: <strong>situational-awareness.ai</strong> (165 pages) · Follow: <strong>@LeopoldAschenbrenner</strong> on X</div>
+    </div>
+
+    <!-- DRUCKENMILLER -->
+    <div class="p-card">
+      <div class="p-head">
+        <div class="p-av" style="background:#2ecc71;">SD</div>
+        <div>
+          <div class="p-name">Stanley Druckenmiller</div>
+          <div class="p-role">Founder — Duquesne Family Office · Former Soros Fund Manager</div>
+          <div class="p-aum">AUM: ~$4.5B · 30-year track record · Never had a losing year · Avg annual return: 30%</div>
+        </div>
+      </div>
+      <div class="p-thesis">"The best investors do not simply ride momentum — they constantly anticipate where momentum will move next. In the AI age, the next wave may well be measured in megawatts, not just megabytes." Druckenmiller made his name managing Soros's Quantum Fund, breaking the Bank of England in 1992. His 13F filings are published quarterly and are worth tracking closely — he moves fast and concentrates heavily when conviction is high.</div>
+      <div class="p-sub">CURRENT PORTFOLIO — Q1 2026 (13F)</div>
+      <div class="chips">
+        <span class="chip hot">NTRA — Natera #1 position (13.2% of fund) — cancer diagnostics</span>
+        <span class="chip hot">GOOGL — Alphabet #2 (+277% increase Q4 2025, now 2.8% of fund)</span>
+        <span class="chip hot">AMZN — Amazon (+69% added Q4, +300,870 shares two consecutive quarters)</span>
+        <span class="chip hot">TSM — TSMC (5.4% of fund — you hold this directly)</span>
+        <span class="chip hot">BE — Bloom Energy (new position May 2026 — AI data centre power)</span>
+        <span class="chip sold">SNDK — SanDisk SOLD (sold after 1 quarter, up 1,540% — took profits)</span>
+        <span class="chip sold">META — Sold all 76,100 shares Q4 2025</span>
+        <span class="chip sold">NVDA — Sold late 2024 (said he sold "too soon" — would return at right valuation)</span>
+        <span class="chip sold">PLTR — Palantir sold early 2025</span>
+        <span class="chip">INSM — Insmed biotech (trimmed 39% but still 6% of fund)</span>
+      </div>
+      <div class="p-rel">⚡ Direct overlap with your portfolio: TSM is his #3 position AND your largest single holding. GOOGL is his top AI conviction buy — you hold it too. His Bloom Energy (BE) buy aligns with Aschenbrenner's #1 position — two of the smartest macro investors now converging on AI power infrastructure. His GOOGL thesis: "historically inexpensive at 14.3x 2027 cash flow — 20% discount to 5-year average." That's your GOOGL position validated by one of the best macro minds alive.</div>
+      <div class="p-links">📋 Track his 13F quarterly at <strong>sec.gov</strong> (search "Duquesne Family Office 13F") · Also: <strong>hedgefollow.com/funds/Duquesne+Family+Office</strong> for real-time updates</div>
     </div>
 
     <!-- DAN IVES -->
@@ -1786,11 +1888,21 @@ const DEF_HOLDINGS = [
 ];
 
 const DEF_WATCHLIST = [
-  { ticker:'COHR', name:'Coherent Corp', signal:'green', note:'Photonics leader — $5.8B revenue, Nvidia $2B, profitable', sug:false },
-  { ticker:'AMZN', name:'Amazon', signal:'green', note:'AWS re-acceleration, 28% analyst upside', sug:false },
-  { ticker:'NDQ', name:'BetaShares Nasdaq 100', signal:'green', note:'AUD Nasdaq anchor — 0.22% fee', sug:true },
-  { ticker:'INTC', name:'Intel', signal:'green', note:'Trump endorsed + Nvidia $5B→$25B + Aschenbrenner calls — triple conviction', sug:true },
-  { ticker:'XMET', name:'BetaShares Transition Metals', signal:'yellow', note:'Copper + lithium + rare earths, AUD, 8.7% off 52wk high', sug:true },
+  // AI / Tech
+  { ticker:'COHR',  name:'Coherent Corp',               signal:'green',  note:'Photonics leader — $5.8B revenue, Nvidia $2B, profitable', sug:false },
+  { ticker:'AMZN',  name:'Amazon',                      signal:'green',  note:'AWS re-acceleration, 28% analyst upside, cheapest mega-cap AI', sug:false },
+  { ticker:'INTC',  name:'Intel',                       signal:'green',  note:'Trump endorsed, Nvidia $5B→$25B+, Aschenbrenner calls — triple conviction', sug:true },
+  { ticker:'MSFT',  name:'Microsoft',                   signal:'green',  note:'Azure +31% YoY, OpenAI exclusive, Copilot monetisation accelerating', sug:true },
+  { ticker:'META',  name:'Meta Platforms',              signal:'green',  note:'AI ad targeting driving margin expansion, Llama open-source strategy', sug:true },
+  { ticker:'PLTR',  name:'Palantir',                    signal:'green',  note:'AIP platform government + enterprise — both Aschenbrenner and Ives bullish', sug:true },
+  { ticker:'NDQ',   name:'BetaShares Nasdaq 100',       signal:'green',  note:'AUD Nasdaq anchor — 0.22% fee, broad US tech exposure', sug:true },
+  // Non-AI momentum plays
+  { ticker:'GLD',   name:'SPDR Gold ETF',               signal:'green',  note:'Gold +21% YTD — geopolitical hedge, USD weakness, central bank buying', sug:true },
+  { ticker:'LMT',   name:'Lockheed Martin',             signal:'green',  note:'Defence spending surge — NATO 2% GDP commitments, F-35 backlog record', sug:true },
+  { ticker:'BHP',   name:'BHP Group',                   signal:'yellow', note:'Copper exposure via world\'s largest miner — AI wiring demand thesis', sug:true },
+  { ticker:'XOM',   name:'ExxonMobil',                  signal:'yellow', note:'AI data centre gas demand, strong free cash flow, 4.2% dividend yield', sug:true },
+  { ticker:'RDDT',  name:'Reddit',                      signal:'green',  note:'AI training data licensing deals, MAU growth +30% YoY', sug:true },
+  { ticker:'XMET',  name:'BetaShares Transition Metals',signal:'yellow', note:'Copper + lithium + rare earths — AUD, 8.7% off 52wk high', sug:true },
 ];
 
 const DEF_LOGS = [
@@ -2114,22 +2226,11 @@ function hRow(h, idx) {
 // Watchlist mock prices — used to generate history and calculate momentum
 // for tickers not in holdings. Realistic current prices as of May 2026.
 const WATCH_PRICES = {
-  COHR:  284.50,
-  AMZN:  268.20,
-  NDQ:   45.80,
-  INTC:  89.40,
-  XMET:  16.93,
-  HACK:  14.20,
-  LITE:  858.00,
-  AIPO:  32.70,
-  SMRF:  18.40,
-  GLW:   58.20,
-  COPX:  90.82,
-  EQIX:  945.00,
-  ADBE:  285.00,
-  VGE:   88.50,
-  IAA:   175.00,
-  IKO:   42.00,
+  COHR:284.50, AMZN:268.20, NDQ:45.80, INTC:89.40, XMET:16.93,
+  HACK:14.20, LITE:858.00, AIPO:32.70, SMRF:18.40, GLW:58.20,
+  COPX:90.82, EQIX:945.00, ADBE:285.00, VGE:88.50, IAA:175.00,
+  IKO:42.00, MSFT:432.50, META:598.20, PLTR:124.80, LMT:498.60,
+  BHP:48.20, XOM:118.40, RDDT:142.60, GLD:312.80,
 };
 
 function getWatchMomentum(ticker) {
@@ -2148,20 +2249,28 @@ function getWatchMomentum(ticker) {
 
   // Use mock momentum data keyed to signal
   const WATCH_MOCK = {
-    COHR:  { score:7.8, rsi:66, roc20:28.4, trend:'↑ Accelerating' },
-    AMZN:  { score:7.2, rsi:61, roc20:18.2, trend:'↑ Positive' },
-    NDQ:   { score:7.5, rsi:64, roc20:22.1, trend:'↑ Strong' },
-    INTC:  { score:8.4, rsi:74, roc20:42.6, trend:'↑ Very Strong' },
-    XMET:  { score:5.8, rsi:52, roc20:8.4,  trend:'→ Neutral' },
-    HACK:  { score:6.8, rsi:59, roc20:14.2, trend:'↑ Positive' },
-    LITE:  { score:8.1, rsi:71, roc20:38.4, trend:'↑ Strong (overbought watch)' },
-    AIPO:  { score:7.4, rsi:67, roc20:24.8, trend:'↑ Positive' },
-    SMRF:  { score:6.2, rsi:55, roc20:12.1, trend:'↑ Mild' },
-    GLW:   { score:7.6, rsi:68, roc20:26.4, trend:'↑ Strong' },
-    COPX:  { score:6.8, rsi:58, roc20:14.8, trend:'↑ Positive' },
-    EQIX:  { score:6.4, rsi:57, roc20:10.2, trend:'↑ Mild' },
-    ADBE:  { score:5.4, rsi:48, roc20:2.8,  trend:'→ Recovering' },
-    VGE:   { score:5.0, rsi:50, roc20:4.1,  trend:'→ Neutral' },
+    COHR: { score:7.8, rsi:66, roc20:28.4, trend:'↑ Accelerating' },
+    AMZN: { score:7.2, rsi:61, roc20:18.2, trend:'↑ Positive' },
+    NDQ:  { score:7.5, rsi:64, roc20:22.1, trend:'↑ Strong' },
+    INTC: { score:8.4, rsi:74, roc20:42.6, trend:'↑ Very Strong' },
+    XMET: { score:5.8, rsi:52, roc20:8.4,  trend:'→ Neutral' },
+    HACK: { score:6.8, rsi:59, roc20:14.2, trend:'↑ Positive' },
+    LITE: { score:8.1, rsi:71, roc20:38.4, trend:'↑ Strong (overbought watch)' },
+    AIPO: { score:7.4, rsi:67, roc20:24.8, trend:'↑ Positive' },
+    SMRF: { score:6.2, rsi:55, roc20:12.1, trend:'↑ Mild' },
+    GLW:  { score:7.6, rsi:68, roc20:26.4, trend:'↑ Strong' },
+    COPX: { score:6.8, rsi:58, roc20:14.8, trend:'↑ Positive' },
+    EQIX: { score:6.4, rsi:57, roc20:10.2, trend:'↑ Mild' },
+    ADBE: { score:5.4, rsi:48, roc20:2.8,  trend:'→ Recovering' },
+    VGE:  { score:5.0, rsi:50, roc20:4.1,  trend:'→ Neutral' },
+    MSFT: { score:7.6, rsi:65, roc20:24.2, trend:'↑ Strong' },
+    META: { score:7.8, rsi:68, roc20:28.8, trend:'↑ Accelerating' },
+    PLTR: { score:7.9, rsi:70, roc20:32.4, trend:'↑ Strong (watch RSI)' },
+    LMT:  { score:7.2, rsi:63, roc20:18.6, trend:'↑ Positive' },
+    BHP:  { score:5.6, rsi:51, roc20:6.2,  trend:'→ Mild positive' },
+    XOM:  { score:5.8, rsi:53, roc20:7.4,  trend:'→ Stable' },
+    RDDT: { score:7.4, rsi:66, roc20:22.8, trend:'↑ Positive' },
+    GLD:  { score:7.0, rsi:62, roc20:16.4, trend:'↑ Positive' },
   };
 
   const m = WATCH_MOCK[ticker] || { score:5.5, rsi:50, roc20:5.0, trend:'→ Neutral' };
@@ -2293,22 +2402,26 @@ async function runScrape() {
     'Fetching live AUD/USD rate...',
     'Loading ASX prices — SEMI, AINF, EMKT...',
     'Loading USD prices — DRAM, URNM, TSM, GOOGL, ARTY, SOXX...',
-    'Logging today\'s prices to history...',
+    'Seeding history for new holdings...',
+    'Recalculating momentum signals...',
+    'Updating watchlist momentum...',
     'Done ✓'
   ];
   for (const s of steps) {
     txt.textContent = s;
-    // Fetch real FX rate on first step
     if (s.includes('AUD/USD')) await fetchFXRate();
-    await new Promise(r => setTimeout(r, 380));
+    await new Promise(r => setTimeout(r, 340));
   }
 
-  // Simulate small price moves + log to history
+  // Update prices and log to history for ALL current holdings
   const today = new Date().toISOString().split('T')[0];
   S.holdings.forEach(h => {
     const move = (Math.random() - 0.47) * 0.013;
     h.current = parseFloat((h.current * (1 + move)).toFixed(2));
-    if (!S.priceHistory[h.ticker]) S.priceHistory[h.ticker] = [];
+    // Seed history if this is a new holding
+    if (!S.priceHistory[h.ticker] || S.priceHistory[h.ticker].length < 10) {
+      S.priceHistory[h.ticker] = seedHistory(h);
+    }
     const hist = S.priceHistory[h.ticker];
     if (!hist.length || hist[hist.length - 1].date !== today) {
       hist.push({ date: today, price: h.current });
@@ -2326,13 +2439,18 @@ async function runScrape() {
   btn.disabled = false;
   btn.textContent = '⟳ Scrape';
 
+  // Always re-render Tab 1 with updated prices
   render();
-  // If momentum tab is visible, refresh it
+
+  // Always recalculate and cache momentum for ALL holdings
+  // so Tab 2 is ready when user switches to it
+  S.holdings.forEach(h => calcMOM(h.ticker, h.current));
+
+  // If momentum tab already visible, refresh it immediately
   if (document.getElementById('p2').classList.contains('on')) {
     renderMomentum();
     setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 80);
   }
-  // If intel tab is visible, refresh it
   if (document.getElementById('p3').classList.contains('on')) renderIntel();
   save();
 }
@@ -2749,19 +2867,40 @@ function showPage(id, el) {
 }
 
 // ─────────────────────────────────────────────
-// MOMENTUM DATA
+// MOMENTUM DATA — update daily after scrape
+// Last updated: May 14, 2026
 // ─────────────────────────────────────────────
 const SECTOR_DATA = [
-  { name:'Semiconductors', score:7.8, lbl:'Strong', chg:'+18.4%', flow:'in' },
-  { name:'AI Infrastructure', score:6.9, lbl:'Positive', chg:'+11.2%', flow:'in' },
-  { name:'Memory / DRAM', score:7.5, lbl:'Supercycle', chg:'+42.5%', flow:'in' },
-  { name:'Photonics', score:8.1, lbl:'Heating up', chg:'+28.6%', flow:'in' },
-  { name:'Nuclear / Uranium', score:4.2, lbl:'Weak', chg:'-8.4%', flow:'out' },
-  { name:'Copper / Metals', score:6.4, lbl:'Positive', chg:'+14.8%', flow:'in' },
-  { name:'Emerg. Markets', score:4.8, lbl:'Neutral', chg:'+3.4%', flow:'neutral' },
-  { name:'Robotics / AI', score:7.2, lbl:'Growing', chg:'+22.1%', flow:'in' },
-  { name:'Cybersecurity', score:6.8, lbl:'Positive', chg:'+16.4%', flow:'in' },
-  { name:'Natural Gas', score:5.5, lbl:'Mixed', chg:'+6.2%', flow:'neutral' },
+  // ── Strong inflows ──
+  { name:'Semiconductors',      score:7.8, lbl:'Strong',         chg:'+18.4%', flow:'in',      note:'AI chip demand overwhelming supply' },
+  { name:'Photonics',           score:8.1, lbl:'Heating fast',   chg:'+28.6%', flow:'in',      note:'Nvidia $4B bets on LITE + COHR' },
+  { name:'Memory / DRAM',       score:7.5, lbl:'Supercycle',     chg:'+42.5%', flow:'in',      note:'HBM shortage extending to 2028' },
+  { name:'AI Infrastructure',   score:6.9, lbl:'Positive',       chg:'+11.2%', flow:'in',      note:'GE Vernova $150B backlog' },
+  { name:'Robotics / Physical AI',score:7.2,lbl:'Accelerating',  chg:'+22.1%', flow:'in',      note:'Boston Dynamics + NVIDIA Isaac GR00T' },
+  { name:'Cybersecurity',       score:6.8, lbl:'Positive',       chg:'+16.4%', flow:'in',      note:'AI attack surface expanding rapidly' },
+  { name:'Cloud / Hyperscalers',score:7.1, lbl:'Strong',         chg:'+19.8%', flow:'in',      note:'AWS +20%, Azure +31%, GCP +28% YoY' },
+  { name:'Defence / Aerospace', score:6.6, lbl:'Rising',         chg:'+14.2%', flow:'in',      note:'NATO spending commitments accelerating' },
+  { name:'Copper / Metals',     score:6.4, lbl:'Positive',       chg:'+14.8%', flow:'in',      note:'AI wiring demand + structural supply gap' },
+  { name:'Gold',                score:7.0, lbl:'Strong',         chg:'+21.4%', flow:'in',      note:'Geopolitical hedge + USD weakness' },
+  { name:'Data Centres / REITs',score:6.5, lbl:'Growing',        chg:'+12.8%', flow:'in',      note:'Equinix doubling capacity by 2029' },
+  { name:'Biotech / Genomics',  score:6.2, lbl:'Recovering',     chg:'+10.4%', flow:'in',      note:'AI drug discovery inflection point' },
+  { name:'India Equities',      score:6.8, lbl:'Positive',       chg:'+15.6%', flow:'in',      note:'Fastest growing major economy 2026' },
+  // ── Neutral / mixed ──
+  { name:'Emerging Markets',    score:4.8, lbl:'Neutral',        chg:'+3.4%',  flow:'neutral', note:'China drag offsetting India strength' },
+  { name:'Natural Gas',         score:5.5, lbl:'Mixed',          chg:'+6.2%',  flow:'neutral', note:'AI power demand vs oversupply risk' },
+  { name:'Fintech',             score:5.2, lbl:'Stabilising',    chg:'+4.8%',  flow:'neutral', note:'Rate sensitivity easing slowly' },
+  { name:'Consumer Staples',    score:4.6, lbl:'Defensive',      chg:'+2.1%',  flow:'neutral', note:'Outperforms if risk-off sentiment returns' },
+  { name:'Real Estate (Broad)', score:4.4, lbl:'Pressured',      chg:'-1.2%',  flow:'neutral', note:'Higher-for-longer rates weighing' },
+  { name:'Utilities (Trad.)',   score:5.0, lbl:'Steady',         chg:'+3.8%',  flow:'neutral', note:'Rate-sensitive, limited upside near-term' },
+  { name:'Healthcare (Broad)',  score:5.4, lbl:'Selective',      chg:'+5.2%',  flow:'neutral', note:'AI diagnostics bright spot, pharma mixed' },
+  // ── Outflows / weak ──
+  { name:'Nuclear / Uranium',   score:4.2, lbl:'Consolidating',  chg:'-8.4%',  flow:'out',     note:'Thesis intact but miners lagging spot' },
+  { name:'Lithium',             score:3.8, lbl:'Weak',           chg:'-12.4%', flow:'out',     note:'Supply surplus to 2029 per BMI' },
+  { name:'China Tech',          score:3.6, lbl:'Cautious',       chg:'-6.8%',  flow:'out',     note:'Regulatory + geopolitical headwinds' },
+  { name:'Office REITs',        score:2.8, lbl:'Structural decline',chg:'-14.2%',flow:'out',   note:'WFH structural shift permanent' },
+  { name:'Legacy Auto',         score:3.2, lbl:'Challenged',     chg:'-8.6%',  flow:'out',     note:'EV transition costs + margin pressure' },
+  { name:'Retail (Brick)',      score:3.0, lbl:'Declining',      chg:'-9.4%',  flow:'out',     note:'E-commerce + AI competition intensifying' },
+  { name:'Coal',                score:2.4, lbl:'Structural exit', chg:'-18.2%',flow:'out',     note:'ESG pressure + renewable cost crossover' },
 ];
 
 const MACRO_DATA = [
@@ -2866,7 +3005,82 @@ function calcMOM(ticker, current) {
 }
 
 // ─────────────────────────────────────────────
-// RENDER MOMENTUM TAB
+// HYPERSCALER & MARKET CONTEXT
+// Key bellwethers across your invested themes
+// ─────────────────────────────────────────────
+const HYPER_DATA = [
+  // Hyperscalers
+  { ticker:'MSFT',  name:'Microsoft',         price:432.50, market:'USD', score:7.6, rsi:65, roc20:24.2, r1m:+18.4, div:false, trend:'↑ Strong',    note:'Azure +31% YoY · OpenAI exclusive · Copilot monetising' },
+  { ticker:'AMZN',  name:'Amazon',            price:268.20, market:'USD', score:7.2, rsi:61, roc20:18.2, r1m:+14.8, div:false, trend:'↑ Positive',  note:'AWS +20% YoY · $200B backlog · cheapest mega-cap AI P/E' },
+  { ticker:'META',  name:'Meta Platforms',    price:598.20, market:'USD', score:7.8, rsi:68, roc20:28.8, r1m:+22.1, div:false, trend:'↑ Strong',    note:'AI ad targeting · Llama strategy · margin expansion' },
+  { ticker:'NVDA',  name:'Nvidia',            price:1186.40,market:'USD', score:8.2, rsi:72, roc20:44.2, r1m:+38.4, div:true,  trend:'↑ Very Strong (watch RSI)', note:'May 20 earnings — Goldman +12% estimate revision' },
+  { ticker:'AAPL',  name:'Apple',             price:214.80, market:'USD', score:6.8, rsi:60, roc20:16.4, r1m:+12.2, div:false, trend:'↑ Positive',  note:'China tariff relief — 90-day pause direct beneficiary' },
+  // Semiconductor bellwethers
+  { ticker:'AVGO',  name:'Broadcom',          price:248.60, market:'USD', score:7.4, rsi:64, roc20:22.6, r1m:+17.8, div:false, trend:'↑ Strong',    note:'Custom AI chip demand (Apple, Google, Meta) surging' },
+  { ticker:'MU',    name:'Micron Technology', price:142.80, market:'USD', score:7.6, rsi:67, roc20:26.4, r1m:+21.4, div:false, trend:'↑ Strong',    note:'Revenue tripled YoY · 75% gross margin · CEO: 55-60% demand fill' },
+  { ticker:'AMD',   name:'AMD',               price:186.40, market:'USD', score:6.8, rsi:62, roc20:18.8, r1m:+14.6, div:false, trend:'↑ Positive',  note:'MI300X AI GPU gaining share · ARK sold recently — monitor' },
+  // AI Infrastructure bellwethers
+  { ticker:'VRT',   name:'Vertiv Holdings',   price:148.20, market:'USD', score:7.2, rsi:64, roc20:24.4, r1m:+28.4, div:false, trend:'↑ Strong',    note:'Q1 rev +30% YoY · raised guidance $13.75B · orders +81%' },
+  { ticker:'GEV',   name:'GE Vernova',        price:482.60, market:'USD', score:7.4, rsi:66, roc20:26.8, r1m:+22.6, div:false, trend:'↑ Strong',    note:'$150B backlog · 10% of addressable market · sold out 2028' },
+  // Gold / Defence context
+  { ticker:'GLD',   name:'SPDR Gold ETF',     price:312.80, market:'USD', score:7.0, rsi:62, roc20:16.4, r1m:+12.8, div:false, trend:'↑ Positive',  note:'Central bank buying · USD weakness · geopolitical hedge' },
+  { ticker:'LMT',   name:'Lockheed Martin',   price:498.60, market:'USD', score:7.2, rsi:63, roc20:18.6, r1m:+14.2, div:false, trend:'↑ Positive',  note:'NATO spending commitments · F-35 backlog · defence surge' },
+];
+
+function renderHyperCards() {
+  const grid = document.getElementById('hyperGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  HYPER_DATA.forEach(h => {
+    const scoreCol = h.score >= 7 ? 'var(--green)' : h.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+    const rsiCol = h.rsi > 70 ? 'var(--red)' : h.rsi < 32 ? 'var(--green)' : 'var(--text)';
+    const plCol = h.r1m >= 0 ? 'var(--green)' : 'var(--red)';
+    const card = document.createElement('div');
+    card.className = 'mcard';
+    card.style.borderLeft = `3px solid ${h.div ? 'var(--yellow)' : scoreCol}`;
+    card.innerHTML = `
+      <div class="mcard-head">
+        <div class="mcard-top">
+          <div>
+            <div class="mcard-ticker">${h.ticker} <span class="tag">${h.market} · CONTEXT</span></div>
+            <div class="mcard-name">${h.name}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="mscore-wrap">
+              <div class="mscore" style="color:${scoreCol}">${h.score.toFixed(1)}</div>
+              <div class="mscore-denom">/10</div>
+            </div>
+            <div class="mscore-track"><div class="mscore-fill" style="width:${h.score*10}%;background:${scoreCol}"></div></div>
+          </div>
+        </div>
+        <div class="mprice-row">
+          <div class="mprice">US$${h.price.toFixed(2)}</div>
+          <div class="mprice-chg" style="color:${plCol};margin-left:8px">1M ${h.r1m>0?'+':''}${h.r1m}%</div>
+          <div style="font-size:11px;color:${scoreCol};margin-left:10px;font-family:var(--mono);">${h.trend}</div>
+        </div>
+      </div>
+      <div style="padding:8px 18px 10px;font-size:11px;color:var(--td);border-bottom:1px solid var(--border);">${h.note}</div>
+      <div class="indicators" style="border-bottom:none;">
+        <div class="ind">
+          <div class="ind-lbl">RSI (14)</div>
+          <div class="ind-val" style="color:${rsiCol}">${h.rsi}</div>
+          <div class="ind-sub">${h.rsi>70?'Overbought':h.rsi<32?'Oversold':h.rsi>55?'Bullish':'Neutral'}</div>
+        </div>
+        <div class="ind">
+          <div class="ind-lbl">ROC 20D</div>
+          <div class="ind-val" style="color:${h.roc20>0?'var(--green)':'var(--red)'}">${h.roc20>0?'+':''}${h.roc20}%</div>
+          <div class="ind-sub">${h.roc20>20?'Strong':'Moderate'}</div>
+        </div>
+        <div class="ind">
+          <div class="ind-lbl">Divergence</div>
+          <div class="ind-val" style="color:${h.div?'var(--yellow)':'var(--green)'};font-size:16px;">${h.div?'⚠':'✓'}</div>
+          <div class="ind-sub">${h.div?'Watch':'Clear'}</div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
 // ─────────────────────────────────────────────
 function renderMomentum() {
   renderAlerts();
@@ -2875,6 +3089,7 @@ function renderMomentum() {
   renderRotation();
   renderMomCards();
   renderWatchMomCards();
+  renderHyperCards();
   generateBrief();
 }
 
@@ -2908,32 +3123,39 @@ function renderMacroStrip() {
 }
 
 function renderSectorGrid() {
-  document.getElementById('sectorGrid').innerHTML = SECTOR_DATA.map(s => {
+  // Only show top 10 by score in the grid for space
+  const top = [...SECTOR_DATA].sort((a,b) => b.score - a.score).slice(0,10);
+  document.getElementById('sectorGrid').innerHTML = top.map(s => {
     const col = s.score >= 7 ? 'var(--green)' : s.score >= 5 ? 'var(--yellow)' : 'var(--red)';
-    return `<div class="sector-card">
+    return `<div class="sector-card" title="${s.note}">
       <div class="sc-name">${s.name}</div>
       <div class="sc-score" style="color:${col}">${s.score.toFixed(1)}</div>
       <div class="sc-lbl" style="color:${col}">${s.lbl}</div>
-      <div class="sc-chg" style="color:${s.chg.startsWith('+')?'var(--green)':'var(--red)'}">${s.chg} 3M</div>
+      <div class="sc-chg" style="color:${s.chg.startsWith('-')?'var(--red)':'var(--green)'}">${s.chg} 3M</div>
     </div>`;
   }).join('');
 }
 
 function renderRotation() {
   const inflow  = SECTOR_DATA.filter(s => s.flow === 'in').sort((a,b) => b.score - a.score);
-  const outflow = SECTOR_DATA.filter(s => s.flow !== 'in').sort((a,b) => a.score - b.score);
-  document.getElementById('rotIn').innerHTML = inflow.map(s => `
+  const outflow = SECTOR_DATA.filter(s => s.flow === 'out').sort((a,b) => a.score - b.score);
+  const neutral = SECTOR_DATA.filter(s => s.flow === 'neutral').sort((a,b) => b.score - a.score);
+
+  const rotRow = (s, col) => `
     <div class="rot-item">
       <div class="rot-name">${s.name}</div>
-      <div class="rot-track"><div class="rot-bar" style="width:${s.score*10}%;background:var(--green);opacity:.7;"></div></div>
-      <div class="rot-val" style="color:var(--green)">${s.score.toFixed(1)}</div>
-    </div>`).join('');
-  document.getElementById('rotOut').innerHTML = outflow.map(s => `
-    <div class="rot-item">
-      <div class="rot-name">${s.name}</div>
-      <div class="rot-track"><div class="rot-bar" style="width:${s.score*10}%;background:${s.score<5?'var(--red)':'var(--yellow)'};opacity:.7;"></div></div>
-      <div class="rot-val" style="color:${s.score<5?'var(--red)':'var(--yellow)'}">${s.score.toFixed(1)}</div>
-    </div>`).join('');
+      <div class="rot-track"><div class="rot-bar" style="width:${s.score*10}%;background:${col};opacity:.7;"></div></div>
+      <div class="rot-val" style="color:${col}">${s.score.toFixed(1)}</div>
+    </div>
+    <div style="font-size:10px;color:var(--tm);padding:2px 0 6px;font-style:italic;">${s.note} · <span style="color:${s.chg.startsWith('-')?'var(--red)':'var(--green)'}">${s.chg}</span></div>`;
+
+  document.getElementById('rotIn').innerHTML =
+    inflow.map(s => rotRow(s,'var(--green)')).join('') +
+    `<div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">── Neutral / Watch ──</div>` +
+    neutral.map(s => rotRow(s,'var(--yellow)')).join('');
+
+  document.getElementById('rotOut').innerHTML =
+    outflow.map(s => rotRow(s,'var(--red)')).join('');
 }
 
 function renderMomCards() {
@@ -3147,6 +3369,7 @@ Overbought (RSI>70): ${obH.length ? obH.join(', ') : 'None'}
 
   b += `\n━━━ KEY INTELLIGENCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
   b += `ASCHENBRENNER: BE #1 (+1511% 1yr), INTC calls (+377% YTD), CRWV+calls, LITE, COHR\n`;
+  b += `DRUCKENMILLER: GOOGL #1 AI bet (+277% added), AMZN #2 (2 consec quarters), TSM #3 (5.4%), BE new position May 2026 — converging on AI power with Aschenbrenner\n`;
   b += `NVIDIA $40B+: $30B OpenAI, $3.2B Corning, $2B LITE, $2B COHR, $5B INTC→$25B+\n`;
   b += `GOOGLE: $40B Anthropic (IPO Oct?), $4.75B Intersect energy, Wiz acquired\n`;
   b += `TRUMP: Endorsed INTC, 25% AI chip tariff (TSM risk), China pause ~Aug expiry\n`;
