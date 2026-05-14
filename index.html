@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Pat's Portfolio — v2.0</title>
+<title>Pat's Portfolio — v2.6</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -1255,6 +1255,56 @@ canvas.spark { width: 100%; height: 68px; display: block; }
   .hist-row { grid-template-columns:60px 1fr 1fr auto; }
   .hist-abs { display:none; }
   .summary-grid { grid-template-columns:1fr 1fr; }
+/* SCORE EXPLANATION EXPANDABLE */
+.score-expand {
+  border-top: 1px solid var(--border);
+}
+.score-expand-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--bb);
+  text-align: left;
+  transition: background .2s;
+}
+.score-expand-btn:hover { background: var(--bglow); }
+.score-exp-arrow {
+  font-size: 10px;
+  color: var(--tm);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.score-exp-body {
+  display: none;
+  padding: 0 18px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--s1);
+}
+.score-pt {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--td);
+  line-height: 1.6;
+}
+.score-pt:last-child { border: none; }
+.score-pt-icon {
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+  width: 14px;
+  text-align: center;
 }
 </style>
 </head>
@@ -1262,7 +1312,7 @@ canvas.spark { width: 100%; height: 68px; display: block; }
 
 <!-- NAV -->
 <div class="nav">
-  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v2.0</span></div>
+  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v2.6</span></div>
   <div class="nav-tabs">
     <div class="nav-tab" onclick="showPage('p1',this)">📱 Input</div>
     <div class="nav-tab on" onclick="showPage('p2',this)">📊 Momentum</div>
@@ -1341,76 +1391,99 @@ canvas.spark { width: 100%; height: 68px; display: block; }
   </div>
 
   <!-- PORTFOLIO HEALTH SCORE -->
-  <div class="health-card" id="healthCard">
-    <div class="health-left">
-      <div class="health-label">Portfolio Health</div>
-      <div class="health-score" id="healthScore">—</div>
-      <div class="health-track"><div class="health-fill" id="healthFill"></div></div>
+  <div class="health-card" id="healthCard" style="flex-direction:column;gap:0;">
+    <div style="display:flex;align-items:flex-start;gap:18px;">
+      <div class="health-left">
+        <div class="health-label">Portfolio Health</div>
+        <div class="health-score" id="healthScore">—</div>
+        <div class="health-track"><div class="health-fill" id="healthFill"></div></div>
+      </div>
+      <div class="health-points" id="healthPoints"></div>
     </div>
-    <div class="health-points" id="healthPoints"></div>
+    <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:2px;">
+      <button class="score-expand-btn" onclick="toggleHealthDetail(this)" style="width:100%;justify-content:space-between;">
+        <span style="color:var(--bb);">Full scorecard + verdict</span>
+        <span class="score-exp-arrow">▼</span>
+      </button>
+      <div id="healthDetail" style="display:none;padding:0 4px;"></div>
+    </div>
   </div>
 
   <!-- Cash -->
-  <div class="sh"><div class="st">Cash</div><button class="add-btn" onclick="openModal('cash')">+ Add Cash</button></div>
-  <div class="cash-row">
-    <div class="cash-card">
-      <div class="cash-lbl">AUD</div>
-      <input class="cash-inp" id="cAUD" value="$5,000" onchange="updateTotals(); save();" />
-    </div>
-    <div class="cash-card">
-      <div class="cash-lbl">USD</div>
-      <input class="cash-inp" id="cUSD" value="$2,000" onchange="updateTotals(); save();" />
+  <div class="input-section" style="background:rgba(72,168,255,0.05);border:1px solid rgba(72,168,255,0.12);border-left:3px solid var(--bb);border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div class="sh" style="margin-top:0;"><div class="st">Cash Positions</div><button class="add-btn" onclick="openModal('cash')">+ Add Cash</button></div>
+    <div class="cash-row">
+      <div class="cash-card">
+        <div class="cash-lbl">AUD</div>
+        <input class="cash-inp" id="cAUD" value="$5,000" onchange="updateTotals(); save();" />
+      </div>
+      <div class="cash-card">
+        <div class="cash-lbl">USD</div>
+        <input class="cash-inp" id="cUSD" value="$2,000" onchange="updateTotals(); save();" />
+      </div>
     </div>
   </div>
 
   <!-- Overlap -->
-  <div class="sh"><div class="st">Portfolio Overlap</div></div>
-  <div id="overlapBars"></div>
+  <div class="input-section" style="background:rgba(0,217,166,0.04);border:1px solid rgba(0,217,166,0.12);border-left:3px solid var(--green);border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div class="sh" style="margin-top:0;"><div class="st">Portfolio Overlap</div></div>
+    <div id="overlapBars"></div>
+  </div>
 
   <!-- ASX Holdings -->
-  <div class="sh">
-    <div class="st">ASX Holdings</div>
-    <button class="add-btn" onclick="openModal('ASX')">+ Add</button>
+  <div class="input-section" style="background:rgba(72,168,255,0.04);border:1px solid rgba(72,168,255,0.10);border-left:3px solid var(--bb);border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div class="sh" style="margin-top:0;">
+      <div class="st">ASX Holdings (AUD)</div>
+      <button class="add-btn" onclick="openModal('ASX')">+ Add</button>
+    </div>
+    <div id="asxList"></div>
   </div>
-  <div id="asxList"></div>
 
   <!-- USD Holdings -->
-  <div class="sh">
-    <div class="st">USD Holdings</div>
-    <button class="add-btn" onclick="openModal('USD')">+ Add</button>
+  <div class="input-section" style="background:rgba(176,110,224,0.04);border:1px solid rgba(176,110,224,0.12);border-left:3px solid var(--purple);border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div class="sh" style="margin-top:0;">
+      <div class="st">USD Holdings</div>
+      <button class="add-btn" onclick="openModal('USD')">+ Add</button>
+    </div>
+    <div id="usdList"></div>
   </div>
-  <div id="usdList"></div>
 
   <!-- Watchlist -->
-  <div class="sh">
-    <div class="st">Watchlist</div>
-    <button class="add-btn" onclick="openWM()">+ Add</button>
+  <div class="input-section" style="background:rgba(245,166,35,0.04);border:1px solid rgba(245,166,35,0.12);border-left:3px solid var(--yellow);border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div class="sh" style="margin-top:0;">
+      <div class="st">Watchlist</div>
+      <button class="add-btn" onclick="openWM()">+ Add</button>
+    </div>
+    <div id="wList"></div>
   </div>
-  <div id="wList"></div>
 
   <!-- Behaviour Log -->
-  <div class="sh"><div class="st">Behaviour Log</div></div>
-  <div class="log-input">
-    <select class="log-sel" id="logType">
-      <option value="buy">Buy</option>
-      <option value="sell">Sell</option>
-      <option value="trim">Trim</option>
-      <option value="fear">Fear Exit</option>
-      <option value="research">Research Note</option>
-    </select>
-    <input class="log-txt" id="logTxt" placeholder="e.g. Sold ARTY — panicked on CPI data" />
-    <button class="add-btn" onclick="addLog()">Log</button>
+  <div class="input-section" style="background:rgba(240,69,69,0.04);border:1px solid rgba(240,69,69,0.10);border-left:3px solid var(--red);border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div class="sh" style="margin-top:0;"><div class="st">Behaviour Log</div></div>
+    <div class="log-input">
+      <select class="log-sel" id="logType">
+        <option value="buy">Buy</option>
+        <option value="sell">Sell</option>
+        <option value="trim">Trim</option>
+        <option value="fear">Fear Exit</option>
+        <option value="research">Research Note</option>
+      </select>
+      <input class="log-txt" id="logTxt" placeholder="e.g. Sold ARTY — panicked on CPI data" />
+      <button class="add-btn" onclick="addLog()">Log</button>
+    </div>
+    <div id="logList"></div>
   </div>
-  <div id="logList"></div>
 
   <!-- Yearly Tracker -->
-  <div class="sh"><div class="st">Yearly Tracker</div></div>
-  <div class="year-grid" id="yearGrid"></div>
-  <div class="perf-card">
-    <div class="perf-row"><div class="perf-lbl">Year to Date</div><div class="perf-val p" id="pYTD">+19.33%</div></div>
-    <div class="perf-row"><div class="perf-lbl">1 Year</div><div class="perf-val p" id="p1Y">—</div></div>
-    <div class="perf-row"><div class="perf-lbl">3 Year CAGR</div><div class="perf-val p" id="p3Y">—</div></div>
-    <div class="perf-row"><div class="perf-lbl">5 Year CAGR</div><div class="perf-val p" id="p5Y">—</div></div>
+  <div class="input-section" style="background:rgba(0,217,166,0.04);border:1px solid rgba(0,217,166,0.10);border-left:3px solid var(--green);border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div class="sh" style="margin-top:0;"><div class="st">Yearly Tracker</div></div>
+    <div class="year-grid" id="yearGrid"></div>
+    <div class="perf-card">
+      <div class="perf-row"><div class="perf-lbl">Year to Date (2026)</div><div class="perf-val p" id="pYTD">—</div></div>
+      <div class="perf-row"><div class="perf-lbl">1 Year (2025 → 2026)</div><div class="perf-val p" id="p1Y">—</div></div>
+      <div class="perf-row"><div class="perf-lbl">Total Since Q3 2024</div><div class="perf-val p" id="p3Y">—</div></div>
+      <div class="perf-row"><div class="perf-lbl">Annualised Since Start</div><div class="perf-val p" id="p5Y">—</div></div>
+    </div>
   </div>
 
 </div><!-- /main -->
@@ -1429,7 +1502,10 @@ canvas.spark { width: 100%; height: 68px; display: block; }
   <div class="macro-strip" id="macroStrip"></div>
 
   <!-- SECTOR HEAT -->
-  <div class="sh"><div class="st">Sector Momentum</div></div>
+  <div class="sh">
+    <div class="st">Sector Momentum</div>
+    <button class="tbtn" onclick="showSectorKey()" style="font-size:11px;">📖 Key</button>
+  </div>
   <div class="sector-grid" id="sectorGrid"></div>
 
   <!-- ROTATION -->
@@ -1701,11 +1777,22 @@ canvas.spark { width: 100%; height: 68px; display: block; }
     <div style="font-family:var(--mono);font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Add / Update Entry</div>
     <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end;">
       <div>
-        <label style="font-size:10px;font-family:var(--mono);color:var(--tm);display:block;margin-bottom:4px;text-transform:uppercase;">Year</label>
+        <label style="font-size:10px;font-family:var(--mono);color:var(--tm);display:block;margin-bottom:4px;text-transform:uppercase;">Period</label>
         <select id="histYear" style="width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);padding:9px 11px;border-radius:6px;font-size:13px;font-family:var(--sans);outline:none;">
-          <option>2026</option><option>2025</option><option>2024</option>
-          <option>2023</option><option>2022</option><option>2021</option>
-          <option>2020</option><option>2019</option><option>2018</option>
+          <optgroup label="── 2026 ──">
+            <option value="2026-Q1">2026 — Q1 (Jan 1)</option>
+            <option value="2026-Q3">2026 — Q3 (Jul 1)</option>
+            <option value="2026">2026 — Full Year (Jan 1)</option>
+          </optgroup>
+          <optgroup label="── 2025 ──">
+            <option value="2025-Q1">2025 — Q1 (Jan 1)</option>
+            <option value="2025-Q3">2025 — Q3 (Jul 1)</option>
+            <option value="2025">2025 — Full Year (Jan 1)</option>
+          </optgroup>
+          <optgroup label="── 2024 ──">
+            <option value="2024-Q3" selected>2024 — Q3 (Jul 1) — Your Start</option>
+            <option value="2024">2024 — Full Year (Jan 1)</option>
+          </optgroup>
         </select>
       </div>
       <div>
@@ -1739,6 +1826,22 @@ canvas.spark { width: 100%; height: 68px; display: block; }
   <div class="key-item"><div class="key-term">MA Position</div><div class="key-def">Price vs 20, 50, 200-day moving averages. Above all three = strong uptrend. Below 200MA = structural downtrend.</div></div>
   <div class="key-item"><div class="key-term">Divergence ⚠</div><div class="key-def">Price hits new high but RSI doesn't confirm it. Momentum is failing before price shows it — one of the most reliable early warnings a professional analyst uses.</div></div>
   <div class="key-item"><div class="key-term">Alpha vs Sector</div><div class="key-def">How much your holding beats or lags its sector index. Negative alpha in a rising sector means you're in the wrong stock.</div></div>
+</div>
+
+<!-- SECTOR KEY PANEL -->
+<div class="key-panel" id="sectorKeyPanel" style="width:360px;">
+  <button class="key-close" onclick="hideSectorKey()">×</button>
+  <div class="key-title">Sector Momentum — Label Guide</div>
+  <div class="key-item"><div class="key-term">Supercycle</div><div class="key-def">A multi-year demand surge that overwhelms supply capacity. Examples: memory 1990s, oil 2000s. Not just a rally — a structural shift in the supply/demand balance that can last 3–7 years. Current: DRAM/HBM memory.</div></div>
+  <div class="key-item"><div class="key-term">Heating up / Heating fast</div><div class="key-def">Momentum is accelerating — more capital is flowing in, price action is strengthening, and institutional interest is visibly increasing. Early-to-mid stage. The time to research before it becomes consensus.</div></div>
+  <div class="key-item"><div class="key-term">Strong / Very Strong</div><div class="key-def">Momentum is established and confirmed by multiple signals — price, volume, earnings, and analyst revisions all aligned. Safer entry but less upside than early stage.</div></div>
+  <div class="key-item"><div class="key-term">Accelerating</div><div class="key-def">The rate of growth is itself increasing — revenue growth is getting faster quarter on quarter. One of the most powerful signals in momentum investing. Earnings revisions going up is the purest form.</div></div>
+  <div class="key-item"><div class="key-term">Positive / Recovering</div><div class="key-def">Upward trend intact but not at full strength. Either early in a recovery or consolidating after a strong run. Worth holding but not the highest conviction entry point.</div></div>
+  <div class="key-item"><div class="key-term">Neutral / Stable / Mixed</div><div class="key-def">No clear directional signal. Money is neither aggressively entering nor leaving. Often a sector waiting for a catalyst — can break either way. Watch but don't overweight.</div></div>
+  <div class="key-item"><div class="key-term">Consolidating / Pressured</div><div class="key-def">Sector has pulled back or is moving sideways after a strong run. Can be healthy (digesting gains) or the beginning of a trend reversal. The difference is whether the fundamentals changed.</div></div>
+  <div class="key-item"><div class="key-term">Weak / Cautious</div><div class="key-def">Momentum has turned negative. Capital is leaving. Worth monitoring if you hold exposure — may need a catalyst to reverse.</div></div>
+  <div class="key-item"><div class="key-term">Structural decline / Structural exit</div><div class="key-def">The long-term trend is down — not just a cyclical dip but a permanent shift (e.g. coal, office REITs, legacy retail). Professional investors are structurally underweighting these regardless of short-term bounces.</div></div>
+  <div class="key-item"><div class="key-term">Score /10</div><div class="key-def">Composite of price momentum (ROC), relative fund flows, earnings revision direction, and analyst sentiment. 8–10 = strong structural buy. 6–7 = positive, monitor. 4–5 = neutral, no edge. Below 4 = avoid or exit.</div></div>
 </div>
 
 <!-- HOLDING MODAL -->
@@ -1909,7 +2012,7 @@ const DEF_LOGS = [
   { ts:'May 13, 2026 — 11:42pm', type:'fear', note:'Sold DRAM, ARTY + others on CPI data. Re-entered same prices next day. Lesson: hold through macro noise.' }
 ];
 
-const YEARS = [2021, 2022, 2023, 2024, 2025, 2026];
+const YEARS = [2024, 2025, 2026];
 
 const REF_QUESTIONS = [
   "What was your single biggest win this week — and what decision led to it?",
@@ -1935,7 +2038,7 @@ function init() {
   if (!S.holdings.length) S.holdings = JSON.parse(JSON.stringify(DEF_HOLDINGS));
   if (!S.watchlist.length) S.watchlist = JSON.parse(JSON.stringify(DEF_WATCHLIST));
   if (!S.logs.length) S.logs = JSON.parse(JSON.stringify(DEF_LOGS));
-  if (!Object.keys(S.yearlyData).length) S.yearlyData = { 2025: 150000, 2026: 179000 };
+  if (!Object.keys(S.yearlyData).length) S.yearlyData = { '2024-Q3': 150000, 2025: 150000, 2026: 179000 };
 
   // Seed 90-day price history for any holdings that don't have it yet
   S.holdings.forEach(h => {
@@ -2020,6 +2123,33 @@ function renderHealthScore() {
     pts.push({ cls: '', txt: `${cashPct}% in cash — fully deployed. No dry powder for a pullback entry.` });
   }
 
+  // Build verdict
+  const verdict = (() => {
+    if (score >= 8) return { txt: 'Portfolio is firing on all cylinders — momentum strong across the board. Stay the course and resist the urge to over-trade.', cls: 'good' };
+    if (score >= 7) return { txt: 'Portfolio in good shape overall. A few signals to watch but no red flags. Continue monitoring and let winners run.', cls: 'good' };
+    if (score >= 6) return { txt: 'Mostly positive but mixed signals in parts of the portfolio. Review your weakest positions and ensure thesis is still intact.', cls: '' };
+    if (score >= 5) return { txt: 'Neutral overall — the portfolio lacks clear directional momentum right now. Wait for stronger signals before adding significant new capital.', cls: 'warn' };
+    return { txt: 'Momentum is broadly weak. Do not add to positions on weakness without a clear catalyst. Review holdings for thesis changes.', cls: 'bad' };
+  })();
+
+  // Build full scorecard rows
+  const moms = S.holdings.map(h => ({ ticker: h.ticker, ...calcMOM(h.ticker, h.current) }));
+  const scorecardRows = moms.sort((a, b) => b.score - a.score).map(m => {
+    const col = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+    const flags = [];
+    if (m.div) flags.push('⚠ Divergence');
+    if (m.rsi > 70) flags.push('🔥 Overbought');
+    if (m.rsi < 32) flags.push('📉 Oversold');
+    if (!m.am200) flags.push('↓ Below 200MA');
+    if (m.macdH < 0 && m.macd > 0) flags.push('📊 MACD fading');
+    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
+      <div style="font-family:var(--mono);font-size:12px;font-weight:700;min-width:52px;">${m.ticker}</div>
+      <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:${col};min-width:36px;">${m.score.toFixed(1)}</div>
+      <div style="flex:1;height:4px;background:var(--s2);border-radius:2px;"><div style="width:${m.score*10}%;height:100%;background:${col};border-radius:2px;"></div></div>
+      <div style="font-size:10px;color:var(--tm);text-align:right;">${flags.join(' · ') || '✓ Clean'}</div>
+    </div>`;
+  }).join('');
+
   // Render
   document.getElementById('healthScore').textContent = score.toFixed(1);
   document.getElementById('healthScore').style.color = col;
@@ -2028,6 +2158,19 @@ function renderHealthScore() {
   document.getElementById('healthPoints').innerHTML = pts.slice(0, 3).map(p =>
     `<div class="health-pt ${p.cls}">${p.txt}</div>`
   ).join('');
+
+  // Expandable detail
+  const detailEl = document.getElementById('healthDetail');
+  if (detailEl) {
+    detailEl.innerHTML = `
+      <div style="padding:14px 0 6px;">
+        <div style="font-size:10px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Today's Verdict</div>
+        <div class="health-pt ${verdict.cls}" style="font-size:13px;line-height:1.6;margin-bottom:14px;">${verdict.txt}</div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Holding Scorecard</div>
+        ${scorecardRows}
+        <div style="font-size:10px;color:var(--tm);margin-top:10px;font-style:italic;">Score is composite of RSI, MACD, MA position, ROC and divergence. Tap ? Key on Momentum tab for full explanation.</div>
+      </div>`;
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -2162,18 +2305,43 @@ function renderOverlap() {
     const isHigh = b.pct >= b.warn;
     const fillColor = isHigh ? 'var(--yellow)' : b.color;
     const pctColor = isHigh ? 'var(--yellow)' : 'var(--td)';
-    const warning = isHigh ? ' ⚠' : '';
+    const warning = isHigh ? ' ⚠ High concentration' : '';
     return `<div class="ov">
       <div class="ov-lbl">
-        <span style="color:${b.color};font-weight:600;">${b.label}</span>${warning}
-        <span style="font-size:10px;color:var(--tm);margin-left:6px;">${b.holders.join(' · ')}</span>
+        <div><span style="color:${b.color};font-weight:600;">${b.label}</span><span style="font-size:10px;color:var(--red);margin-left:5px;">${warning}</span></div>
+        <div style="font-size:10px;color:var(--tm);margin-top:1px;">${b.holders.join(' · ')}</div>
       </div>
       <div class="ov-track"><div class="ov-fill" style="width:${b.pct}%;background:${fillColor};"></div></div>
       <div class="ov-pct" style="color:${pctColor}">${b.pct}%</div>
     </div>`;
   }).join('');
 
-  document.getElementById('overlapBars').innerHTML = html || '<div class="empty">No overlap data available</div>';
+  // Individual position concentration
+  const posRows = S.holdings.map(h => {
+    const eq = h.market === 'ASX' ? h.shares * h.current : (h.shares * h.current) / fx;
+    const pct = (eq / totalEquity * 100).toFixed(1);
+    const isHigh = parseFloat(pct) > 20;
+    const isMed = parseFloat(pct) > 12;
+    const col = isHigh ? 'var(--red)' : isMed ? 'var(--yellow)' : 'var(--td)';
+    return { ticker: h.ticker, pct: parseFloat(pct), col, isHigh, isMed };
+  }).sort((a,b) => b.pct - a.pct);
+
+  const posHtml = `
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+      <div style="font-size:10px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Individual Position Size</div>
+      ${posRows.map(p => `
+        <div style="display:flex;align-items:center;gap:10px;padding:4px 0;">
+          <div style="font-family:var(--mono);font-size:11px;font-weight:700;min-width:52px;">${p.ticker}</div>
+          <div style="flex:1;height:4px;background:var(--s2);border-radius:2px;">
+            <div style="width:${Math.min(p.pct*2,100)}%;height:100%;background:${p.col};border-radius:2px;opacity:.8;"></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:${p.col};min-width:36px;text-align:right;">${p.pct}%</div>
+          ${p.isHigh ? '<div style="font-size:10px;color:var(--red);">⚠ >20%</div>' : p.isMed ? '<div style="font-size:10px;color:var(--yellow);">⚠ >12%</div>' : ''}
+        </div>`).join('')}
+      <div style="font-size:10px;color:var(--tm);margin-top:8px;font-style:italic;">⚠ flags positions above 12% or 20% of total equity — review if single-stock risk is comfortable.</div>
+    </div>`;
+
+  document.getElementById('overlapBars').innerHTML = (html || '<div class="empty">No overlap data available</div>') + posHtml;
 }
 
 function render() {
@@ -2187,13 +2355,28 @@ function render() {
 }
 
 function renderHoldings() {
+  const fx = parseFloat(document.getElementById('fxR').textContent) || 0.642;
   const asx = S.holdings.filter(h => h.market === 'ASX');
   const usd = S.holdings.filter(h => h.market === 'USD');
+
+  // Section totals
+  const asxTotal = asx.reduce((s, h) => s + h.shares * h.current, 0);
+  const usdTotal = usd.reduce((s, h) => s + h.shares * h.current, 0);
+  const asxTotalStr = `A$${Math.round(asxTotal).toLocaleString()} across ${asx.length} position${asx.length !== 1 ? 's' : ''}`;
+  const usdTotalStr = `US$${Math.round(usdTotal).toLocaleString()} · A$${Math.round(usdTotal/fx).toLocaleString()} across ${usd.length} position${usd.length !== 1 ? 's' : ''}`;
+
+  // Update section headers with totals
+  const asxSection = document.querySelector('#asxList')?.previousElementSibling;
+  const usdSection = document.querySelector('#usdList')?.previousElementSibling;
+
   document.getElementById('asxList').innerHTML = asx.length
-    ? asx.map(h => hRow(h, S.holdings.indexOf(h))).join('')
+    ? `<div style="font-size:11px;color:var(--td);font-family:var(--mono);padding:4px 0 8px;">${asxTotalStr}</div>` +
+      asx.map(h => hRow(h, S.holdings.indexOf(h))).join('')
     : '<div class="empty">No ASX holdings</div>';
+
   document.getElementById('usdList').innerHTML = usd.length
-    ? usd.map(h => hRow(h, S.holdings.indexOf(h))).join('')
+    ? `<div style="font-size:11px;color:var(--td);font-family:var(--mono);padding:4px 0 8px;">${usdTotalStr}</div>` +
+      usd.map(h => hRow(h, S.holdings.indexOf(h))).join('')
     : '<div class="empty">No USD holdings</div>';
 }
 
@@ -2203,18 +2386,32 @@ function hRow(h, idx) {
   const pct = ((h.current - h.entry) / h.entry * 100).toFixed(1);
   const pc = pct > 0 ? 'p' : pct < 0 ? 'n' : 'u';
   const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
+
+  // Get momentum score from Tab 2 engine
+  const m = calcMOM(h.ticker, h.current);
+  const scoreCol = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+  const flags = [];
+  if (m.div) flags.push('⚠');
+  if (m.rsi > 70) flags.push('🔥');
+  if (!m.am200) flags.push('↓MA');
+
   return `<div class="hrow sig-${sc}">
     <div class="dot ${sc}"></div>
     <div class="hrow-info">
       <div class="hrow-ticker">
         ${h.ticker}
         <span class="tag">${h.market}</span>
+        ${flags.length ? `<span style="font-size:10px;color:var(--yellow);">${flags.join(' ')}</span>` : ''}
       </div>
-      <div class="hrow-meta">${Number(h.shares).toLocaleString()} shares${h.notes ? ' · ' + h.notes.substring(0,40) + (h.notes.length>40?'…':'') : ''}</div>
+      <div class="hrow-meta">${Number(h.shares).toLocaleString()} shares${h.notes ? ' · ' + h.notes.substring(0,36) + (h.notes.length>36?'…':'') : ''}</div>
     </div>
     <div class="hrow-price">
       <div class="hrow-cur">${cur}${h.current.toFixed(2)}</div>
-      <div class="hrow-chg ${pc}">${arrow} ${Math.abs(pct)}% from entry</div>
+      <div class="hrow-chg ${pc}">${arrow} ${Math.abs(pct)}%</div>
+    </div>
+    <div style="text-align:center;flex-shrink:0;min-width:38px;">
+      <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:${scoreCol};">${m.score.toFixed(1)}</div>
+      <div style="font-size:9px;color:var(--tm);font-family:var(--mono);">/10</div>
     </div>
     <div class="hrow-btns">
       <button class="btn-edit" onclick="editH(${idx})">✎</button>
@@ -2331,15 +2528,17 @@ function renderLog() {
 }
 
 function renderYearly() {
-  document.getElementById('yearGrid').innerHTML = YEARS.map(y => `
-    <div class="year-card">
+  document.getElementById('yearGrid').innerHTML = YEARS.map(y => {
+    const val = S.yearlyData[y]; // annual entry only (not Q1/Q3)
+    return `<div class="year-card">
       <div class="year-lbl">${y}</div>
       <input class="year-inp" type="text"
-        value="${S.yearlyData[y] ? '$' + Number(S.yearlyData[y]).toLocaleString() : ''}"
+        value="${val ? '$' + Number(val).toLocaleString() : ''}"
         placeholder="—"
         onchange="setYear(${y}, this.value)" />
       <div class="year-chg" id="yc${y}"></div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   calcPerf();
 }
 
@@ -2348,15 +2547,18 @@ function setYear(y, v) {
   S.yearlyData[y] = isNaN(n) ? '' : n;
   calcPerf();
   save();
+  // Sync with History tab if it's visible
+  if (document.getElementById('p4')?.classList.contains('on')) renderHistory();
 }
 
 function calcPerf() {
   const y25 = S.yearlyData[2025], y26 = S.yearlyData[2026];
+  const y24 = S.yearlyData[2024] || S.yearlyData['2024-Q3'];
   if (y25 && y26) setP('pYTD', ((y26 - y25) / y25 * 100).toFixed(1));
   const cur = y26 || y25;
   if (cur && y25) setP('p1Y', ((cur - y25) / y25 * 100).toFixed(1));
-  if (cur && S.yearlyData[2023]) setP('p3Y', ((Math.pow(cur / S.yearlyData[2023], 1/3) - 1) * 100).toFixed(1), ' p.a.');
-  if (cur && S.yearlyData[2021]) setP('p5Y', ((Math.pow(cur / S.yearlyData[2021], 1/5) - 1) * 100).toFixed(1), ' p.a.');
+  if (cur && y24) setP('p3Y', ((cur - y24) / y24 * 100).toFixed(1), ' since Q3 2024');
+  if (cur && y24) setP('p5Y', ((Math.pow(cur / y24, 1 / 1.75) - 1) * 100).toFixed(1), ' p.a. since start');
 }
 
 function setP(id, v, sfx='') {
@@ -2867,40 +3069,41 @@ function showPage(id, el) {
 }
 
 // ─────────────────────────────────────────────
-// MOMENTUM DATA — update daily after scrape
+// MOMENTUM DATA — rotated weekly to reflect market
 // Last updated: May 14, 2026
+// New: Agentic AI, India, AI Drug Discovery added
+// Removed: Consumer Staples, Retail (Brick) — not relevant to this portfolio
 // ─────────────────────────────────────────────
 const SECTOR_DATA = [
-  // ── Strong inflows ──
-  { name:'Semiconductors',      score:7.8, lbl:'Strong',         chg:'+18.4%', flow:'in',      note:'AI chip demand overwhelming supply' },
-  { name:'Photonics',           score:8.1, lbl:'Heating fast',   chg:'+28.6%', flow:'in',      note:'Nvidia $4B bets on LITE + COHR' },
-  { name:'Memory / DRAM',       score:7.5, lbl:'Supercycle',     chg:'+42.5%', flow:'in',      note:'HBM shortage extending to 2028' },
-  { name:'AI Infrastructure',   score:6.9, lbl:'Positive',       chg:'+11.2%', flow:'in',      note:'GE Vernova $150B backlog' },
-  { name:'Robotics / Physical AI',score:7.2,lbl:'Accelerating',  chg:'+22.1%', flow:'in',      note:'Boston Dynamics + NVIDIA Isaac GR00T' },
-  { name:'Cybersecurity',       score:6.8, lbl:'Positive',       chg:'+16.4%', flow:'in',      note:'AI attack surface expanding rapidly' },
-  { name:'Cloud / Hyperscalers',score:7.1, lbl:'Strong',         chg:'+19.8%', flow:'in',      note:'AWS +20%, Azure +31%, GCP +28% YoY' },
-  { name:'Defence / Aerospace', score:6.6, lbl:'Rising',         chg:'+14.2%', flow:'in',      note:'NATO spending commitments accelerating' },
-  { name:'Copper / Metals',     score:6.4, lbl:'Positive',       chg:'+14.8%', flow:'in',      note:'AI wiring demand + structural supply gap' },
-  { name:'Gold',                score:7.0, lbl:'Strong',         chg:'+21.4%', flow:'in',      note:'Geopolitical hedge + USD weakness' },
-  { name:'Data Centres / REITs',score:6.5, lbl:'Growing',        chg:'+12.8%', flow:'in',      note:'Equinix doubling capacity by 2029' },
-  { name:'Biotech / Genomics',  score:6.2, lbl:'Recovering',     chg:'+10.4%', flow:'in',      note:'AI drug discovery inflection point' },
-  { name:'India Equities',      score:6.8, lbl:'Positive',       chg:'+15.6%', flow:'in',      note:'Fastest growing major economy 2026' },
-  // ── Neutral / mixed ──
-  { name:'Emerging Markets',    score:4.8, lbl:'Neutral',        chg:'+3.4%',  flow:'neutral', note:'China drag offsetting India strength' },
-  { name:'Natural Gas',         score:5.5, lbl:'Mixed',          chg:'+6.2%',  flow:'neutral', note:'AI power demand vs oversupply risk' },
-  { name:'Fintech',             score:5.2, lbl:'Stabilising',    chg:'+4.8%',  flow:'neutral', note:'Rate sensitivity easing slowly' },
-  { name:'Consumer Staples',    score:4.6, lbl:'Defensive',      chg:'+2.1%',  flow:'neutral', note:'Outperforms if risk-off sentiment returns' },
-  { name:'Real Estate (Broad)', score:4.4, lbl:'Pressured',      chg:'-1.2%',  flow:'neutral', note:'Higher-for-longer rates weighing' },
-  { name:'Utilities (Trad.)',   score:5.0, lbl:'Steady',         chg:'+3.8%',  flow:'neutral', note:'Rate-sensitive, limited upside near-term' },
-  { name:'Healthcare (Broad)',  score:5.4, lbl:'Selective',      chg:'+5.2%',  flow:'neutral', note:'AI diagnostics bright spot, pharma mixed' },
-  // ── Outflows / weak ──
-  { name:'Nuclear / Uranium',   score:4.2, lbl:'Consolidating',  chg:'-8.4%',  flow:'out',     note:'Thesis intact but miners lagging spot' },
-  { name:'Lithium',             score:3.8, lbl:'Weak',           chg:'-12.4%', flow:'out',     note:'Supply surplus to 2029 per BMI' },
-  { name:'China Tech',          score:3.6, lbl:'Cautious',       chg:'-6.8%',  flow:'out',     note:'Regulatory + geopolitical headwinds' },
-  { name:'Office REITs',        score:2.8, lbl:'Structural decline',chg:'-14.2%',flow:'out',   note:'WFH structural shift permanent' },
-  { name:'Legacy Auto',         score:3.2, lbl:'Challenged',     chg:'-8.6%',  flow:'out',     note:'EV transition costs + margin pressure' },
-  { name:'Retail (Brick)',      score:3.0, lbl:'Declining',      chg:'-9.4%',  flow:'out',     note:'E-commerce + AI competition intensifying' },
-  { name:'Coal',                score:2.4, lbl:'Structural exit', chg:'-18.2%',flow:'out',     note:'ESG pressure + renewable cost crossover' },
+  // ── Strong inflows — structural ──
+  { name:'Photonics',              score:8.4, lbl:'Heating fast',      chg:'+34.2%', flow:'in',      note:'Nvidia $4B into LITE+COHR — now institutional consensus' },
+  { name:'Semiconductors',         score:7.8, lbl:'Strong',            chg:'+18.4%', flow:'in',      note:'AI chip demand overwhelming supply through 2027' },
+  { name:'Memory / HBM',           score:7.8, lbl:'Supercycle',        chg:'+44.8%', flow:'in',      note:'SK Hynix 72% op margin — sold out to 2028' },
+  { name:'Agentic AI / Software',  score:7.6, lbl:'Accelerating',      chg:'+28.4%', flow:'in',      note:'Agents replacing SaaS workflows — new enterprise spend cycle' },
+  { name:'Gold / Precious Metals', score:7.4, lbl:'Strong',            chg:'+22.4%', flow:'in',      note:'Central bank buying record highs — USD debasement hedge' },
+  { name:'Cloud / Hyperscalers',   score:7.4, lbl:'Strong',            chg:'+22.6%', flow:'in',      note:'AWS +20%, Azure +31%, GCP +28% — all re-accelerating' },
+  { name:'Defence / Aerospace',    score:7.2, lbl:'Rising fast',       chg:'+18.8%', flow:'in',      note:'NATO 5% GDP target — decade of committed spending ahead' },
+  { name:'Robotics / Physical AI', score:7.0, lbl:'Accelerating',      chg:'+24.6%', flow:'in',      note:'NVIDIA Isaac + Boston Dynamics entering mass factory deployment' },
+  { name:'AI Infrastructure',      score:7.0, lbl:'Positive',          chg:'+14.2%', flow:'in',      note:'GE Vernova $150B backlog — power grid is the bottleneck' },
+  { name:'India Equities',         score:6.9, lbl:'Structural growth',  chg:'+18.2%', flow:'in',      note:'Fastest growing G20 economy — manufacturing shift from China' },
+  { name:'Cybersecurity',          score:6.8, lbl:'Positive',          chg:'+16.4%', flow:'in',      note:'AI creates new attack surfaces — spend grows in lockstep with AI' },
+  { name:'AI Drug Discovery',      score:6.6, lbl:'Emerging',          chg:'+16.8%', flow:'in',      note:'AlphaFold + AI cutting drug dev time 60% — inflection point' },
+  { name:'Copper / Critical Metals',score:6.6, lbl:'Positive',         chg:'+14.8%', flow:'in',      note:'AI wiring + data centre demand vs structural 20-yr mine gap' },
+  { name:'Data Centre REITs',      score:6.4, lbl:'Growing',           chg:'+12.2%', flow:'in',      note:'Equinix doubling capacity by 2029 — demand exceeds build rate' },
+  // ── Neutral / rotating ──
+  { name:'Natural Gas / LNG',      score:5.4, lbl:'Mixed',             chg:'+6.8%',  flow:'neutral', note:'AI power demand positive — global oversupply still weighing' },
+  { name:'Fintech / Payments',     score:5.2, lbl:'Stabilising',       chg:'+5.2%',  flow:'neutral', note:'Rate sensitivity easing — AI fraud detection a growing tailwind' },
+  { name:'Healthcare (Broad)',      score:5.2, lbl:'Selective',         chg:'+5.8%',  flow:'neutral', note:'AI diagnostics bright spot — traditional pharma mixed signals' },
+  { name:'Emerging Markets',       score:5.0, lbl:'Selective',         chg:'+4.8%',  flow:'neutral', note:'India strong, China drag — own the countries not the index' },
+  { name:'Consumer Discretionary', score:4.8, lbl:'Cautious',          chg:'+3.2%',  flow:'neutral', note:'Tariff uncertainty weighing on forward consumer confidence' },
+  { name:'Utilities (Traditional)',  score:4.6, lbl:'Rate sensitive',   chg:'+2.4%',  flow:'neutral', note:'Higher-for-longer caps upside — not the AI power play to own' },
+  // ── Outflows / structural decline ──
+  { name:'Nuclear / Uranium',      score:4.2, lbl:'Consolidating',     chg:'-8.4%',  flow:'out',     note:'Long-term thesis intact — miners lagging spot price short-term' },
+  { name:'Lithium',                score:3.6, lbl:'Oversupplied',      chg:'-14.2%', flow:'out',     note:'Surplus to 2029 per BMI — too early to rotate back in' },
+  { name:'China Tech',             score:3.4, lbl:'Cautious',          chg:'-7.6%',  flow:'out',     note:'Regulatory overhang + US tariff risk — selective positions only' },
+  { name:'Legacy Auto (ICE)',      score:3.0, lbl:'Structural exit',   chg:'-11.4%', flow:'out',     note:'EV transition costs + Chinese EV competition — structurally avoid' },
+  { name:'Office REITs',           score:2.6, lbl:'Structural decline', chg:'-16.8%',flow:'out',     note:'WFH is permanent — vacancy rates structurally elevated' },
+  { name:'Coal',                   score:2.2, lbl:'Structural exit',   chg:'-20.4%', flow:'out',     note:'ESG mandates + renewable cost crossover — institutional exit underway' },
 ];
 
 const MACRO_DATA = [
@@ -3158,6 +3361,88 @@ function renderRotation() {
     outflow.map(s => rotRow(s,'var(--red)')).join('');
 }
 
+function buildScoreExplanation(m, h, plp) {
+  const pts = [];
+  const scoreCol = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+
+  // RSI signal
+  if (m.rsi > 70) {
+    pts.push({ type:'warn', txt:`RSI ${m.rsi} is overbought — momentum is strong but stretched. This costs the score because statistically a pullback or consolidation becomes more likely above 70. Not a reason to sell, but a reason not to add aggressively right now.` });
+  } else if (m.rsi < 32) {
+    pts.push({ type:'good', txt:`RSI ${m.rsi} is oversold — in a structural uptrend this is a contrarian buy signal. The score benefits because oversold bounces in bull markets tend to be sharp and fast.` });
+  } else if (m.rsi > 55) {
+    pts.push({ type:'good', txt:`RSI ${m.rsi} is in bullish territory — momentum is healthy without being stretched. This is the ideal RSI zone for a trending stock and adds positively to the score.` });
+  } else {
+    pts.push({ type:'neutral', txt:`RSI ${m.rsi} is neutral — no strong momentum signal either way. The score is not boosted or penalised here. Watch for RSI breaking above 55 (bullish) or below 45 (caution).` });
+  }
+
+  // MACD signal
+  if (m.macd > 0 && m.macdH > 0) {
+    pts.push({ type:'good', txt:`MACD is positive (+${m.macd}) and the histogram is growing — this means upward momentum is not just present but accelerating. A strong positive contribution to the score.` });
+  } else if (m.macd > 0 && m.macdH < 0) {
+    pts.push({ type:'warn', txt:`MACD is still positive (+${m.macd}) but the histogram is shrinking — the rally is losing pace even though price may still be rising. A mild negative. Watch for MACD crossing below zero.` });
+  } else if (m.macd < 0) {
+    pts.push({ type:'bad', txt:`MACD is negative (${m.macd}) — downward pressure is dominant. This significantly reduces the score. The position needs either a MACD crossover back above zero or a strong fundamental catalyst to recover momentum.` });
+  }
+
+  // MA position
+  const maCnt = [m.am200, m.am50, m.am20].filter(Boolean).length;
+  if (maCnt === 3) {
+    pts.push({ type:'good', txt:`Price is above all three moving averages (20, 50, 200-day) — this is textbook uptrend structure. Each MA adds to the score. A professional analyst would call this "well-positioned on all timeframes."` });
+  } else if (maCnt === 2) {
+    pts.push({ type:'neutral', txt:`Price is above 2 of 3 moving averages — mostly constructive but one MA is overhead acting as resistance. The score is partially supported but not at full strength on the MA component.` });
+  } else if (maCnt <= 1) {
+    pts.push({ type:'bad', txt:`Price is below most moving averages — this signals a structural downtrend on at least one timeframe. A significant penalty to the score. The position needs to recapture its MAs to rebuild momentum.` });
+  }
+
+  // ROC acceleration/deceleration
+  if (m.roc20 > 15 && m.roc5 > m.roc20 * 0.4) {
+    pts.push({ type:'good', txt:`Rate of change is strong at +${m.roc20}% over 20 days and the 5-day ROC (${m.roc5}%) shows momentum is still building — not decelerating. This is one of the cleaner momentum signals available.` });
+  } else if (m.roc20 > 0 && m.roc5 < m.roc20 * 0.2) {
+    pts.push({ type:'warn', txt:`20-day ROC is positive (+${m.roc20}%) but the 5-day ROC is only ${m.roc5}% — momentum is clearly decelerating. The move may be losing steam. Worth watching over the next 3–5 sessions.` });
+  } else if (m.roc20 < 0) {
+    pts.push({ type:'bad', txt:`Rate of change is negative over 20 days (${m.roc20}%) — the trend is moving against you. This reduces the score. A negative ROC combined with a negative MACD is a double warning signal.` });
+  }
+
+  // Divergence
+  if (m.div) {
+    pts.push({ type:'bad', txt:`RSI divergence detected — price is at or near a recent high but RSI is not confirming. This is one of the most reliable early warning signals a professional analyst uses. It costs significantly on the score because divergences precede reversals more often than not. Reduce position size or tighten your mental stop-loss.` });
+  }
+
+  // Entry P/L context
+  const plNum = parseFloat(plp);
+  if (plNum > 50) {
+    pts.push({ type:'neutral', txt:`You're up ${plp}% from entry — you have a significant buffer. This doesn't affect the momentum score directly, but it's worth noting that taking partial profits at this level and re-entering on a pullback is a standard professional move to manage risk.` });
+  } else if (plNum < -10) {
+    pts.push({ type:'warn', txt:`You're down ${Math.abs(plp)}% from entry — below your cost basis. The momentum score reflects the current trend direction, not your entry point. If momentum is still strong, this can recover. If momentum is weak AND you're offside, a review of the thesis is warranted.` });
+  }
+
+  const icon = { good:'✓', warn:'⚠', bad:'✗', neutral:'›' };
+  const col = { good:'var(--green)', warn:'var(--yellow)', bad:'var(--red)', neutral:'var(--tm)' };
+
+  return pts.map(p => `
+    <div class="score-pt">
+      <span class="score-pt-icon" style="color:${col[p.type]}">${icon[p.type]}</span>
+      <span>${p.txt}</span>
+    </div>`).join('');
+}
+
+function toggleHealthDetail(btn) {
+  const body = document.getElementById('healthDetail');
+  const arrow = btn.querySelector('.score-exp-arrow');
+  const isOpen = body.style.display === 'block';
+  body.style.display = isOpen ? 'none' : 'block';
+  arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+function toggleScoreExp(btn) {
+  const body = btn.nextElementSibling;
+  const arrow = btn.querySelector('.score-exp-arrow');
+  const isOpen = body.style.display === 'block';
+  body.style.display = isOpen ? 'none' : 'block';
+  arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
 function renderMomCards() {
   const grid = document.getElementById('momGrid');
   grid.innerHTML = '';
@@ -3241,6 +3526,16 @@ function renderMomCards() {
         <div class="ret-item"><span class="ret-period">1 Month</span><div class="ret-val ${m.r1m>=0?'p':'n'}">${m.r1m>0?'+':''}${m.r1m}%</div></div>
         <div class="ret-item"><span class="ret-period">3 Month</span><div class="ret-val ${m.r3m>=0?'p':'n'}">${m.r3m>0?'+':''}${m.r3m}%</div></div>
         <div class="ret-item"><span class="ret-period">From Entry</span><div class="ret-val ${plp>=0?'p':'n'}">${plp>0?'+':''}${plp}%</div></div>
+      </div>
+
+      <div class="score-expand">
+        <button class="score-expand-btn" onclick="toggleScoreExp(this)">
+          <span>Why ${m.score.toFixed(1)}/10?</span>
+          <span class="score-exp-arrow">▼</span>
+        </button>
+        <div class="score-exp-body">
+          ${buildScoreExplanation(m, h, plp)}
+        </div>
       </div>`;
     grid.appendChild(div);
   });
@@ -3392,6 +3687,11 @@ function copyBrief() {
 
 function showKey() { document.getElementById('keyPanel').classList.add('on'); }
 function hideKey() { document.getElementById('keyPanel').classList.remove('on'); }
+function showSectorKey() {
+  const p = document.getElementById('sectorKeyPanel');
+  p.classList.toggle('on');
+}
+function hideSectorKey() { document.getElementById('sectorKeyPanel').classList.remove('on'); }
 
 // ─────────────────────────────────────────────
 // THEME
@@ -3415,70 +3715,110 @@ document.querySelectorAll('.overlay').forEach(el => {
 // HISTORY TAB
 // ─────────────────────────────────────────────
 function addHistEntry() {
-  const year = parseInt(document.getElementById('histYear').value);
+  const key = document.getElementById('histYear').value; // e.g. "2026", "2026-Q1", "2026-Q3"
   const raw = document.getElementById('histBalance').value.replace(/[$,\s]/g,'');
   const bal = parseFloat(raw);
-  if (!year || isNaN(bal) || bal <= 0) return;
-  S.yearlyData[year] = bal;
+  if (!key || isNaN(bal) || bal <= 0) return;
+  S.yearlyData[key] = bal;
   document.getElementById('histBalance').value = '';
   save();
   renderHistory();
+  // Sync Input tab yearly tracker (annual entries only)
+  renderYearly();
+  calcPerf();
 }
 
-function removeHistEntry(year) {
-  delete S.yearlyData[year];
+function removeHistEntry(key) {
+  delete S.yearlyData[key];
   save();
   renderHistory();
+  renderYearly();
+  calcPerf();
 }
 
 function renderHistory() {
-  // Sort entries newest first
-  const entries = Object.entries(S.yearlyData)
-    .filter(([,v]) => v && !isNaN(v))
-    .map(([y,v]) => ({ year: parseInt(y), bal: parseFloat(v) }))
-    .sort((a,b) => b.year - a.year);
+  // Separate annual entries from quarterly entries
+  const allKeys = Object.keys(S.yearlyData).filter(k => S.yearlyData[k] && !isNaN(S.yearlyData[k]));
 
-  if (!entries.length) {
-    document.getElementById('historyTable').innerHTML = '<div class="empty">No entries yet — add your January 1 balance for each year above</div>';
+  const annualEntries = allKeys
+    .filter(k => !k.includes('-Q'))
+    .map(k => ({ key: k, label: k, year: parseInt(k), quarter: null, bal: parseFloat(S.yearlyData[k]) }))
+    .sort((a, b) => b.year - a.year);
+
+  const quarterlyEntries = allKeys
+    .filter(k => k.includes('-Q'))
+    .map(k => {
+      const [yr, q] = k.split('-');
+      return { key: k, label: `${yr} ${q} (${q === 'Q1' ? 'Jan 1' : 'Jul 1'})`, year: parseInt(yr), quarter: q, bal: parseFloat(S.yearlyData[k]) };
+    })
+    .sort((a, b) => b.year !== a.year ? b.year - a.year : b.quarter.localeCompare(a.quarter));
+
+  if (!annualEntries.length && !quarterlyEntries.length) {
+    document.getElementById('historyTable').innerHTML = '<div class="empty">No entries yet — add your balance for any period above</div>';
     document.getElementById('historySummary').innerHTML = '';
     drawHistChart([]);
     return;
   }
 
-  // Calculate gains year-over-year
-  const sorted = [...entries].sort((a,b) => a.year - b.year);
+  // Calculate year-on-year gains for annual entries
+  const sortedAnnual = [...annualEntries].sort((a, b) => a.year - b.year);
   const gains = {};
-  for (let i = 1; i < sorted.length; i++) {
-    const prev = sorted[i-1], curr = sorted[i];
-    gains[curr.year] = { pct: ((curr.bal - prev.bal) / prev.bal * 100).toFixed(1), abs: curr.bal - prev.bal };
+  for (let i = 1; i < sortedAnnual.length; i++) {
+    const prev = sortedAnnual[i-1], curr = sortedAnnual[i];
+    gains[curr.key] = { pct: ((curr.bal - prev.bal) / prev.bal * 100).toFixed(1), abs: curr.bal - prev.bal };
   }
 
-  // Find best and worst years
-  const gainYears = Object.entries(gains).filter(([,g]) => g.pct !== null);
-  const bestYear = gainYears.length ? gainYears.reduce((a,b) => parseFloat(a[1].pct) > parseFloat(b[1].pct) ? a : b)[0] : null;
-  const worstYear = gainYears.length ? gainYears.reduce((a,b) => parseFloat(a[1].pct) < parseFloat(b[1].pct) ? a : b)[0] : null;
+  // Calculate Q1→Q3 within-year gain where both exist
+  const qGains = {};
+  quarterlyEntries.forEach(q => {
+    if (q.quarter === 'Q3') {
+      const q1key = `${q.year}-Q1`;
+      if (S.yearlyData[q1key]) {
+        const q1 = parseFloat(S.yearlyData[q1key]);
+        qGains[q.key] = { pct: ((q.bal - q1) / q1 * 100).toFixed(1), abs: q.bal - q1, label: 'vs Q1' };
+      }
+    }
+  });
 
-  document.getElementById('historyTable').innerHTML = entries.map(e => {
-    const g = gains[e.year];
-    const isBest = String(e.year) === String(bestYear);
-    const isWorst = String(e.year) === String(worstYear);
+  const gainYears = Object.entries(gains);
+  const bestYear = gainYears.length ? gainYears.reduce((a, b) => parseFloat(a[1].pct) > parseFloat(b[1].pct) ? a : b)[0] : null;
+  const worstYear = gainYears.length ? gainYears.reduce((a, b) => parseFloat(a[1].pct) < parseFloat(b[1].pct) ? a : b)[0] : null;
+
+  const rowHtml = (e, g, isQ) => {
+    const isBest = !isQ && e.key === bestYear;
+    const isWorst = !isQ && e.key === worstYear;
     const rowClass = isBest ? 'best' : isWorst ? 'worst' : '';
     const gainPct = g ? parseFloat(g.pct) : null;
     const gainClass = gainPct === null ? 'u' : gainPct >= 0 ? 'p' : 'n';
     const gainTxt = gainPct === null ? '—' : `${gainPct >= 0 ? '+' : ''}${gainPct}%`;
     const absTxt = g ? `${g.abs >= 0 ? '+' : ''}A$${Math.round(g.abs).toLocaleString()}` : '—';
-    return `<div class="hist-row ${rowClass}">
-      <div class="hist-year">${e.year}${isBest ? ' 🏆' : isWorst ? ' 📉' : ''}</div>
-      <div class="hist-bal">A$${Math.round(e.bal).toLocaleString()}</div>
+    const vsLbl = g?.label || (isQ ? '' : 'vs prev yr');
+    return `<div class="hist-row ${rowClass}" style="${isQ ? 'background:var(--s1);border-left:3px solid var(--purple);' : ''}">
+      <div class="hist-year">${e.label}${isBest ? ' 🏆' : isWorst ? ' 📉' : ''}</div>
+      <div class="hist-bal" style="color:var(--text)">A$${Math.round(e.bal).toLocaleString()}</div>
       <div class="hist-gain ${gainClass}">${gainTxt}</div>
-      <div class="hist-abs">${absTxt}</div>
-      <button class="hist-del" onclick="removeHistEntry(${e.year})">−</button>
+      <div class="hist-abs">${absTxt} ${vsLbl ? `<span style="color:var(--tm);font-size:9px;">${vsLbl}</span>` : ''}</div>
+      <button class="hist-del" onclick="removeHistEntry('${e.key}')">−</button>
     </div>`;
-  }).join('');
+  };
 
-  // Summary stats
-  if (sorted.length >= 2) {
-    const first = sorted[0], last = sorted[sorted.length-1];
+  // Group quarterly under their year row for display
+  const allRows = [];
+  annualEntries.forEach(e => {
+    allRows.push(rowHtml(e, gains[e.key], false));
+    // Show Q3 and Q1 for this year indented underneath
+    const qForYear = quarterlyEntries.filter(q => q.year === e.year).sort((a,b) => b.quarter.localeCompare(a.quarter));
+    qForYear.forEach(q => allRows.push(rowHtml(q, qGains[q.key] || null, true)));
+  });
+  // Any quarterly entries without an annual parent
+  const orphanQ = quarterlyEntries.filter(q => !annualEntries.find(a => a.year === q.year));
+  orphanQ.forEach(q => allRows.push(rowHtml(q, qGains[q.key] || null, true)));
+
+  document.getElementById('historyTable').innerHTML = allRows.join('');
+
+  // Summary stats — annual only
+  if (sortedAnnual.length >= 2) {
+    const first = sortedAnnual[0], last = sortedAnnual[sortedAnnual.length-1];
     const totalGain = ((last.bal - first.bal) / first.bal * 100).toFixed(1);
     const years = last.year - first.year;
     const cagr = years > 0 ? ((Math.pow(last.bal / first.bal, 1/years) - 1) * 100).toFixed(1) : '—';
@@ -3499,21 +3839,21 @@ function renderHistory() {
           <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">per year</div>
         </div>
         <div class="summary-card">
-          <span class="summary-lbl">Avg Annual Return</span>
+          <span class="summary-lbl">Avg Annual</span>
           <div class="summary-val" style="color:${col(avgAnnual)}">${avgAnnual > 0 ? '+' : ''}${avgAnnual}%</div>
           <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">simple average</div>
         </div>
         <div class="summary-card">
           <span class="summary-lbl">Best Year</span>
           <div class="summary-val" style="color:var(--green)">+${bestGain}%</div>
-          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">${bestYear}</div>
+          <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:3px;">${bestYear || '—'}</div>
         </div>
       </div>`;
   } else {
     document.getElementById('historySummary').innerHTML = '';
   }
 
-  drawHistChart(sorted);
+  drawHistChart(sortedAnnual);
 }
 
 function drawHistChart(entries) {
@@ -3592,7 +3932,7 @@ function drawHistChart(entries) {
 S.holdings = JSON.parse(JSON.stringify(DEF_HOLDINGS));
 S.watchlist = JSON.parse(JSON.stringify(DEF_WATCHLIST));
 S.logs = JSON.parse(JSON.stringify(DEF_LOGS));
-S.yearlyData = { 2025: 150000, 2026: 179000 };
+S.yearlyData = { '2024-Q3': 150000, 2025: 150000, 2026: 179000 };
 
 // Load saved data from localStorage if it exists
 try {
