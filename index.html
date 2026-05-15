@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Pat's Portfolio — v3.3</title>
+<title>Pat's Portfolio — v3.5</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -1312,7 +1312,7 @@ canvas.spark { width: 100%; height: 68px; display: block; }
 
 <!-- NAV -->
 <div class="nav">
-  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v3.3</span></div>
+  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v3.5</span></div>
   <div class="nav-tabs">
     <div class="nav-tab" onclick="showPage('p1',this)">📱 Input</div>
     <div class="nav-tab on" onclick="showPage('p2',this)">📊 Momentum</div>
@@ -1602,8 +1602,25 @@ USD | 0" style="width:100%;background:var(--s1);border:1px solid var(--border);c
     Last scraped: <span id="intelUp">Not yet — run Scrape to refresh</span>
   </div>
 
+  <!-- ── 13F FILING CALENDAR ── -->
+  <div class="i-section" style="background:#0a1a2e;border-left:3px solid var(--bb);">
+    <div class="i-title">📅 13F Filing Calendar — When New Holdings Data Drops</div>
+    <div class="i-summary">Hedge funds with over $100M in US equity must file 13F reports within 45 days of each quarter end. These are the exact dates when Aschenbrenner, Druckenmiller and others must reveal their positions. Mark these in your calendar — check hedgefollow.com the day after each deadline for updates.</div>
+
+    <div id="filingCalendar"></div>
+
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+      <div style="font-size:10px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">How to read 13F filings</div>
+      <div style="font-size:11px;color:var(--td);line-height:1.7;">
+        <strong style="color:var(--text);">What it shows:</strong> All long positions in US-listed stocks over $100k. Updated quarterly, 45 days after quarter end.<br>
+        <strong style="color:var(--text);">What it hides:</strong> Short positions, options (unless exercisable), foreign stocks, cash, private investments, and any trades made within the quarter.<br>
+        <strong style="color:var(--text);">The lag problem:</strong> By the time you see the filing, the data is 45-75 days old. Smart money may have already moved. Use filings for thesis confirmation, not as a trade trigger.<br>
+        <strong style="color:var(--text);">Best sources:</strong> <span style="color:var(--bb);">hedgefollow.com</span> alerts you the moment a filing drops · <span style="color:var(--bb);">sec.gov/cgi-bin/browse-edgar</span> for raw filings · <span style="color:var(--bb);">whalewisdom.com</span> for comparison tools.
+      </div>
+    </div>
+  </div>
+
   <!-- ── INFLUENTIAL INVESTORS ── -->
-  <div class="i-section">
     <div class="i-title">Influential Investors to Follow</div>
 
     <!-- ASCHENBRENNER -->
@@ -1613,26 +1630,26 @@ USD | 0" style="width:100%;background:var(--s1);border:1px solid var(--border);c
         <div>
           <div class="p-name">Leopold Aschenbrenner</div>
           <div class="p-role">Founder — Situational Awareness LP · Former OpenAI Superalignment Researcher</div>
-          <div class="p-aum">AUM: $5.5B · Grew from $225M in under 2 years · Invested nearly all personal net worth</div>
+          <div class="p-aum">AUM: $5.5B · 29 holdings · Grew from $225M in under 2 years · Nearly all personal net worth invested</div>
         </div>
       </div>
-      <div class="p-thesis">"Don't bet on the AI model companies. Bet on the physical bottlenecks — electricity, compute, data centres. AGI arrives by 2027. The most valuable assets in the AI era are not algorithms, they are power and computing capacity."</div>
-      <div class="p-sub">TOP 13F HOLDINGS Q1 2026</div>
+      <div class="p-thesis">"Don't bet on the AI model companies. Bet on the physical bottlenecks — electricity, compute, data centres. AGI arrives by 2027." Fund went from 6 stocks at $254M in Q4 2024 → 29 stocks at $5.52B by Q1 2026. That's the thesis working in real time. He simultaneously shorts the broader semiconductor sector while holding Intel and Broadcom long — a complex paired trade.</div>
+      <div class="p-sub">VERIFIED 13F — Q1 2026 (filed Feb 11, 2026) · Top 5 holdings = 58.8% of fund</div>
       <div class="chip-row">
-        <span class="chip hot">BE — Bloom Energy #1 (+1,511% 1yr)</span>
-        <span class="chip hot">CRWV — CoreWeave + calls (14% of fund)</span>
+        <span class="chip hot">BE — Bloom Energy #1 (22.4% of fund · +150% YTD)</span>
+        <span class="chip hot">CRWV — CoreWeave calls (14% of fund · +63% YTD)</span>
         <span class="chip hot">LITE — Lumentum (+143% YTD)</span>
         <span class="chip hot">INTC — Intel + 20.2M call options (+377% YTD)</span>
         <span class="chip hot">COHR — Coherent Corp</span>
-        <span class="chip watch">CORZ — Core Scientific</span>
-        <span class="chip watch">IREN — ex-Bitcoin miner → AI data centres</span>
-        <span class="chip watch">SNDK — SanDisk</span>
-        <span class="chip">VST — Vistra Energy</span>
-        <span class="chip">CEG — Constellation Energy</span>
-        <span class="chip">RIOT, HUT, APLD — Bitcoin miners pivoting to AI</span>
+        <span class="chip watch">CORZ — Core Scientific (data centres · +36% YTD)</span>
+        <span class="chip watch">IREN — ex-Bitcoin miner → AI (+29% YTD · +772% 1yr)</span>
+        <span class="chip watch">CIPHER — Cipher Mining (new position)</span>
+        <span class="chip">VST — Vistra Energy (power)</span>
+        <span class="chip">CEG — Constellation Energy (nuclear)</span>
+        <span class="chip">RIOT · HUT · APLD — Bitcoin miners → AI compute</span>
       </div>
-      <div class="p-rel">⚡ Your overlap: DRAM (memory thesis), URNM (nuclear/energy), AINF (infrastructure). Intel is his current high-conviction next multibagger — not in your portfolio. He was in Bloom Energy at ~$258. It's now $1,500+. He identified the power bottleneck 18 months before the market.</div>
-      <div class="p-links">📖 Read free: <strong>situational-awareness.ai</strong> (165 pages) · Follow: <strong>@LeopoldAschenbrenner</strong> on X</div>
+      <div class="p-rel" id="laOverlap">⚡ Run Scrape to calculate your overlap with Aschenbrenner's portfolio.</div>
+      <div class="p-links">📖 Free: <strong>situational-awareness.ai</strong> · Follow: <strong>@LeopoldAschenbrenner</strong> · Live tracker: <strong>hedgefollow.com/funds/Situational+Awareness</strong></div>
     </div>
 
     <!-- DRUCKENMILLER -->
@@ -1642,25 +1659,28 @@ USD | 0" style="width:100%;background:var(--s1);border:1px solid var(--border);c
         <div>
           <div class="p-name">Stanley Druckenmiller</div>
           <div class="p-role">Founder — Duquesne Family Office · Former Soros Fund Manager</div>
-          <div class="p-aum">AUM: ~$4.5B · 30-year track record · Never had a losing year · Avg annual return: 30%</div>
+          <div class="p-aum">AUM: ~$4.49B · 62 holdings · 30-year track record · Never had a losing year · Avg return: 30% p.a.</div>
         </div>
       </div>
-      <div class="p-thesis">"The best investors do not simply ride momentum — they constantly anticipate where momentum will move next. In the AI age, the next wave may well be measured in megawatts, not just megabytes." Druckenmiller made his name managing Soros's Quantum Fund, breaking the Bank of England in 1992. His 13F filings are published quarterly and are worth tracking closely — he moves fast and concentrates heavily when conviction is high.</div>
-      <div class="p-sub">CURRENT PORTFOLIO — Q1 2026 (13F)</div>
-      <div class="chips">
-        <span class="chip hot">NTRA — Natera #1 position (13.2% of fund) — cancer diagnostics</span>
-        <span class="chip hot">GOOGL — Alphabet #2 (+277% increase Q4 2025, now 2.8% of fund)</span>
-        <span class="chip hot">AMZN — Amazon (+69% added Q4, +300,870 shares two consecutive quarters)</span>
+      <div class="p-thesis">"The best investors do not simply ride momentum — they constantly anticipate where momentum will move next." Q4 2025 he overhauled his entire portfolio — sold 33 stocks, initiated 29 new positions, more than tripled his Alphabet stake. He moves fast and concentrates hard when conviction is high. Watch every quarterly 13F filing closely.</div>
+      <div class="p-sub">VERIFIED 13F — Q4 2025 (Dec 31, 2025 filing · $4.49B portfolio · 62 holdings)</div>
+      <div class="chip-row">
+        <span class="chip hot">NTRA — Natera #1 (13.63% of fund · $522M) — AI-driven cancer diagnostics</span>
+        <span class="chip hot">XLF — Financial Select SPDR (large ETF position)</span>
+        <span class="chip hot">GOOGL — Alphabet (tripled stake Q4 2025 — top AI conviction buy)</span>
+        <span class="chip hot">AMZN — Amazon (new position Q4 2025 · now #11 largest)</span>
         <span class="chip hot">TSM — TSMC (5.4% of fund — you hold this directly)</span>
-        <span class="chip hot">BE — Bloom Energy (new position May 2026 — AI data centre power)</span>
-        <span class="chip sold">SNDK — SanDisk SOLD (sold after 1 quarter, up 1,540% — took profits)</span>
+        <span class="chip hot">BE — Bloom Energy (new position — convergence with Aschenbrenner)</span>
+        <span class="chip watch">INSM — Insmed biotech (trimmed 39% · still ~6% of fund)</span>
+        <span class="chip watch">PKB — Invesco Building & Construction ETF (new)</span>
+        <span class="chip watch">EWZ — iShares MSCI Brazil ETF (new)</span>
+        <span class="chip watch">RSP — Invesco S&P 500 Equal Weight ETF</span>
+        <span class="chip sold">SNDK — Sold Q4 2025 (up 1,540% — took profits)</span>
         <span class="chip sold">META — Sold all 76,100 shares Q4 2025</span>
-        <span class="chip sold">NVDA — Sold late 2024 (said he sold "too soon" — would return at right valuation)</span>
-        <span class="chip sold">PLTR — Palantir sold early 2025</span>
-        <span class="chip">INSM — Insmed biotech (trimmed 39% but still 6% of fund)</span>
+        <span class="chip sold">NVDA — Sold late 2024 ("sold too soon" — watching for re-entry)</span>
       </div>
-      <div class="p-rel">⚡ Direct overlap with your portfolio: TSM is his #3 position AND your largest single holding. GOOGL is his top AI conviction buy — you hold it too. His Bloom Energy (BE) buy aligns with Aschenbrenner's #1 position — two of the smartest macro investors now converging on AI power infrastructure. His GOOGL thesis: "historically inexpensive at 14.3x 2027 cash flow — 20% discount to 5-year average." That's your GOOGL position validated by one of the best macro minds alive.</div>
-      <div class="p-links">📋 Track his 13F quarterly at <strong>sec.gov</strong> (search "Duquesne Family Office 13F") · Also: <strong>hedgefollow.com/funds/Duquesne+Family+Office</strong> for real-time updates</div>
+      <div class="p-rel" id="sdOverlap">⚡ Run Scrape to calculate your overlap with Druckenmiller's portfolio.</div>
+      <div class="p-links">📋 Track: <strong>sec.gov</strong> (search "Duquesne Family Office 13F") · Live: <strong>hedgefollow.com/funds/Duquesne+Family+Office</strong></div>
     </div>
 
     <!-- DAN IVES -->
@@ -2800,6 +2820,8 @@ async function runScrape() {
     setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 80);
   }
   if (document.getElementById('p3').classList.contains('on')) renderIntel();
+  // Always update investor overlap with latest holdings
+  updateInvestorOverlap();
   save();
 }
 
@@ -3017,11 +3039,130 @@ const SPEC_DATA = [
     rev:'ETF structure — all underlying holdings revenue generating.' },
 ];
 
+function renderFilingCalendar() {
+  const cal = document.getElementById('filingCalendar');
+  if (!cal) return;
+
+  // 13F deadlines: 45 days after quarter end
+  // Q1 ends Mar 31 → due May 15
+  // Q2 ends Jun 30 → due Aug 14
+  // Q3 ends Sep 30 → due Nov 14
+  // Q4 ends Dec 31 → due Feb 14
+  const filings = [
+    {
+      quarter: 'Q1 2026', period: 'Jan–Mar 2026',
+      deadline: new Date('2026-05-15'),
+      deadlineStr: 'May 15, 2026',
+      note: 'Aschenbrenner + Druckenmiller must file by this date. Check hedgefollow.com tonight.',
+      investors: ['Aschenbrenner', 'Druckenmiller', 'Dan Ives (Wedbush)'],
+      status: 'due'
+    },
+    {
+      quarter: 'Q2 2026', period: 'Apr–Jun 2026',
+      deadline: new Date('2026-08-14'),
+      deadlineStr: 'Aug 14, 2026',
+      note: 'Will reveal any moves made through June — including any response to China tariff pause expiry (~Aug 11).',
+      investors: ['Aschenbrenner', 'Druckenmiller', 'Dan Ives (Wedbush)'],
+      status: 'upcoming'
+    },
+    {
+      quarter: 'Q3 2026', period: 'Jul–Sep 2026',
+      deadline: new Date('2026-11-14'),
+      deadlineStr: 'Nov 14, 2026',
+      note: 'Will reveal post-summer positioning. Watch for AI infrastructure rotation signals.',
+      investors: ['Aschenbrenner', 'Druckenmiller', 'Dan Ives (Wedbush)'],
+      status: 'upcoming'
+    },
+    {
+      quarter: 'Q4 2026', period: 'Oct–Dec 2026',
+      deadline: new Date('2027-02-14'),
+      deadlineStr: 'Feb 14, 2027',
+      note: 'Full year end positioning — the most important filing. Sets the narrative for 2027.',
+      investors: ['Aschenbrenner', 'Druckenmiller', 'Dan Ives (Wedbush)'],
+      status: 'upcoming'
+    }
+  ];
+
+  const today = new Date();
+
+  cal.innerHTML = filings.map(f => {
+    const daysUntil = Math.ceil((f.deadline - today) / (1000 * 60 * 60 * 24));
+    const isPast    = daysUntil < 0;
+    const isImminent = daysUntil >= 0 && daysUntil <= 7;
+    const isSoon    = daysUntil > 7 && daysUntil <= 30;
+
+    const statusCol  = isPast ? 'var(--green)' : isImminent ? 'var(--red)' : isSoon ? 'var(--yellow)' : 'var(--td)';
+    const statusTxt  = isPast ? '✓ Filed' : isImminent ? `⚠ ${daysUntil === 0 ? 'DUE TODAY' : `Due in ${daysUntil} day${daysUntil===1?'':'s'}`}` : isSoon ? `📅 ${daysUntil} days away` : `📅 ${daysUntil} days`;
+    const borderCol  = isPast ? 'var(--green)' : isImminent ? 'var(--red)' : isSoon ? 'var(--yellow)' : 'var(--border)';
+
+    return `<div style="display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--border);border-left:3px solid ${borderCol};padding-left:12px;margin-bottom:4px;">
+      <div style="min-width:90px;">
+        <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);">${f.quarter}</div>
+        <div style="font-size:10px;color:var(--tm);font-family:var(--mono);">${f.period}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--text);font-weight:600;margin-bottom:3px;">Deadline: ${f.deadlineStr}</div>
+        <div style="font-size:11px;color:var(--td);margin-bottom:4px;">${f.note}</div>
+        <div style="font-size:10px;color:var(--tm);">Filers: ${f.investors.join(' · ')}</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;color:${statusCol};font-weight:700;white-space:nowrap;text-align:right;">${statusTxt}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateInvestorOverlap() {
+  const tickers = S.holdings.map(h => h.ticker);
+
+  // Aschenbrenner overlap
+  const laHolds = ['BE','CRWV','LITE','INTC','COHR','CORZ','IREN','CIPHER','VST','CEG','RIOT','HUT','APLD'];
+  const laMatch = tickers.filter(t => laHolds.includes(t));
+  // Theme overlap (ETF-level)
+  const laThemes = [];
+  if (tickers.includes('AINF')) laThemes.push('AINF (AI infrastructure — his core thesis)');
+  if (tickers.includes('SEMI') || tickers.includes('SOXX')) laThemes.push('SEMI/SOXX (semiconductor exposure he also holds via complex pairs)');
+  if (tickers.includes('GOOGL')) laThemes.push('GOOGL (AI hyperscaler)');
+  if (tickers.includes('TSM')) laThemes.push('TSM (foundry — his Intel thesis depends on this)');
+  if (tickers.includes('NVDA')) laThemes.push('NVDA (he has short semi exposure but NVDA is in your holdings)');
+  const laEl = document.getElementById('laOverlap');
+  if (laEl) {
+    if (laMatch.length) {
+      laEl.innerHTML = `⚡ <strong>Direct ticker overlap with Aschenbrenner:</strong> ${laMatch.join(', ')} — you own the same stocks.<br>` +
+        (laThemes.length ? `<strong>Theme overlap:</strong> ${laThemes.join(' · ')}<br>` : '') +
+        `<strong>What he has that you don't:</strong> BE (Bloom Energy — his #1), CRWV (CoreWeave), INTC (Intel — his next multibagger conviction). He was in Bloom Energy at $258. It's now $1,500+.`;
+    } else {
+      laEl.innerHTML = `⚡ <strong>No direct ticker overlap</strong> — but your themes align.<br>` +
+        (laThemes.length ? `Theme overlap: ${laThemes.join(' · ')}<br>` : '') +
+        `Consider: BE (Bloom Energy — his #1), INTC (Intel — triple conviction), CRWV (CoreWeave).`;
+    }
+  }
+
+  // Druckenmiller overlap
+  const sdHolds = ['GOOGL','AMZN','TSM','BE','NTRA','XLF','INSM'];
+  const sdMatch = tickers.filter(t => sdHolds.includes(t));
+  const sdEl = document.getElementById('sdOverlap');
+  if (sdEl) {
+    if (sdMatch.length) {
+      sdEl.innerHTML = `⚡ <strong>Direct ticker overlap with Druckenmiller:</strong> ${sdMatch.join(', ')} — you're in the same positions.<br>` +
+        `His GOOGL thesis: "historically inexpensive at 14.3x 2027 cash flow — 20% discount to 5-year average." You hold GOOGL — validated.<br>` +
+        `His TSM position (5.4% of his $4.49B fund) = $242M. You hold TSM as your largest single position — same conviction.<br>` +
+        (tickers.includes('NVDA') ? `⚠ You hold NVDA — he sold it late 2024 and said "too soon." Watch if he re-enters — that would be a strong signal to hold or add.` : '');
+    } else {
+      sdEl.innerHTML = `⚡ <strong>Limited direct overlap</strong> with Druckenmiller currently.<br>His top AI bets: GOOGL (tripled Q4 2025), AMZN (new position), TSM (5.4% of fund). Consider whether these fit your thesis.`;
+    }
+  }
+}
+
 function renderIntel() {
   // Update timestamp
   const ts = document.getElementById('lastUp')?.textContent || '—';
   const el = document.getElementById('intelUp');
   if (el) el.textContent = ts === '—' ? 'Not yet — run Scrape to refresh' : ts;
+
+  // Render 13F filing calendar
+  renderFilingCalendar();
+
+  // Update investor overlap with current holdings
+  updateInvestorOverlap();
 
   // Render speculative grid
   const grid = document.getElementById('specGrid');
