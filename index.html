@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Pat's Portfolio — v3.5</title>
+<title>Pat's Portfolio — v4.4</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -423,7 +423,130 @@ body {
 .ov-pct { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--yellow); }
 
 /* ── WATCHLIST ROW ── */
-/* ── WATCHLIST ROWS (momentum-aware) ── */
+/* ── MORNING NOTE ── */
+.mnote {
+  background: var(--s0);
+  border: 1px solid var(--bb2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.mnote-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(72,168,255,0.05);
+}
+.mnote-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bb);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.mnote-ts { font-family: var(--mono); font-size: 10px; color: var(--tm); }
+.mnote-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.mnote-action {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.mnote-action.urgent  { background: rgba(240,69,69,0.08);  border: 1px solid rgba(240,69,69,0.2); }
+.mnote-action.week    { background: rgba(245,166,35,0.08);  border: 1px solid rgba(245,166,35,0.2); }
+.mnote-action.ready   { background: rgba(0,217,166,0.06);   border: 1px solid rgba(0,217,166,0.15); }
+.mnote-action.info    { background: rgba(72,168,255,0.06);   border: 1px solid rgba(72,168,255,0.15); }
+.mnote-dot { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.mnote-lbl { font-family: var(--mono); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 2px; }
+.mnote-action.urgent .mnote-lbl { color: var(--red); }
+.mnote-action.week   .mnote-lbl { color: var(--yellow); }
+.mnote-action.ready  .mnote-lbl { color: var(--green); }
+.mnote-action.info   .mnote-lbl { color: var(--bb); }
+.mnote-text { color: var(--td); }
+</style>
+<style>
+/* ── WATCHLIST ROWS ── */
+.wrow-full {
+  const weak = moms.filter(m => m.score < 4.5).sort((a,b) => a.score - b.score);
+
+  const actions = [];
+
+  // ── URGENT (red) ──
+  if (divs.length) {
+    divs.forEach(m => {
+      actions.push({ type:'urgent', emoji:'🔴', label:'Urgent',
+        text:`<strong>${m.ticker}</strong> showing RSI divergence — price at recent high but momentum not confirming. Consider reducing position size 20–25% or tightening your mental stop to the 20-day MA. This is one of the most reliable early warning signals.` });
+    });
+  }
+  if (overbought.length) {
+    const ob = overbought[0];
+    actions.push({ type:'urgent', emoji:'🔴', label:'Urgent',
+      text:`<strong>${ob.ticker}</strong> RSI ${ob.rsi} — extreme overbought. RSI has been above 70 for multiple days. Do not add here. If considering trimming, this is the highest-risk position right now. A 5–10% pullback before resuming uptrend is historically common at these levels.` });
+  }
+
+  // ── THIS WEEK (yellow) ──
+  if (oversold.length) {
+    oversold.forEach(m => {
+      actions.push({ type:'week', emoji:'🟡', label:'This Week',
+        text:`<strong>${m.ticker}</strong> RSI ${m.rsi} — approaching oversold. In a structural bull market, RSI below 33 is typically a buy signal. Watch for RSI to turn back above 38 as confirmation of a bounce before adding. ${totalCashAUD > 5000 ? `You have A$${Math.round(totalCashAUD).toLocaleString()} available.` : ''}` });
+    });
+  }
+  if (belowAll.length) {
+    belowAll.forEach(m => {
+      actions.push({ type:'week', emoji:'🟡', label:'This Week',
+        text:`<strong>${m.ticker}</strong> is below all three moving averages (20, 50, 200-day). Review whether the thesis has changed. If fundamentals are intact, this may be a buying opportunity — but do not average down without a confirmed RSI bounce above 40.` });
+    });
+  }
+
+  // ── WHEN READY (green) ──
+  if (totalCashAUD > 3000) {
+    const bestEntry = weak.length ? weak[0] : oversold.length ? oversold[0] : null;
+    if (bestEntry) {
+      actions.push({ type:'ready', emoji:'🟢', label:'When Ready',
+        text:`You have <strong>A$${Math.round(totalCashAUD).toLocaleString()} (${cashPct}%) in cash</strong>. Consider deploying into <strong>${bestEntry.ticker}</strong> when RSI drops below 32 and bounces back above 38 — that's your entry confirmation signal. Don't chase — wait for the bounce.` });
+    } else {
+      actions.push({ type:'ready', emoji:'🟢', label:'When Ready',
+        text:`You have <strong>A$${Math.round(totalCashAUD).toLocaleString()} (${cashPct}%) in cash</strong>. Portfolio momentum is broadly healthy. Hold cash until a clear pullback in a high-conviction name or a new sector opportunity emerges. Patience is a position.` });
+    }
+  }
+
+  if (strong.length) {
+    actions.push({ type:'ready', emoji:'🟢', label:'Holding Well',
+      text:`<strong>${strong.map(m=>m.ticker).join(', ')}</strong> — strong momentum confirmed (score ${strong[0].score}/10). These are your leaders. Let winners run. Only consider trimming if RSI exceeds 80 or a divergence appears.` });
+  }
+
+  // ── INFO ──
+  actions.push({ type:'info', emoji:'📊', label:'Portfolio',
+    text:`Average momentum <strong>${avgScore}/10</strong> across ${moms.length} holdings. ${avgScore >= 7 ? 'Broadly healthy — no structural concerns.' : avgScore >= 5.5 ? 'Mixed signals — monitor closely this week.' : 'Momentum is weak across the portfolio. Review each position for thesis changes.'}` });
+
+  const now = new Date();
+  const ts = now.toLocaleDateString('en-AU', { weekday:'short', day:'numeric', month:'short' });
+
+  el.innerHTML = `
+    <div class="mnote">
+      <div class="mnote-header">
+        <div class="mnote-title">📋 What To Do Next — Morning Note</div>
+        <div class="mnote-ts">${ts}</div>
+      </div>
+      <div class="mnote-body">
+        ${actions.map(a => `
+          <div class="mnote-action ${a.type}">
+            <div class="mnote-dot">${a.emoji}</div>
+            <div>
+              <div class="mnote-lbl">${a.label}</div>
+              <div class="mnote-text">${a.text}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+/* ── WATCHLIST ROWS ── */
 .wrow-full {
   background: var(--s0);
   border: 1px solid var(--border);
@@ -1306,13 +1429,70 @@ canvas.spark { width: 100%; height: 68px; display: block; }
   width: 14px;
   text-align: center;
 }
+/* ── BREAKING NEWS BANNER ── */
+.bnews-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.bnews-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 9px 16px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-bottom: 1px solid rgba(0,0,0,.2);
+  animation: bnSlide .3s ease;
+}
+@keyframes bnSlide { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+.bnews-item.critical { background: #7a0a0a; }
+.bnews-item.warning  { background: #5a3a00; }
+.bnews-item.info     { background: #0a2a4a; }
+.bnews-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.bnews-body { flex: 1; }
+.bnews-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bnews-tag.critical { color: #ff6b6b; }
+.bnews-tag.warning  { color: #ffc107; }
+.bnews-tag.info     { color: #48a8ff; }
+.bnews-date { font-size: 9px; color: rgba(255,255,255,.4); font-family: var(--mono); }
+.bnews-headline { font-weight: 700; color: #fff; margin-bottom: 2px; font-size: 12px; }
+.bnews-detail { font-size: 11px; color: rgba(255,255,255,.75); }
+.bnews-close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.5);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 4px;
+  flex-shrink: 0;
+  transition: color .2s;
+}
+.bnews-close:hover { color: #fff; }
 </style>
 </head>
 <body>
 
+<!-- ═══ BREAKING NEWS BANNER ═══ -->
+<div class="bnews-wrap" id="bnewsWrap"></div>
+
 <!-- NAV -->
 <div class="nav">
-  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v3.5</span></div>
+  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v4.4</span></div>
   <div class="nav-tabs">
     <div class="nav-tab" onclick="showPage('p1',this)">📱 Input</div>
     <div class="nav-tab on" onclick="showPage('p2',this)">📊 Momentum</div>
@@ -1430,6 +1610,14 @@ canvas.spark { width: 100%; height: 68px; display: block; }
     <div id="overlapBars"></div>
   </div>
 
+  <!-- AUD/USD Impact Calculator -->
+  <div class="input-section" style="background:rgba(245,166,35,0.04);border:1px solid rgba(245,166,35,0.12);border-left:3px solid var(--yellow);border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div class="sh" style="margin-top:0;"><div class="st">AUD/USD Impact on Your Portfolio</div></div>
+    <div style="font-size:11px;color:var(--td);margin-bottom:10px;">See how AUD/USD moves affect the AUD value of your USD holdings. Current rate: <span id="fxImpactRate" style="color:var(--bb);font-family:var(--mono);font-weight:700;"></span></div>
+    <div id="fxImpactGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
+    <div style="font-size:10px;color:var(--tm);margin-top:10px;font-style:italic;">A stronger AUD reduces the value of your USD holdings in Australian dollars. At 0.72 AUD is historically elevated — a pullback to 0.66 would add ~A$8,000 to your portfolio value without any stock moving.</div>
+  </div>
+
   <!-- ASX Holdings -->
   <div class="input-section" style="background:rgba(72,168,255,0.04);border:1px solid rgba(72,168,255,0.10);border-left:3px solid var(--bb);border-radius:10px;padding:14px;margin-bottom:12px;">
     <div class="sh" style="margin-top:0;">
@@ -1470,13 +1658,15 @@ canvas.spark { width: 100%; height: 68px; display: block; }
     <textarea id="pasteImport" rows="6" placeholder="Paste block from Claude e.g.:
 REPLACE ASX
 SEMI | 894 | 37.62 | ASX
-AINF | 690 | 18.57 | ASX
 REPLACE USD
 GOOGL | 47.6537 | 401.13 | USD
-TSM | 76.0793 | 417.90 | USD
 CASH UPDATE
 AUD | 13145.42
-USD | 0" style="width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:7px;font-size:12px;font-family:var(--mono);outline:none;resize:vertical;line-height:1.7;margin-bottom:8px;"></textarea>
+USD | 0
+SECTOR UPDATE
+Semiconductors | 7.8 | Strong | +18.4% | in | AI chip demand overwhelming supply
+MACRO UPDATE
+AUD/USD | 0.6842 | +0.3% | true" style="width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:7px;font-size:12px;font-family:var(--mono);outline:none;resize:vertical;line-height:1.7;margin-bottom:8px;"></textarea>
     <div style="display:flex;gap:8px;align-items:center;">
       <button onclick="applyPasteImport()" style="background:var(--blue);border:none;color:#fff;padding:9px 18px;border-radius:6px;font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;">Apply Update</button>
       <button onclick="document.getElementById('pasteImport').value=''" style="background:var(--s1);border:1px solid var(--border);color:var(--td);padding:9px 14px;border-radius:6px;font-size:12px;font-family:var(--sans);cursor:pointer;">Clear</button>
@@ -1531,6 +1721,9 @@ USD | 0" style="width:100%;background:var(--s1);border:1px solid var(--border);c
 <div id="p2" class="page-wrap">
 <div class="main" style="max-width:1100px;">
 
+  <!-- MORNING NOTE -->
+  <div id="morningNote" style="margin-bottom:14px;"></div>
+
   <!-- ALERT BANNERS -->
   <div id="alertStrip"></div>
 
@@ -1558,6 +1751,16 @@ USD | 0" style="width:100%;background:var(--s1);border:1px solid var(--border);c
       <div class="rot-title">🔴 Outflows / Structural Decline</div>
       <div id="rotOut"></div>
     </div>
+  </div>
+
+  <!-- GLOBAL FLOWS -->
+  <div class="mom-section-header" style="background:rgba(176,110,224,0.06);border:1px solid rgba(176,110,224,0.15);color:var(--purple);">
+    <span style="display:block;width:3px;height:13px;background:var(--purple);border-radius:2px;flex-shrink:0;"></span>
+    🌐 Global Capital Flows — Where Money Is Moving Worldwide
+  </div>
+  <div style="background:rgba(176,110,224,0.03);border:1px solid rgba(176,110,224,0.08);border-radius:12px;padding:14px;margin-bottom:14px;">
+    <div style="font-size:11px;color:var(--td);margin-bottom:12px;font-style:italic;">Broad regional flows including crypto as risk-on indicator. ⚡ flags regions up 15%+ in 3 months. Updated with each brief from Claude.</div>
+    <div id="globalFlowsGrid"></div>
   </div>
 
   <!-- HOLDING MOMENTUM CARDS -->
@@ -1618,6 +1821,13 @@ USD | 0" style="width:100%;background:var(--s1);border:1px solid var(--border);c
         <strong style="color:var(--text);">Best sources:</strong> <span style="color:var(--bb);">hedgefollow.com</span> alerts you the moment a filing drops · <span style="color:var(--bb);">sec.gov/cgi-bin/browse-edgar</span> for raw filings · <span style="color:var(--bb);">whalewisdom.com</span> for comparison tools.
       </div>
     </div>
+  </div>
+
+  <!-- ── KEY DATES CALENDAR ── -->
+  <div class="i-section" style="background:#0d1f2a;border-left:3px solid var(--yellow);">
+    <div class="i-title">🗓 Key Dates — Earnings, Fed, RBA & Market Events</div>
+    <div class="i-summary">All upcoming dates that directly affect your portfolio. Red = within 7 days. Yellow = within 30 days. Updated manually — paste me a date to add it.</div>
+    <div id="keyDatesCalendar"></div>
   </div>
 
   <!-- ── INFLUENTIAL INVESTORS ── -->
@@ -2027,6 +2237,7 @@ let S = {
   yearlyData: {},
   priceHistory: {},
   reflections: [],
+  priceUpdated: {}, // ticker -> ISO date string of last price update
   activeType: 'stock'
 };
 
@@ -2118,112 +2329,169 @@ function save() {
 function renderHealthScore() {
   if (!S.holdings.length) return;
 
-  // Calculate composite score from all holdings
-  const scores = S.holdings.map(h => calcMOM(h.ticker, h.current).score);
-  const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-  const score = parseFloat(avg.toFixed(1));
+  const fx = parseFloat(document.getElementById('fxR').textContent) || 0.642;
+  const moms = S.holdings.map(h => ({ ticker: h.ticker, ...h, ...calcMOM(h.ticker, h.current) }));
 
-  // Gather signals for dot points
-  const moms = S.holdings.map(h => ({ ticker: h.ticker, ...calcMOM(h.ticker, h.current) }));
+  // ── SUB-SCORE 1: MOMENTUM ──
+  const avgMom = moms.reduce((s,m) => s + m.score, 0) / moms.length;
   const divs = moms.filter(m => m.div);
   const overbought = moms.filter(m => m.rsi > 70);
   const oversold = moms.filter(m => m.rsi < 32);
   const belowMa200 = moms.filter(m => !m.am200);
   const strongHolders = moms.filter(m => m.score >= 7.5);
   const weakHolders = moms.filter(m => m.score < 4.5);
+  let momScore = parseFloat(avgMom.toFixed(1));
+  if (divs.length) momScore = Math.max(1, momScore - 0.8);
+  const momNote = divs.length
+    ? `Divergence on ${divs.map(m=>m.ticker).join(', ')} — momentum warning active.`
+    : overbought.length
+    ? `${overbought.map(m=>m.ticker).join(', ')} overbought — strong but stretched.`
+    : oversold.length
+    ? `${oversold.map(m=>m.ticker).join(', ')} oversold — potential bounce signal.`
+    : strongHolders.length
+    ? `${strongHolders.map(m=>m.ticker).join(', ')} leading with strong momentum.`
+    : 'Momentum broadly neutral — no clear directional signal.';
 
-  // Determine colour
-  const col = score >= 7 ? 'var(--green)' : score >= 5 ? 'var(--yellow)' : 'var(--red)';
+  // ── SUB-SCORE 2: CONCENTRATION RISK ──
+  const totalEquity = moms.reduce((s,h) => {
+    const eq = h.market === 'ASX' ? h.shares*h.current : (h.shares*h.current)/fx;
+    return s + eq;
+  }, 0);
+  const positions = moms.map(h => {
+    const eq = h.market === 'ASX' ? h.shares*h.current : (h.shares*h.current)/fx;
+    return { ticker: h.ticker, pct: eq/totalEquity*100 };
+  }).sort((a,b) => b.pct - a.pct);
+  const maxPos = positions[0]?.pct || 0;
+  const semis = moms.filter(m => ['SEMI','SOXX','DRAM','TSM','NVDA'].includes(m.ticker));
+  const semiPct = semis.reduce((s,h) => {
+    const eq = h.market === 'ASX' ? h.shares*h.current : (h.shares*h.current)/fx;
+    return s + eq/totalEquity*100;
+  }, 0);
+  let concScore = 10;
+  if (maxPos > 25) concScore -= 3;
+  else if (maxPos > 18) concScore -= 2;
+  else if (maxPos > 12) concScore -= 1;
+  if (semiPct > 70) concScore -= 3;
+  else if (semiPct > 55) concScore -= 2;
+  else if (semiPct > 40) concScore -= 1;
+  if (moms.length < 4) concScore -= 2;
+  concScore = parseFloat(Math.max(1, Math.min(10, concScore)).toFixed(1));
+  const concNote = semiPct > 60
+    ? `${semiPct.toFixed(0)}% in semiconductors — high theme concentration. Consider a second uncorrelated theme.`
+    : maxPos > 20
+    ? `${positions[0].ticker} is ${maxPos.toFixed(0)}% of portfolio — single stock risk elevated.`
+    : `Concentration within acceptable range. Largest position ${positions[0]?.ticker} at ${maxPos.toFixed(0)}%.`;
 
-  // Build dot points
-  const pts = [];
-
-  // Strength point
-  if (strongHolders.length) {
-    pts.push({ cls: 'good', txt: `${strongHolders.map(m => m.ticker).join(', ')} showing strong momentum (score ≥7.5) — structural uptrend intact.` });
-  } else if (score >= 6) {
-    pts.push({ cls: 'good', txt: 'Broad momentum healthy — no single position in structural decline.' });
-  }
-
-  // Risk point
-  if (divs.length) {
-    pts.push({ cls: 'bad', txt: `⚠ Divergence on ${divs.map(m => m.ticker).join(', ')} — price at high but RSI not confirming. Reduce risk or tighten stops.` });
-  } else if (overbought.length) {
-    pts.push({ cls: 'warn', txt: `${overbought.map(m => m.ticker).join(', ')} overbought (RSI >70) — avoid adding at current levels. Expect consolidation.` });
-  } else if (oversold.length) {
-    pts.push({ cls: 'good', txt: `${oversold.map(m => m.ticker).join(', ')} oversold (RSI <32) — in an uptrend this is typically a buy opportunity.` });
-  }
-
-  // MA / structural point
-  if (belowMa200.length) {
-    pts.push({ cls: 'bad', txt: `${belowMa200.map(m => m.ticker).join(', ')} below 200-day MA — structural downtrend signal. Review thesis before adding.` });
-  } else if (weakHolders.length) {
-    pts.push({ cls: 'warn', txt: `${weakHolders.map(m => m.ticker).join(', ')} momentum weak (<4.5/10). Not in structural decline but watch closely.` });
-  } else {
-    pts.push({ cls: 'good', txt: 'All holdings above 200-day MA — broad structural uptrend intact across portfolio.' });
-  }
-
-  // Cash point
+  // ── SUB-SCORE 3: CASH POSITIONING ──
   const cashA = parseCash(document.getElementById('cAUD')?.value || '0');
   const cashU = parseCash(document.getElementById('cUSD')?.value || '0');
-  const fx = parseFloat(document.getElementById('fxR').textContent) || 0.642;
-  const totalCash = cashA + cashU / fx;
-  const totalPortfolio = parseFloat((document.getElementById('tTotal').textContent || '$0').replace(/[A$,]/g, '')) || 1;
-  const cashPct = (totalCash / totalPortfolio * 100).toFixed(0);
-  if (cashPct > 15) {
-    pts.push({ cls: 'warn', txt: `${cashPct}% in cash — significant dry powder available. Bull momentum favours deployment.` });
-  } else if (cashPct > 5) {
-    pts.push({ cls: '', txt: `${cashPct}% in cash — reasonable buffer. Available for opportunistic entries.` });
-  } else {
-    pts.push({ cls: '', txt: `${cashPct}% in cash — fully deployed. No dry powder for a pullback entry.` });
-  }
+  const totalCash = cashA + cashU/fx;
+  const totalPort = parseFloat((document.getElementById('tTotal')?.textContent||'$0').replace(/[A$,]/g,'')) || 1;
+  const cashPct = totalCash/totalPort*100;
+  let cashScore = 6;
+  if (cashPct >= 5 && cashPct <= 15) cashScore = 8;
+  else if (cashPct > 15 && cashPct <= 25) cashScore = 7;
+  else if (cashPct > 25) cashScore = 5;
+  else if (cashPct < 2) cashScore = 4;
+  if (overbought.length >= 2) cashScore = Math.min(cashScore + 1, 10);
+  cashScore = parseFloat(cashScore.toFixed(1));
+  const cashNote = cashPct > 20
+    ? `${cashPct.toFixed(0)}% cash — significant dry powder. Deploy on confirmed pullback signals.`
+    : cashPct > 8
+    ? `${cashPct.toFixed(0)}% cash — healthy buffer. Available for opportunistic entries.`
+    : cashPct > 3
+    ? `${cashPct.toFixed(0)}% cash — modest buffer. Limited capacity to buy dips.`
+    : 'Fully deployed — no dry powder. Consider taking partial profits on overbought positions.';
 
-  // Build verdict
-  const verdict = (() => {
-    if (score >= 8) return { txt: 'Portfolio is firing on all cylinders — momentum strong across the board. Stay the course and resist the urge to over-trade.', cls: 'good' };
-    if (score >= 7) return { txt: 'Portfolio in good shape overall. A few signals to watch but no red flags. Continue monitoring and let winners run.', cls: 'good' };
-    if (score >= 6) return { txt: 'Mostly positive but mixed signals in parts of the portfolio. Review your weakest positions and ensure thesis is still intact.', cls: '' };
-    if (score >= 5) return { txt: 'Neutral overall — the portfolio lacks clear directional momentum right now. Wait for stronger signals before adding significant new capital.', cls: 'warn' };
-    return { txt: 'Momentum is broadly weak. Do not add to positions on weakness without a clear catalyst. Review holdings for thesis changes.', cls: 'bad' };
-  })();
+  // ── SUB-SCORE 4: MACRO ALIGNMENT ──
+  const aboveAll = moms.filter(m => m.am200 && m.am50 && m.am20).length;
+  const macroScore = parseFloat(Math.min(10, Math.max(1,
+    5 + (aboveAll/moms.length)*3 - (divs.length*0.8) + (overbought.length < 2 ? 0.5 : -0.5)
+  )).toFixed(1));
+  const macroNote = aboveAll === moms.length
+    ? 'All holdings above key MAs — macro trend fully supportive.'
+    : aboveAll >= moms.length * 0.6
+    ? `${aboveAll}/${moms.length} holdings above all MAs — broadly supportive macro backdrop.`
+    : `Only ${aboveAll}/${moms.length} holdings above all MAs — macro headwinds present. Watch rate and inflation data.`;
 
-  // Build full scorecard rows
+  // ── OVERALL (weighted) ──
+  const score = parseFloat((momScore*0.35 + concScore*0.25 + cashScore*0.2 + macroScore*0.2).toFixed(1));
+  const col = score >= 7 ? 'var(--green)' : score >= 5 ? 'var(--yellow)' : 'var(--red)';
+
+  // ── DOT POINTS (top 3) ──
+  const pts = [];
+  if (strongHolders.length) pts.push({ cls:'good', txt:`${strongHolders.map(m=>m.ticker).join(', ')} — strong momentum (≥7.5/10), uptrend intact.` });
+  else if (score >= 6) pts.push({ cls:'good', txt:'Broad momentum healthy — no structural decline detected.' });
+  if (divs.length) pts.push({ cls:'bad', txt:`⚠ Divergence on ${divs.map(m=>m.ticker).join(', ')} — tighten stops.` });
+  else if (overbought.length) pts.push({ cls:'warn', txt:`${overbought.map(m=>m.ticker).join(', ')} overbought — avoid adding.` });
+  if (semiPct > 60) pts.push({ cls:'warn', txt:`${semiPct.toFixed(0)}% semiconductor concentration — consider diversifying.` });
+  else if (cashPct > 15) pts.push({ cls:'warn', txt:`${cashPct.toFixed(0)}% cash idle — deploy on next oversold signal.` });
+  else pts.push({ cls:'', txt:`${cashPct.toFixed(0)}% cash available for opportunistic entries.` });
+
+  // ── VERDICT ──
+  const verdict = score >= 8 ? { txt:'Portfolio firing on all cylinders. Stay the course.', cls:'good' }
+    : score >= 7 ? { txt:'Good shape overall. Let winners run, monitor divergences.', cls:'good' }
+    : score >= 6 ? { txt:'Mixed signals. Review weakest positions this week.', cls:'' }
+    : score >= 5 ? { txt:'Neutral momentum. Wait for clearer signals before deploying capital.', cls:'warn' }
+    : { txt:'Momentum broadly weak. Review each holding for thesis changes.', cls:'bad' };
+
+  // ── SCORECARD ROWS ──
   const scorecardMoms = S.holdings.map(h => ({ ticker: h.ticker, ...calcMOM(h.ticker, h.current) }));
-  const scorecardRows = scorecardMoms.sort((a, b) => b.score - a.score).map(m => {
-    const col = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+  const scorecardRows = scorecardMoms.sort((a,b) => b.score-a.score).map(m => {
+    const c = m.score>=7?'var(--green)':m.score>=5?'var(--yellow)':'var(--red)';
     const flags = [];
-    if (m.div) flags.push('⚠ Divergence');
-    if (m.rsi > 70) flags.push('🔥 Overbought');
-    if (m.rsi < 32) flags.push('📉 Oversold');
-    if (!m.am200) flags.push('↓ Below 200MA');
-    if (m.macdH < 0 && m.macd > 0) flags.push('📊 MACD fading');
+    if (m.div) flags.push('⚠ Div');
+    if (m.rsi>70) flags.push('🔥 OB');
+    if (m.rsi<32) flags.push('📉 OS');
+    if (!m.am200) flags.push('↓MA');
     return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
       <div style="font-family:var(--mono);font-size:12px;font-weight:700;min-width:52px;">${m.ticker}</div>
-      <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:${col};min-width:36px;">${m.score.toFixed(1)}</div>
-      <div style="flex:1;height:4px;background:var(--s2);border-radius:2px;"><div style="width:${m.score*10}%;height:100%;background:${col};border-radius:2px;"></div></div>
-      <div style="font-size:10px;color:var(--tm);text-align:right;">${flags.join(' · ') || '✓ Clean'}</div>
+      <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:${c};min-width:36px;">${m.score.toFixed(1)}</div>
+      <div style="flex:1;height:4px;background:var(--s2);border-radius:2px;"><div style="width:${m.score*10}%;height:100%;background:${c};border-radius:2px;"></div></div>
+      <div style="font-size:10px;color:var(--tm);text-align:right;">${flags.join(' · ')||'✓ Clean'}</div>
     </div>`;
   }).join('');
 
-  // Render
+  // ── SUB-SCORE CARDS ──
+  const subCard = (label, s, note) => {
+    const c = s>=7?'var(--green)':s>=5?'var(--yellow)':'var(--red)';
+    return `<div style="background:var(--s2);border-radius:8px;padding:10px 12px;">
+      <div style="font-size:9px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">${label}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+        <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:${c}">${s.toFixed(1)}</div>
+        <div style="flex:1;height:4px;background:var(--s1);border-radius:2px;overflow:hidden;"><div style="width:${s*10}%;height:100%;background:${c};border-radius:2px;"></div></div>
+      </div>
+      <div style="font-size:10px;color:var(--td);line-height:1.5;">${note}</div>
+    </div>`;
+  };
+
+  // ── RENDER ──
   document.getElementById('healthScore').textContent = score.toFixed(1);
   document.getElementById('healthScore').style.color = col;
-  document.getElementById('healthFill').style.width = (score * 10) + '%';
+  document.getElementById('healthFill').style.width = (score*10)+'%';
   document.getElementById('healthFill').style.background = col;
-  document.getElementById('healthPoints').innerHTML = pts.slice(0, 3).map(p =>
+  document.getElementById('healthPoints').innerHTML = pts.slice(0,3).map(p=>
     `<div class="health-pt ${p.cls}">${p.txt}</div>`
   ).join('');
 
-  // Expandable detail
   const detailEl = document.getElementById('healthDetail');
   if (detailEl) {
     detailEl.innerHTML = `
       <div style="padding:14px 0 6px;">
-        <div style="font-size:10px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Today's Verdict</div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Today's Verdict</div>
         <div class="health-pt ${verdict.cls}" style="font-size:13px;line-height:1.6;margin-bottom:14px;">${verdict.txt}</div>
+
+        <div style="font-size:10px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Sub-Scores</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+          ${subCard('Momentum', momScore, momNote)}
+          ${subCard('Concentration Risk', concScore, concNote)}
+          ${subCard('Cash Positioning', cashScore, cashNote)}
+          ${subCard('Macro Alignment', macroScore, macroNote)}
+        </div>
+
         <div style="font-size:10px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Holding Scorecard</div>
         ${scorecardRows}
-        <div style="font-size:10px;color:var(--tm);margin-top:10px;font-style:italic;">Score is composite of RSI, MACD, MA position, ROC and divergence. Tap ? Key on Momentum tab for full explanation.</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:10px;font-style:italic;">Overall = Momentum 35% · Concentration 25% · Cash 20% · Macro 20%</div>
       </div>`;
   }
 }
@@ -2422,25 +2690,63 @@ function applyPasteImport() {
   const result = document.getElementById('pasteResult');
   if (!raw) { result.textContent = 'Nothing to import'; result.style.color = 'var(--yellow)'; return; }
 
-  let updated = 0, added = 0, skipped = 0, cashUpdated = 0;
-  let mode = 'holdings'; // default mode
+  let updated = 0, added = 0, skipped = 0, cashUpdated = 0, sectorsUpdated = 0;
+  let mode = 'holdings';
 
   const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
 
   lines.forEach(line => {
-    // Detect block headers
     if (line.startsWith('HOLDINGS UPDATE')) { mode = 'holdings'; return; }
     if (line.startsWith('CASH UPDATE'))     { mode = 'cash';     return; }
     if (line.startsWith('REMOVE'))          { mode = 'remove';   return; }
+    if (line.startsWith('SECTOR UPDATE'))   { mode = 'sector';   return; }
+    if (line.startsWith('MACRO UPDATE'))    { mode = 'macro';    return; }
     if (line.startsWith('REPLACE ASX')) {
-      // Wipe all ASX holdings — rebuild from lines that follow
       S.holdings = S.holdings.filter(h => h.market !== 'ASX');
       mode = 'holdings'; return;
     }
     if (line.startsWith('REPLACE USD')) {
-      // Wipe all USD holdings — rebuild from lines that follow
       S.holdings = S.holdings.filter(h => h.market !== 'USD');
       mode = 'holdings'; return;
+    }
+
+    if (mode === 'sector') {
+      // Format: SECTOR NAME | SCORE | LABEL | 3M% | FLOW | NOTE
+      // e.g. Semiconductors | 7.8 | Strong | +18.4% | in | AI chip demand overwhelming supply
+      const parts = line.split('|').map(p => p.trim());
+      if (parts.length < 4) { skipped++; return; }
+      const name  = parts[0];
+      const score = parseFloat(parts[1]);
+      const lbl   = parts[2] || '';
+      const chg   = parts[3] || '';
+      const flow  = (parts[4] || 'neutral').toLowerCase();
+      const note  = parts[5] || '';
+      if (!name || isNaN(score)) { skipped++; return; }
+      const idx = SECTOR_DATA.findIndex(s => s.name.toLowerCase() === name.toLowerCase());
+      if (idx >= 0) {
+        SECTOR_DATA[idx] = { ...SECTOR_DATA[idx], score, lbl, chg, flow, note };
+      } else {
+        SECTOR_DATA.push({ name, score, lbl, chg, flow, note });
+      }
+      sectorsUpdated++;
+      return;
+    }
+
+    if (mode === 'macro') {
+      // Format: LABEL | VALUE | CHANGE | POSITIVE(true/false)
+      // e.g. AUD/USD | 0.6842 | +0.3% | true
+      const parts = line.split('|').map(p => p.trim());
+      if (parts.length < 3) { skipped++; return; }
+      const lbl = parts[0];
+      const val = parts[1];
+      const chg = parts[2];
+      const pos = parts[3]?.toLowerCase() !== 'false';
+      const idx = MACRO_DATA.findIndex(m => m.lbl.toLowerCase() === lbl.toLowerCase());
+      if (idx >= 0) {
+        MACRO_DATA[idx] = { lbl, val, chg, pos };
+      }
+      sectorsUpdated++;
+      return;
     }
 
     if (mode === 'remove') {
@@ -2453,24 +2759,23 @@ function applyPasteImport() {
     }
 
     if (mode === 'cash') {
-      // Format: AUD | 13145.42  or  USD | 0
       const parts = line.split('|').map(p => p.trim());
       if (parts.length < 2) { skipped++; return; }
       const currency = parts[0].toUpperCase();
       const amount   = parseFloat(parts[1].replace(/[$,]/g, ''));
       if (isNaN(amount)) { skipped++; return; }
       if (currency === 'AUD') {
-        document.getElementById('cAUD').value = '$' + amount.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('cAUD').value = '$' + amount.toLocaleString('en-AU', { minimumFractionDigits:2, maximumFractionDigits:2 });
         cashUpdated++;
       } else if (currency === 'USD') {
-        document.getElementById('cUSD').value = '$' + amount.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('cUSD').value = '$' + amount.toLocaleString('en-AU', { minimumFractionDigits:2, maximumFractionDigits:2 });
         cashUpdated++;
       }
       updateTotals();
       return;
     }
 
-    // Holdings mode: TICKER | SHARES | PRICE | MARKET
+    // Holdings mode
     const parts = line.split('|').map(p => p.trim());
     if (parts.length < 3) { skipped++; return; }
     const ticker = parts[0].toUpperCase();
@@ -2484,30 +2789,77 @@ function applyPasteImport() {
       S.holdings[idx].shares  = shares;
       S.holdings[idx].current = price;
       S.holdings[idx].market  = market;
+      S.priceUpdated[ticker]  = new Date().toISOString().split('T')[0];
       updated++;
     } else {
-      S.holdings.push({
-        ticker, name: ticker, market,
-        shares, entry: price, current: price,
-        signal: 'yellow', notes: 'Added via screenshot import'
-      });
-      S.priceHistory[ticker] = seedHistory({ ticker, current: price, entry: price });
+      S.holdings.push({ ticker, name:ticker, market, shares, entry:price, current:price, signal:'yellow', notes:'Added via screenshot import' });
+      S.priceHistory[ticker] = seedHistory({ ticker, current:price, entry:price });
+      S.priceUpdated[ticker] = new Date().toISOString().split('T')[0];
       added++;
     }
   });
 
   document.getElementById('pasteImport').value = '';
   render();
+  // Re-render momentum tab if sectors were updated
+  if (sectorsUpdated > 0 && document.getElementById('p2').classList.contains('on')) {
+    renderMomentum();
+  }
   save();
 
   const msg = [];
-  if (updated)     msg.push(`${updated} holding${updated>1?'s':''} updated`);
-  if (added)       msg.push(`${added} holding${added>1?'s':''} added`);
-  if (cashUpdated) msg.push(`cash updated`);
-  if (skipped)     msg.push(`${skipped} skipped`);
+  if (updated)        msg.push(`${updated} holding${updated>1?'s':''} updated`);
+  if (added)          msg.push(`${added} holding${added>1?'s':''} added`);
+  if (cashUpdated)    msg.push(`cash updated`);
+  if (sectorsUpdated) msg.push(`${sectorsUpdated} sector${sectorsUpdated>1?'s':''} updated`);
+  if (skipped)        msg.push(`${skipped} skipped`);
   result.textContent = '✓ ' + (msg.join(', ') || 'Done');
   result.style.color = 'var(--green)';
   setTimeout(() => result.textContent = '', 4000);
+}
+
+function renderFXImpact() {
+  const el = document.getElementById('fxImpactGrid');
+  const rateEl = document.getElementById('fxImpactRate');
+  if (!el) return;
+
+  const currentFX = parseFloat(document.getElementById('fxR').textContent) || 0.642;
+  if (rateEl) rateEl.textContent = currentFX.toFixed(4);
+
+  // Calculate total USD holdings value in USD
+  const usdHoldings = S.holdings.filter(h => h.market === 'USD');
+  const totalUSD = usdHoldings.reduce((s,h) => s + h.shares * h.current, 0);
+
+  if (totalUSD === 0) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--tm);grid-column:span 3;">No USD holdings to calculate impact for.</div>';
+    return;
+  }
+
+  // Scenarios — show current ± moves
+  const scenarios = [
+    { rate: 0.60, label: 'AUD 0.60', note: 'Weak AUD' },
+    { rate: 0.63, label: 'AUD 0.63', note: 'Moderate' },
+    { rate: 0.66, label: 'AUD 0.66', note: 'Historical avg' },
+    { rate: currentFX, label: `AUD ${currentFX.toFixed(2)}`, note: 'Current' },
+    { rate: 0.72, label: 'AUD 0.72', note: 'Elevated' },
+    { rate: 0.76, label: 'AUD 0.76', note: 'Strong AUD' },
+  ].sort((a,b) => a.rate - b.rate);
+
+  const currentAUD = totalUSD / currentFX;
+
+  el.innerHTML = scenarios.map(s => {
+    const audVal = totalUSD / s.rate;
+    const diff = audVal - currentAUD;
+    const isCurrent = Math.abs(s.rate - currentFX) < 0.005;
+    const col = isCurrent ? 'var(--bb)' : diff > 0 ? 'var(--green)' : 'var(--red)';
+    const diffStr = isCurrent ? 'Current' : `${diff > 0 ? '+' : ''}A$${Math.round(diff).toLocaleString()}`;
+    return `<div style="background:${isCurrent ? 'rgba(72,168,255,0.1)' : 'var(--s1)'};border:1px solid ${isCurrent ? 'var(--bb2)' : 'var(--border)'};border-radius:8px;padding:10px;text-align:center;">
+      <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:${isCurrent ? 'var(--bb)' : 'var(--text)'};">${s.label}</div>
+      <div style="font-size:9px;color:var(--tm);margin-bottom:5px;">${s.note}</div>
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);">A$${Math.round(audVal).toLocaleString()}</div>
+      <div style="font-family:var(--mono);font-size:11px;color:${col};margin-top:2px;">${diffStr}</div>
+    </div>`;
+  }).join('');
 }
 
 function render() {
@@ -2517,6 +2869,7 @@ function render() {
   renderYearly();
   updateTotals();
   renderOverlap();
+  renderFXImpact();
   renderHealthScore();
 }
 
@@ -2553,13 +2906,31 @@ function hRow(h, idx) {
   const pc = pct > 0 ? 'p' : pct < 0 ? 'n' : 'u';
   const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
 
-  // Get momentum score from Tab 2 engine
+  // Get momentum for stop calculation
   const m = calcMOM(h.ticker, h.current);
   const scoreCol = m.score >= 7 ? 'var(--green)' : m.score >= 5 ? 'var(--yellow)' : 'var(--red)';
   const flags = [];
   if (m.div) flags.push('⚠');
   if (m.rsi > 70) flags.push('🔥');
   if (!m.am200) flags.push('↓MA');
+
+  // Stop loss — based on 50MA approximation (current * 0.88 if above, 200MA approx if below)
+  const stopPct  = m.am50 ? 0.88 : 0.82;
+  const stopPrice = (h.current * stopPct).toFixed(2);
+  const stopDist  = (((h.current * stopPct) - h.current) / h.current * 100).toFixed(1);
+  const nearStop  = parseFloat(stopDist) > -6; // within 6% of stop
+  const stopCol   = nearStop ? 'var(--red)' : 'var(--tm)';
+  const cur = h.market === 'ASX' ? 'A$' : 'US$';
+
+  // Last updated timestamp
+  const updDate = S.priceUpdated[h.ticker];
+  const today2 = new Date().toISOString().split('T')[0];
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  const tsLabel = !updDate ? 'Price not verified'
+    : updDate === today2 ? 'Updated today'
+    : updDate === yesterday ? 'Updated yesterday'
+    : `Updated ${updDate}`;
+  const tsCol = !updDate ? 'var(--red)' : updDate === today2 ? 'var(--green)' : updDate === yesterday ? 'var(--yellow)' : 'var(--red)';
 
   return `<div class="hrow sig-${sc}">
     <div class="dot ${sc}"></div>
@@ -2569,7 +2940,14 @@ function hRow(h, idx) {
         <span class="tag">${h.market}</span>
         ${flags.length ? `<span style="font-size:10px;color:var(--yellow);">${flags.join(' ')}</span>` : ''}
       </div>
-      <div class="hrow-meta">${Number(h.shares).toLocaleString()} shares${h.notes ? ' · ' + h.notes.substring(0,36) + (h.notes.length>36?'…':'') : ''}</div>
+      <div class="hrow-meta">
+        ${Number(h.shares).toLocaleString()} shares
+        ${h.notes ? ' · ' + h.notes.substring(0,30) + (h.notes.length>30?'…':'') : ''}
+      </div>
+      <div style="font-size:9px;font-family:var(--mono);color:${tsCol};margin-top:2px;">
+        ● ${tsLabel}
+        <span style="color:${stopCol};margin-left:8px;">${nearStop ? '⚠' : '▼'} Stop ${cur}${stopPrice} (${stopDist}%)</span>
+      </div>
     </div>
     <div class="hrow-price">
       <div class="hrow-cur">${cur}${h.current.toFixed(2)}</div>
@@ -2640,7 +3018,35 @@ function getWatchMomentum(ticker) {
   return { ...m, div: m.rsi > 70 && m.roc20 < m.roc20 * 0.5 };
 }
 
-function renderWatchlist() {
+  const m = WATCH_MOCK[ticker] || { score:5.5, rsi:50, roc20:5.0, trend:'→ Neutral' };
+  return { ...m, div: m.rsi > 70 && m.roc20 < m.roc20 * 0.5 };
+}
+
+// Entry zones and stop levels for watchlist — updated with each brief
+const WATCH_ENTRY_STOPS = {
+  COHR: { buyZone:[260, 285],  idealEntry:252, stop:228, note:'Buy on pullback to 50MA. Ideal entry RSI <55. Stop below 200MA.' },
+  AMZN: { buyZone:[250, 272],  idealEntry:242, stop:228, note:'AWS re-acceleration thesis. Enter on broad market dip. Stop below $228.' },
+  NDQ:  { buyZone:[43.5, 46.5],idealEntry:42.0,stop:39.8,note:'AUD Nasdaq anchor. Buy any 5%+ pullback. Stop below $39.80.' },
+  INTC: { buyZone:[82, 92],    idealEntry:78,  stop:72,  note:'Triple conviction. Enter on RSI pullback below 60. Stop below $72 (200MA area).' },
+  XMET: { buyZone:[15.8, 17.2],idealEntry:15.0,stop:14.2,note:'Copper/transition metals. Thesis is slow-burn. Enter on any RSI <45.' },
+  MSFT: { buyZone:[415, 438],  idealEntry:408, stop:388, note:'Azure growth thesis. Enter on 5%+ pullback. Stop below $388 (50MA).' },
+  META: { buyZone:[572, 608],  idealEntry:555, stop:522, note:'AI ad revenue. Strong momentum — enter on any 7%+ pullback from highs.' },
+  PLTR: { buyZone:[115, 128],  idealEntry:108, stop:98,  note:'RSI 70 — stretched. Wait for RSI pullback to 58 before entering.' },
+  GLD:  { buyZone:[298, 316],  idealEntry:290, stop:278, note:'Gold hedge. Enter on any macro fear spike or USD strength reversal.' },
+  LMT:  { buyZone:[478, 505],  idealEntry:465, stop:448, note:'Defence spending thesis. Enter on any broad market selloff.' },
+  BHP:  { buyZone:[45.5, 49.5],idealEntry:44.0,stop:42.0,note:'ASX listed. Copper exposure. Enter if commodity cycle turns.' },
+  XOM:  { buyZone:[112, 120],  idealEntry:108, stop:102, note:'AI gas demand thesis. Enter on oil pullback. 4.2% dividend yield.' },
+  RDDT: { buyZone:[132, 148],  idealEntry:125, stop:116, note:'AI training data licensing. High beta. Enter on market dip only.' },
+};
+
+function getEntryStop(ticker, currentPrice) {
+  const d = WATCH_ENTRY_STOPS[ticker];
+  if (!d || !currentPrice) return null;
+  const inZone = currentPrice >= d.buyZone[0] && currentPrice <= d.buyZone[1];
+  const nearStop = currentPrice <= d.stop * 1.05; // within 5% of stop
+  const belowIdeal = currentPrice <= d.idealEntry;
+  return { ...d, inZone, nearStop, belowIdeal, currentPrice };
+}
   if (!S.watchlist.length) {
     document.getElementById('wList').innerHTML = '<div class="empty">No watchlist items</div>';
     return;
@@ -2664,6 +3070,7 @@ function renderWatchlist() {
         </div>
         <div class="wrow-score" style="color:${scoreCol}">${m.score.toFixed(1)}<span style="font-size:10px;color:var(--tm)">/10</span></div>
         <div class="wrow-trend" style="color:${scoreCol}">${m.trend}</div>
+        <button onclick="buyFromWatchlist('${w.ticker}','${w.name||w.ticker}',${i})" style="background:rgba(0,217,166,0.12);border:1px solid rgba(0,217,166,0.3);color:var(--green);border-radius:5px;padding:3px 9px;cursor:pointer;font-size:11px;font-weight:600;font-family:var(--mono);margin-right:4px;">Buy</button>
         <button class="btn-rm" onclick="removeW(${i})">−</button>
       </div>
       <div class="wrow-bottom">
@@ -2743,12 +3150,18 @@ function updateTotals() {
   });
   const cashA = parseCash(document.getElementById('cAUD').value);
   const cashU = parseCash(document.getElementById('cUSD').value);
-  const totalA = audH + cashA;
-  const totalUinA = (usdH + cashU) / fx;
-  const total = totalA + totalUinA;
-  document.getElementById('tAUD').textContent = 'A$' + Math.round(totalA).toLocaleString();
-  document.getElementById('tUSD').textContent = 'A$' + Math.round(totalUinA).toLocaleString();
+  const totalA    = audH + cashA;
+  const usdInAUD  = (usdH + cashU) / fx;
+  const total     = totalA + usdInAUD;
+
+  document.getElementById('tAUD').textContent  = 'A$' + Math.round(totalA).toLocaleString();
+  // Show USD holdings in both USD and AUD equivalent
+  document.getElementById('tUSD').textContent  = 'A$' + Math.round(usdInAUD).toLocaleString();
   document.getElementById('tTotal').textContent = 'A$' + Math.round(total).toLocaleString();
+
+  // Update the FX impact calculator rate display if visible
+  const fxRateEl = document.getElementById('fxImpactRate');
+  if (fxRateEl) fxRateEl.textContent = fx.toFixed(4);
 }
 
 function parseCash(v) {
@@ -2758,6 +3171,37 @@ function parseCash(v) {
 // ─────────────────────────────────────────────
 // SCRAPE (simulated — real scraper goes on Mac Mini server)
 // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// YAHOO FINANCE PRICE FETCH
+// ─────────────────────────────────────────────
+async function fetchYahooPrice(ticker, market) {
+  // Yahoo Finance symbol mapping for ASX stocks
+  const symbol = market === 'ASX' ? `${ticker}.AX` : ticker;
+  try {
+    // Use Yahoo Finance v8 endpoint — works from browser without CORS issues via proxy
+    const proxies = [
+      `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`,
+      `https://query2.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`,
+    ];
+    for (const url of proxies) {
+      try {
+        const res = await fetch(url, {
+          headers: { 'Accept': 'application/json' },
+          signal: AbortSignal.timeout(5000)
+        });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const meta = data?.chart?.result?.[0]?.meta;
+        if (!meta) continue;
+        // Use regularMarketPrice for live, previousClose as fallback
+        const price = meta.regularMarketPrice || meta.chartPreviousClose;
+        if (price && price > 0) return parseFloat(price.toFixed(2));
+      } catch(e) { continue; }
+    }
+  } catch(e) {}
+  return null; // Fetch failed — will keep existing price
+}
+
 async function runScrape() {
   const btn = document.getElementById('scrapeBtn');
   const bar = document.getElementById('sbar');
@@ -2766,38 +3210,54 @@ async function runScrape() {
   btn.textContent = '⟳ Running...';
   bar.classList.add('on');
 
-  const steps = [
-    'Fetching live AUD/USD rate...',
-    'Loading ASX prices — SEMI, AINF, EMKT...',
-    'Loading USD prices — DRAM, URNM, TSM, GOOGL, ARTY, SOXX...',
-    'Seeding history for new holdings...',
-    'Recalculating momentum signals...',
-    'Updating watchlist momentum...',
-    'Done ✓'
-  ];
-  for (const s of steps) {
-    txt.textContent = s;
-    if (s.includes('AUD/USD')) await fetchFXRate();
-    await new Promise(r => setTimeout(r, 340));
-  }
-
-  // Update prices and log to history for ALL current holdings
   const today = new Date().toISOString().split('T')[0];
-  S.holdings.forEach(h => {
-    const move = (Math.random() - 0.47) * 0.013;
-    h.current = parseFloat((h.current * (1 + move)).toFixed(2));
-    // Seed history if this is a new holding
+
+  // Step 1 — AUD/USD first so all conversions use fresh rate
+  txt.textContent = 'Fetching live AUD/USD rate...';
+  await fetchFXRate();
+  await new Promise(r => setTimeout(r, 200));
+  // Update totals immediately with new FX rate before price fetch
+  updateTotals();
+  renderFXImpact();
+
+  // Step 2 — Fetch real prices from Yahoo Finance for each holding
+  let fetched = 0, failed = 0;
+  for (const h of S.holdings) {
+    txt.textContent = `Fetching ${h.ticker} price...`;
+    const price = await fetchYahooPrice(h.ticker, h.market);
+    if (price !== null) {
+      h.current = price;
+      S.priceUpdated[h.ticker] = today;
+      fetched++;
+    } else {
+      // Keep existing price, mark as simulated
+      failed++;
+    }
+    // Log to 90-day price history regardless
     if (!S.priceHistory[h.ticker] || S.priceHistory[h.ticker].length < 10) {
       S.priceHistory[h.ticker] = seedHistory(h);
     }
     const hist = S.priceHistory[h.ticker];
-    if (!hist.length || hist[hist.length - 1].date !== today) {
+    if (!hist.length || hist[hist.length-1].date !== today) {
       hist.push({ date: today, price: h.current });
       if (hist.length > 90) hist.shift();
     } else {
-      hist[hist.length - 1].price = h.current;
+      hist[hist.length-1].price = h.current;
     }
-  });
+    await new Promise(r => setTimeout(r, 150)); // rate limit
+  }
+
+  // Step 3 — Momentum recalculation
+  txt.textContent = 'Recalculating momentum signals...';
+  await new Promise(r => setTimeout(r, 300));
+  S.holdings.forEach(h => calcMOM(h.ticker, h.current));
+
+  // Step 4 — Done
+  const resultMsg = failed > 0
+    ? `✓ ${fetched} live · ${failed} kept last price`
+    : `✓ All ${fetched} prices live`;
+  txt.textContent = resultMsg;
+  await new Promise(r => setTimeout(r, 1200));
 
   const now = new Date();
   const ts = now.toLocaleDateString('en-AU') + ' ' + now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' });
@@ -2807,20 +3267,13 @@ async function runScrape() {
   btn.disabled = false;
   btn.textContent = '⟳ Scrape';
 
-  // Always re-render Tab 1 with updated prices
   render();
-
-  // Always recalculate and cache momentum for ALL holdings
-  // so Tab 2 is ready when user switches to it
-  S.holdings.forEach(h => calcMOM(h.ticker, h.current));
-
-  // If momentum tab already visible, refresh it immediately
+  renderFXImpact(); // refresh with new FX rate and prices
   if (document.getElementById('p2').classList.contains('on')) {
     renderMomentum();
     setTimeout(() => S.holdings.forEach(h => drawSpark(h.ticker)), 80);
   }
   if (document.getElementById('p3').classList.contains('on')) renderIntel();
-  // Always update investor overlap with latest holdings
   updateInvestorOverlap();
   save();
 }
@@ -2943,6 +3396,27 @@ function saveW() {
   renderWatchlist();
   save();
 }
+function buyFromWatchlist(ticker, name, watchIdx) {
+  // Determine market from watchlist data
+  const w = S.watchlist[watchIdx];
+  const asxTickers = ['NDQ','SEMI','AINF','EMKT','XMET','HACK','AIPO','SMRF','BHP'];
+  const mkt = asxTickers.includes(ticker) ? 'ASX' : 'USD';
+  const price = WATCH_PRICES[ticker] || 0;
+
+  // Open the add holding modal pre-filled
+  openModal(mkt);
+  setTimeout(() => {
+    document.getElementById('fTk').value  = ticker;
+    document.getElementById('fNm').value  = name;
+    document.getElementById('fCu').value  = price || '';
+    document.getElementById('fEn').value  = price || '';
+    document.getElementById('fMkt').value = mkt;
+    document.getElementById('mTitle').textContent = `Buy ${ticker} — from Watchlist`;
+    // Focus shares field so user just types shares and saves
+    document.getElementById('fSh').focus();
+  }, 50);
+}
+
 function removeW(idx) {
   S.watchlist.splice(idx, 1);
   renderWatchlist();
@@ -3038,6 +3512,79 @@ const SPEC_DATA = [
     desc:'Pure SMR/nuclear ETF launched Feb 2026. Holds Oklo, NexGen Energy, Uranium Energy Corp. More diversified than URNM across the full nuclear value chain.',
     rev:'ETF structure — all underlying holdings revenue generating.' },
 ];
+
+function renderKeyDates() {
+  const el = document.getElementById('keyDatesCalendar');
+  if (!el) return;
+
+  const KEY_DATES = [
+    // ── EARNINGS ──
+    { date:'2026-05-20', label:'NVDA — Nvidia Q1 FY27 Earnings', type:'earnings', impact:'critical', tickers:['NVDA','SOXX','SEMI'], note:'Most important date for your portfolio. Goldman raised estimates 12%. H200 China export approval announced same week. A beat will lift NVDA, SOXX and SEMI simultaneously.' },
+    { date:'2026-05-28', label:'AMZN — Amazon Q1 2026 Earnings', type:'earnings', impact:'high', tickers:['AMZN','GOOGL'], note:'AWS re-acceleration thesis on trial. Watch cloud revenue growth rate — if above 22% it\'s a beat.' },
+    { date:'2026-06-04', label:'AVGO — Broadcom Q2 FY26 Earnings', type:'earnings', impact:'medium', tickers:['SOXX','SEMI'], note:'Custom AI chip demand indicator. Top 5 holding in SOXX — results move the ETF.' },
+    { date:'2026-07-15', label:'TSM — TSMC Q2 2026 Earnings', type:'earnings', impact:'critical', tickers:['TSM'], note:'Your largest USD holding. Revenue guidance is the key number. Watch for tariff impact comments on Arizona fab timeline.' },
+    { date:'2026-07-22', label:'GOOGL — Alphabet Q2 2026 Earnings', type:'earnings', impact:'high', tickers:['GOOGL'], note:'Cloud growth rate + Anthropic commentary. Druckenmiller tripled his stake — watch if thesis is confirmed.' },
+    { date:'2026-07-24', label:'MSFT — Microsoft Q4 FY26 Earnings', type:'earnings', impact:'high', tickers:['MSFT'], note:'Azure growth rate. Above 33% = beat. Copilot monetisation progress key.' },
+    { date:'2026-07-29', label:'META — Meta Q2 2026 Earnings', type:'earnings', impact:'medium', tickers:['META'], note:'AI ad revenue + Llama open-source strategy update.' },
+    { date:'2026-07-31', label:'AMZN — Amazon Q2 2026 Earnings', type:'earnings', impact:'high', tickers:['AMZN'], note:'Second quarter in a row as Druckenmiller\'s new position. AWS commentary critical.' },
+    // ── FED ──
+    { date:'2026-06-17', label:'FOMC Meeting — Fed Rate Decision', type:'fed', impact:'critical', tickers:['All USD holdings'], note:'First decision under new Chair Kevin Warsh. Rate hike probability now 45% for sometime in 2026. Any hawkish language will hit your growth holdings.' },
+    { date:'2026-07-29', label:'FOMC Meeting — Fed Rate Decision', type:'fed', impact:'critical', tickers:['All USD holdings'], note:'Second Warsh meeting. If inflation stays hot, this is where a hike becomes more likely. Watch CPI prints in June and July.' },
+    { date:'2026-09-16', label:'FOMC Meeting — Fed Rate Decision', type:'fed', impact:'high', tickers:['All USD holdings'], note:'Third quarter decision. Market will be pricing in full year by now.' },
+    // ── RBA ──
+    { date:'2026-06-02', label:'RBA Board Meeting — Rate Decision', type:'rba', impact:'high', tickers:['AUD/USD','AINF','EMKT','SEMI'], note:'Affects AUD/USD directly which impacts the AUD value of all your USD holdings. Watch inflation data in May.' },
+    { date:'2026-07-07', label:'RBA Board Meeting — Rate Decision', type:'rba', impact:'high', tickers:['AUD/USD'], note:'July meeting. If AUD stays above 0.72, consider whether currency risk is offsetting USD gains.' },
+    // ── MACRO ──
+    { date:'2026-08-11', label:'China Tariff Pause Expiry — 90-Day Ceasefire Ends', type:'macro', impact:'critical', tickers:['TSM','GOOGL','SOXX','NVDA'], note:'The 90-day pause announced May 13 expires. If tariffs resume, TSM is your most exposed position. Mark this date and review sizing in July.' },
+    { date:'2026-06-11', label:'US CPI Report — May Inflation Data', type:'macro', impact:'high', tickers:['All holdings'], note:'Will determine whether the rate hike probability rises further. Hot print = bad for all your growth holdings.' },
+    { date:'2026-07-14', label:'US CPI Report — June Inflation Data', type:'macro', impact:'high', tickers:['All holdings'], note:'Second consecutive hot print would likely trigger rate hike expectations for September.' },
+    // ── SMSF ──
+    { date:'2026-06-30', label:'SMSF Financial Year End — Australia', type:'smsf', impact:'high', tickers:['SMSF'], note:'End of 2025-26 financial year. Review contributions, capital gains, and tax position before June 30. Speak to your adviser.' },
+    { date:'2026-10-31', label:'SMSF Annual Return Due — ATO', type:'smsf', impact:'medium', tickers:['SMSF'], note:'Annual return lodgement deadline. Ensure all transactions are recorded including the SOXX sale and any new purchases.' },
+  ];
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const typeIcon = { earnings:'📊', fed:'🏦', rba:'🇦🇺', macro:'🌐', smsf:'📋' };
+  const typeLabel = { earnings:'EARNINGS', fed:'FED MEETING', rba:'RBA MEETING', macro:'MACRO EVENT', smsf:'SMSF' };
+  const impactBorder = { critical:'var(--red)', high:'var(--yellow)', medium:'var(--bb)' };
+
+  const sorted = [...KEY_DATES]
+    .map(d => ({ ...d, dateObj: new Date(d.date) }))
+    .sort((a,b) => a.dateObj - b.dateObj);
+
+  el.innerHTML = sorted.map(d => {
+    const daysUntil = Math.ceil((d.dateObj - today) / 86400000);
+    const isPast = daysUntil < 0;
+    const isUrgent = daysUntil >= 0 && daysUntil <= 7;
+    const isSoon = daysUntil > 7 && daysUntil <= 30;
+
+    const statusCol = isPast ? 'var(--tm)' : isUrgent ? 'var(--red)' : isSoon ? 'var(--yellow)' : 'var(--td)';
+    const statusTxt = isPast
+      ? 'Past'
+      : daysUntil === 0 ? '🔴 TODAY'
+      : isUrgent ? `🔴 ${daysUntil}d`
+      : isSoon ? `🟡 ${daysUntil}d`
+      : `📅 ${daysUntil}d`;
+    const rowBg = isPast ? '' : isUrgent ? 'background:rgba(240,69,69,0.06);' : isSoon ? 'background:rgba(245,166,35,0.05);' : '';
+    const borderLeft = isPast ? 'var(--border)' : impactBorder[d.impact] || 'var(--border)';
+    const dateStr = d.dateObj.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+
+    return `<div style="display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:start;padding:10px 10px 10px 12px;border-bottom:1px solid var(--border);border-left:3px solid ${borderLeft};margin-bottom:3px;${rowBg}${isPast?'opacity:.45;':''}">
+      <div style="text-align:center;">
+        <div style="font-size:18px;">${typeIcon[d.type]}</div>
+        <div style="font-size:8px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;margin-top:2px;">${typeLabel[d.type]}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:${isPast?'var(--tm)':'var(--text)'};margin-bottom:2px;">${d.label}</div>
+        <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-bottom:4px;">${dateStr} · Affects: ${d.tickers.join(', ')}</div>
+        <div style="font-size:11px;color:var(--td);line-height:1.5;">${d.note}</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${statusCol};white-space:nowrap;text-align:right;min-width:48px;">${statusTxt}</div>
+    </div>`;
+  }).join('');
+}
 
 function renderFilingCalendar() {
   const cal = document.getElementById('filingCalendar');
@@ -3160,6 +3707,7 @@ function renderIntel() {
 
   // Render 13F filing calendar
   renderFilingCalendar();
+  renderKeyDates();
 
   // Update investor overlap with current holdings
   updateInvestorOverlap();
@@ -3339,7 +3887,38 @@ function renderWatchMomCards() {
           <div class="ind-sub">${m.score>=7?'Entry zone':'Monitor'}</div>
           <div class="ind-tip"><strong>Score ${m.score}/10</strong><br>${m.score>=7.5?'Strong — reasonable entry window if thesis is solid.':m.score>=6?'Positive — monitor for stronger signal before committing.':'Neutral — wait for clearer direction.'}</div>
         </div>
-      </div>`;
+      </div>
+
+      ${(() => {
+        const es = getEntryStop(w.ticker, priceVal);
+        if (!es) return '';
+        const zoneCol = es.inZone ? 'var(--green)' : es.belowIdeal ? 'var(--bb)' : 'var(--tm)';
+        const zoneBg  = es.inZone ? 'rgba(0,217,166,0.08)' : 'var(--s1)';
+        const zoneBdr = es.inZone ? '1px solid rgba(0,217,166,0.25)' : '1px solid var(--border)';
+        const stopCol = es.nearStop ? 'var(--red)' : 'var(--tm)';
+        const cur = mkt === 'ASX' ? 'A$' : 'US$';
+        return `<div style="background:${zoneBg};border:${zoneBdr};border-radius:8px;margin:0 18px 12px;padding:10px 12px;">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--tm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Entry & Stop Levels</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:7px;">
+            <div>
+              <div style="font-size:9px;color:var(--tm);font-family:var(--mono);margin-bottom:2px;">BUY ZONE</div>
+              <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${zoneCol};">${cur}${es.buyZone[0]}–${es.buyZone[1]}</div>
+              ${es.inZone ? '<div style="font-size:9px;color:var(--green);margin-top:2px;">✓ In zone now</div>' : ''}
+            </div>
+            <div>
+              <div style="font-size:9px;color:var(--tm);font-family:var(--mono);margin-bottom:2px;">IDEAL ENTRY</div>
+              <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--bb);">${cur}${es.idealEntry}</div>
+              ${es.belowIdeal ? '<div style="font-size:9px;color:var(--bb);margin-top:2px;">⚡ Below ideal</div>' : ''}
+            </div>
+            <div>
+              <div style="font-size:9px;color:var(--tm);font-family:var(--mono);margin-bottom:2px;">STOP LOSS</div>
+              <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${stopCol};">${cur}${es.stop}</div>
+              ${es.nearStop ? '<div style="font-size:9px;color:var(--red);margin-top:2px;">⚠ Near stop</div>' : ''}
+            </div>
+          </div>
+          <div style="font-size:10px;color:var(--td);line-height:1.5;">${es.note}</div>
+        </div>`;
+      })()}`;
     grid.appendChild(card);
   });
 }
@@ -3618,11 +4197,88 @@ function renderHyperCards() {
 }
 
 // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// MORNING NOTE — WHAT TO DO NEXT
+// ─────────────────────────────────────────────
+function renderMorningNote() {
+  const el = document.getElementById('morningNote');
+  if (!el || !S.holdings.length) return;
+
+  const fx = parseFloat(document.getElementById('fxR').textContent) || 0.642;
+  const cashAUD = parseCash(document.getElementById('cAUD')?.value || '0');
+  const cashUSD = parseCash(document.getElementById('cUSD')?.value || '0');
+  const totalCashAUD = cashAUD + (cashUSD / fx);
+  const cashPct = totalCashAUD > 0
+    ? ((totalCashAUD / (parseFloat((document.getElementById('tTotal')?.textContent||'$0').replace(/[A$,]/g,''))||1)) * 100).toFixed(0)
+    : 0;
+
+  const moms = S.holdings.map(h => ({ ...h, ...calcMOM(h.ticker, h.current) }));
+  const avgScore = (moms.reduce((s,m) => s + m.score, 0) / moms.length).toFixed(1);
+  const divs = moms.filter(m => m.div);
+  const overbought = moms.filter(m => m.rsi > 73).sort((a,b) => b.rsi - a.rsi);
+  const oversold = moms.filter(m => m.rsi < 33).sort((a,b) => a.rsi - b.rsi);
+  const belowAll = moms.filter(m => !m.am200 && !m.am50 && !m.am20);
+  const strong = moms.filter(m => m.score >= 7.5).sort((a,b) => b.score - a.score);
+  const weak = moms.filter(m => m.score < 4.5).sort((a,b) => a.score - b.score);
+
+  const actions = [];
+
+  if (divs.length) {
+    divs.forEach(m => actions.push({ type:'urgent', emoji:'🔴', label:'Urgent',
+      text:`<strong>${m.ticker}</strong> — RSI divergence active. Price at recent high but momentum not confirming. Consider reducing 20–25% or tightening stop to 20-day MA.` }));
+  }
+  if (overbought.length) {
+    const ob = overbought[0];
+    actions.push({ type:'urgent', emoji:'🔴', label:'Urgent',
+      text:`<strong>${ob.ticker}</strong> RSI ${ob.rsi} — extreme overbought. Do not add. Consider trimming if RSI stays above 78 for 3+ sessions.` });
+  }
+  if (oversold.length) {
+    oversold.forEach(m => actions.push({ type:'week', emoji:'🟡', label:'This Week',
+      text:`<strong>${m.ticker}</strong> RSI ${m.rsi} — oversold. Watch for RSI bounce above 38 as entry confirmation. ${totalCashAUD > 5000 ? `You have A$${Math.round(totalCashAUD).toLocaleString()} available.` : ''}` }));
+  }
+  if (belowAll.length) {
+    belowAll.forEach(m => actions.push({ type:'week', emoji:'🟡', label:'This Week',
+      text:`<strong>${m.ticker}</strong> below all 3 MAs. Don't average down without confirmed RSI bounce above 40.` }));
+  }
+  if (totalCashAUD > 3000) {
+    const best = weak.length ? weak[0] : oversold.length ? oversold[0] : null;
+    if (best) {
+      actions.push({ type:'ready', emoji:'🟢', label:'When Ready',
+        text:`<strong>A$${Math.round(totalCashAUD).toLocaleString()} (${cashPct}% cash)</strong> available. Consider <strong>${best.ticker}</strong> when RSI drops below 32 and bounces above 38.` });
+    } else {
+      actions.push({ type:'ready', emoji:'🟢', label:'When Ready',
+        text:`<strong>A$${Math.round(totalCashAUD).toLocaleString()} (${cashPct}% cash)</strong> available. Hold until a clear pullback in a high-conviction name.` });
+    }
+  }
+  if (strong.length) {
+    actions.push({ type:'ready', emoji:'🟢', label:'Holding Well',
+      text:`<strong>${strong.map(m=>m.ticker).join(', ')}</strong> — score ${strong[0].score}/10. Let winners run.` });
+  }
+  actions.push({ type:'info', emoji:'📊', label:'Portfolio',
+    text:`Average momentum <strong>${avgScore}/10</strong> across ${moms.length} holdings. ${parseFloat(avgScore) >= 7 ? 'Broadly healthy.' : parseFloat(avgScore) >= 5.5 ? 'Mixed signals — monitor closely.' : 'Momentum weak — review each position.'}` });
+
+  const ts = new Date().toLocaleDateString('en-AU', { weekday:'short', day:'numeric', month:'short' });
+  el.innerHTML = `<div class="mnote">
+    <div class="mnote-header">
+      <div class="mnote-title">📋 What To Do Next — Morning Note</div>
+      <div class="mnote-ts">${ts}</div>
+    </div>
+    <div class="mnote-body">
+      ${actions.map(a => `<div class="mnote-action ${a.type}">
+        <div class="mnote-dot">${a.emoji}</div>
+        <div><div class="mnote-lbl">${a.label}</div><div class="mnote-text">${a.text}</div></div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
 function renderMomentum() {
+  renderMorningNote();
   renderAlerts();
   renderMacroStrip();
   renderSectorGrid();
   renderRotation();
+  renderGlobalFlows();
   renderMomCards();
   renderWatchMomCards();
   renderHyperCards();
@@ -4078,7 +4734,7 @@ function copyBrief() {
   navigator.clipboard.writeText(text).then(() => {
     const btns = document.querySelectorAll('[onclick="copyBrief()"]');
     btns.forEach(b => { const orig = b.textContent; b.textContent = '✓ Copied!'; setTimeout(() => b.textContent = orig, 2000); });
-  }).catch(() => { console.log(generateBrief()); });
+  }).catch(() => { });
 }
 
 function showKey() { document.getElementById('keyPanel').classList.add('on'); }
@@ -4094,8 +4750,17 @@ function hideSectorKey() { document.getElementById('sectorKeyPanel').classList.r
 // ─────────────────────────────────────────────
 function toggleTheme() {
   document.body.classList.toggle('lm');
-  document.getElementById('themeBtn').textContent =
-    document.body.classList.contains('lm') ? '🌙' : '☀';
+  const isLight = document.body.classList.contains('lm');
+  document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀';
+  localStorage.setItem('pats_theme', isLight ? 'light' : 'dark');
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem('pats_theme');
+  if (saved === 'light') {
+    document.body.classList.add('lm');
+    document.getElementById('themeBtn').textContent = '🌙';
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -4108,7 +4773,110 @@ document.querySelectorAll('.overlay').forEach(el => {
 });
 
 // ─────────────────────────────────────────────
-// HISTORY TAB
+// GLOBAL FLOWS — Updated May 16, 2026
+// ─────────────────────────────────────────────
+const GLOBAL_FLOWS = [
+  { region:'United States', flag:'🇺🇸', etf:'SPY/QQQ', score:7.2, flow:'in',      r3m:'+18.4%', lbl:'Strong',            note:'AI earnings cycle driving record highs. S&P 7,500+, Nasdaq all-time high. Watch rate hike risk from sticky 3.8% CPI.', spike:true },
+  { region:'India',         flag:'🇮🇳', etf:'INDA',    score:7.8, flow:'in',      r3m:'+22.6%', lbl:'Structural growth', note:'Fastest growing G20 economy. Manufacturing shift from China accelerating. Young population, Modi infrastructure buildout.', spike:true },
+  { region:'Japan',         flag:'🇯🇵', etf:'EWJ',     score:6.8, flow:'in',      r3m:'+14.2%', lbl:'Positive',          note:'Corporate governance reforms driving shareholder returns. Weak yen boosting exports. Semiconductor equipment leaders benefiting from AI.', spike:false },
+  { region:'Southeast Asia',flag:'🌏', etf:'ASEA',    score:6.4, flow:'in',      r3m:'+12.8%', lbl:'Rising',            note:'Vietnam + Indonesia key manufacturing beneficiaries of China+1 supply chain shift. Young demographics, growing tech.', spike:false },
+  { region:'Bitcoin/Crypto',flag:'₿',  etf:'BTC/ETH', score:6.6, flow:'in',      r3m:'+28.4%', lbl:'Risk-on indicator', note:'BTC ~$80k. Historically leads risk-on sentiment — when BTC rallies, tech follows 48-72hrs later. Use as leading indicator.', spike:true },
+  { region:'Brazil',        flag:'🇧🇷', etf:'EWZ',     score:5.4, flow:'neutral', r3m:'+6.2%',  lbl:'Commodity play',   note:'Druckenmiller initiated EWZ position Q4 2025. Commodity exports benefiting from AI infrastructure demand. Political risk remains.', spike:false },
+  { region:'Europe',        flag:'🇪🇺', etf:'VGK',     score:5.2, flow:'neutral', r3m:'+4.8%',  lbl:'Selective',        note:'UK political instability. Defence stocks outperforming on NATO spending. Energy transition mixed. Selective exposure only.', spike:false },
+  { region:'Australia',     flag:'🇦🇺', etf:'STW',     score:5.8, flow:'neutral', r3m:'+8.4%',  lbl:'Resources + banks',note:'ASX 200 at 8,241. Copper strong, iron ore soft. Big 4 banks defensive. AUD at 0.72+ reducing USD gains when converted.', spike:false },
+  { region:'China',         flag:'🇨🇳', etf:'FXI',     score:3.2, flow:'out',     r3m:'-7.6%',  lbl:'Cautious',         note:'Regulatory overhang. Property sector stressed. CQQQ 50% below 2021 peak. Tariff uncertainty. Druckenmiller has zero China exposure.', spike:false },
+  { region:'United Kingdom',flag:'🇬🇧', etf:'EWU',     score:4.2, flow:'out',     r3m:'-2.4%',  lbl:'Political risk',   note:'PM Starmer facing leadership crisis. 10-year gilt yields spiking. Banks selling off. Avoid near-term.', spike:false },
+];
+
+function renderGlobalFlows() {
+  const el = document.getElementById('globalFlowsGrid');
+  if (!el) return;
+  el.innerHTML = GLOBAL_FLOWS.map(g => {
+    const scoreCol = g.score >= 7 ? 'var(--green)' : g.score >= 5 ? 'var(--yellow)' : 'var(--red)';
+    const flowIcon = g.flow === 'in' ? '▲' : g.flow === 'out' ? '▼' : '→';
+    const flowCol  = g.flow === 'in' ? 'var(--green)' : g.flow === 'out' ? 'var(--red)' : 'var(--yellow)';
+    const r3mCol   = g.r3m.startsWith('+') ? 'var(--green)' : 'var(--red)';
+    const spike    = g.spike ? `<span style="background:rgba(0,217,166,0.12);color:var(--green);font-size:9px;font-family:var(--mono);padding:1px 5px;border-radius:3px;margin-left:5px;border:1px solid rgba(0,217,166,0.25);">⚡ HOT</span>` : '';
+    return `<div style="display:grid;grid-template-columns:40px 1fr 44px 60px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:20px;text-align:center;">${g.flag}</div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:4px;">${g.region}${spike}</div>
+        <div style="font-size:10px;color:var(--tm);font-family:var(--mono);margin-top:1px;">${g.etf} · ${g.lbl}</div>
+        <div style="font-size:11px;color:var(--td);margin-top:3px;line-height:1.4;">${g.note}</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:${scoreCol}">${g.score.toFixed(1)}</div>
+        <div style="font-size:9px;color:var(--tm);font-family:var(--mono);">/10</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:${r3mCol}">${g.r3m}</div>
+        <div style="font-size:10px;color:${flowCol};font-family:var(--mono);">${flowIcon} ${g.flow.toUpperCase()}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────
+// BREAKING NEWS SYSTEM
+// Update BREAKING_NEWS array when briefed by Pat
+// ─────────────────────────────────────────────
+const BREAKING_NEWS = [
+  {
+    id: 'bn_20260516_1',
+    severity: 'critical',
+    icon: '📉',
+    tag: 'MARKET SELLOFF',
+    date: 'May 16, 2026',
+    headline: 'Tech selloff — Nasdaq -1.4%, S&P 500 -1% as Trump-Xi summit disappoints',
+    detail: 'No major policy breakthrough from Beijing summit. 10-year Treasury yield spiked to 4.55% (1-year high). Rate hike probability jumped from 1% to 45% in one month. Intel -6%, AMD -5%, NVDA -4%. Your SOXX, SEMI, NVDA, TSM all affected. Fundamentals unchanged — this is macro-driven profit taking after a 60% SOX YTD run.'
+  },
+  {
+    id: 'bn_20260516_2',
+    severity: 'warning',
+    icon: '🛢️',
+    tag: 'OIL & INFLATION',
+    date: 'May 16, 2026',
+    headline: 'Oil back above $102 — April CPI 3.8% hottest in 3 years',
+    detail: 'Brent crude at $107.30. April CPI 3.8% YoY — highest since 2023. New Fed Chair Kevin Warsh takes over today as Powell\'s term ends. Gold -2.7%, copper -4.2% also selling off. High inflation + higher yields = pressure on all growth stocks you hold.'
+  },
+  {
+    id: 'bn_20260516_3',
+    severity: 'info',
+    icon: '📅',
+    tag: 'KEY DATE REMINDER',
+    date: 'May 16, 2026',
+    headline: 'Nvidia earnings Wednesday May 20 — most important date for your portfolio',
+    detail: 'Goldman Sachs raised estimates 12% ahead of print. H200 chip exports to China just approved. A beat could reverse today\'s selloff across NVDA, SOXX and SEMI simultaneously. Hold positions through earnings. Do not sell into today\'s weakness before this catalyst.'
+  }
+];
+
+function renderBreakingNews() {
+  const wrap = document.getElementById('bnewsWrap');
+  if (!wrap) return;
+  const dismissed = JSON.parse(sessionStorage.getItem('bn_dismissed') || '[]');
+  const active = BREAKING_NEWS.filter(n => !dismissed.includes(n.id));
+  wrap.innerHTML = active.map(n => `
+    <div class="bnews-item ${n.severity}" id="bn_${n.id}">
+      <div class="bnews-icon">${n.icon}</div>
+      <div class="bnews-body">
+        <div class="bnews-tag ${n.severity}">
+          ⚡ BREAKING — ${n.tag}
+          <span class="bnews-date">${n.date}</span>
+        </div>
+        <div class="bnews-headline">${n.headline}</div>
+        <div class="bnews-detail">${n.detail}</div>
+      </div>
+      <button class="bnews-close" onclick="dismissNews('${n.id}')" title="Dismiss">×</button>
+    </div>`).join('');
+}
+
+function dismissNews(id) {
+  const dismissed = JSON.parse(sessionStorage.getItem('bn_dismissed') || '[]');
+  dismissed.push(id);
+  sessionStorage.setItem('bn_dismissed', JSON.stringify(dismissed));
+  renderBreakingNews();
+}
+
 // ─────────────────────────────────────────────
 function addHistEntry() {
   const key = document.getElementById('histYear').value; // e.g. "2026", "2026-Q1", "2026-Q3"
@@ -4335,6 +5103,10 @@ function drawHistChart(annualEntries, quarterlyEntries = []) {
 // ─────────────────────────────────────────────
 // STARTUP
 // ─────────────────────────────────────────────
+// Breaking news always renders first regardless of auth
+renderBreakingNews();
+// Restore theme preference
+loadTheme();
 // Seed default data for public tabs (Momentum + Intel)
 S.holdings = JSON.parse(JSON.stringify(DEF_HOLDINGS));
 S.watchlist = JSON.parse(JSON.stringify(DEF_WATCHLIST));
