@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Pat's Portfolio — v4.7</title>
+<title>Pat's Portfolio — v4.8</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -1489,7 +1489,7 @@ canvas.spark { width: 100%; height: 68px; display: block; }
 
 <!-- NAV -->
 <div class="nav">
-  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v4.7</span></div>
+  <div class="nav-logo">Pat's Portfolio <span style="font-size:9px;color:var(--tm);font-weight:400;margin-left:4px;">v4.8</span></div>
   <div class="nav-tabs">
     <div class="nav-tab" onclick="showPage('p1',this)">📱 Input</div>
     <div class="nav-tab on" onclick="showPage('p2',this)">📊 Momentum</div>
@@ -3042,6 +3042,8 @@ function getEntryStop(ticker, currentPrice) {
   const belowIdeal = currentPrice <= d.idealEntry;
   return { ...d, inZone, nearStop, belowIdeal, currentPrice };
 }
+
+function renderWatchlist() {
   if (!S.watchlist.length) {
     document.getElementById('wList').innerHTML = '<div class="empty">No watchlist items</div>';
     return;
